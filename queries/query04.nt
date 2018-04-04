@@ -2,26 +2,19 @@
 
 #shows a ranking of the most commonly used operating systems
 
+#Ranking operating system 
+
+#shows a ranking of the most commonly used operating systems
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX w3: <http://www.w3.org/2000/01/rdf-schema#>
-
-PREFIX docker: <http://www.w3.org/ns/bde/docker/>
-PREFIX purl: <http://www.purl.org/net/wicus-stack#>
-PREFIX is: <http://purl.org/ontology/is/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX voc: <http://voc.odw.tw/>
+PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
-prefix vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
-prefix ex: <http://dockerpedia.inf.utfsm.cl/resource/>
-
-SELECT ?layer ?osname
-WHERE {
-  { select distinct ?image ?layer where {
-      ?image vocab:id 62434 .
+SELECT ?osname (count(?osname) as ?count) WHERE { 
+  { SELECT distinct ?image ?os WHERE {
+      ?image rdf:type vocab:Image .
       ?image vocab:hasLayer ?layer .
-    } limit 1
-  }
-  ?layer vocab:useOS ?os .
-  ?os rdfs:label ?osname
-  
-} order by ?layer limit 10000
+      ?layer vocab:useOS ?os .
+    }
+  } 
+  ?os rdfs:label ?osname 
+} group by (?osname) order by desc(?count)
