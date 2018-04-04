@@ -1,9 +1,4 @@
 #Ranking operating system 
-
-#shows a ranking of the most commonly used operating systems
-
-#Ranking operating system 
-
 #shows a ranking of the most commonly used operating systems
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -17,4 +12,4 @@ SELECT ?osname (count(?osname) as ?count) WHERE {
     }
   } 
   ?os rdfs:label ?osname 
-} group by (?osname) order by desc(?count)
+} group by (?osname) order by desc(?count) limit 10

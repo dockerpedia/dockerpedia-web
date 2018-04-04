@@ -12,4 +12,4 @@ WHERE {
   ?modification vocab:relatedPackage ?packageversion .
   ?package vocab:hasVersion ?packageversion .
   ?package rdfs:label ?packagename .
-} group by (?packagename) order by desc(?count)
+} group by (?packagename) order by desc(?count) limit 10

@@ -8,4 +8,4 @@ SELECT ?layer (count(?layer) as ?count)
 WHERE {
   ?image rdf:type vocab:Image ;
          vocab:hasLayer ?layer .
-} group by (?layer) order by desc(?count)
+} group by (?layer) order by desc(?count) limit 10

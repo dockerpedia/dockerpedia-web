@@ -1,18 +1,7 @@
-#shows the packages of image
-
+#Shows the packages of image
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX w3: <http://www.w3.org/2000/01/rdf-schema#>
-
-PREFIX docker: <http://www.w3.org/ns/bde/docker/>
-PREFIX purl: <http://www.purl.org/net/wicus-stack#>
-PREFIX is: <http://purl.org/ontology/is/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX voc: <http://voc.odw.tw/>
-
-prefix vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
-prefix ex: <http://dockerpedia.inf.utfsm.cl/resource/>
-prefix exdata: <http://dockerpedia.inf.utfsm.cl/data/>
-
+PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?packagename ?packageversionint
 WHERE {
@@ -21,6 +10,6 @@ WHERE {
   ?modification vocab:modifiedLayer ?layer .
   ?modification vocab:relatedPackage ?packageversion .
   ?package vocab:hasVersion ?packageversion .
-  ?package w3:label ?packagename .
-  ?packageversion w3:label ?packageversionint
-} limit 10000
+  ?package rdfs:label ?packagename .
+  ?packageversion rdfs:label ?packageversionint
+} limit 500
