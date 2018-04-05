@@ -772,7 +772,7 @@ JOIN vulnerability AS v
     where namespace.name like '%debian%';
   """;];
 
-  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/LayerModification/{package_id}"; ];
+  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/SoftwarePackage/{package_id}"; ];
 
   rr:predicateObjectMap
   [
