@@ -758,3 +758,25 @@ JOIN vulnerability AS v
     rr:objectMap  [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/ImageLayer/{layer_id}" ]
   ];
 .
+
+#Relation 19
+<TriplesMapFeatureversion-Layer19>
+  a rr:TriplesMap;
+
+  rr:logicalTable [ rr:sqlQuery """
+    select 
+      feature.id as package_id,
+      feature.name as package_name
+    from namespace join feature on feature.namespace_id=namespace.id
+    where namespace.name like '%debian%';
+  """;];
+
+  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/LayerModification/{package_id}";
+                    rr:class vocab:LayerModification ];
+
+  rr:predicateObjectMap
+  [
+    rr:predicate  vocab:x-debian ;
+    rr:objectMap  [ rr:template "http://packages.qa.debian.org/{package_name}" ]
+  ];
+.
