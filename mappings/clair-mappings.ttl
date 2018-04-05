@@ -4,6 +4,7 @@
 @prefix vocab: <http://dockerpedia.inf.utfsm.cl/vocab#> .
 @prefix data: <http://dockerpedia.inf.utfsm.cl/resource/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @base <http://dockerpedia.inf.utfsm.cl/base/> .
 
 #Table 0
@@ -771,12 +772,11 @@ JOIN vulnerability AS v
     where namespace.name like '%debian%';
   """;];
 
-  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/LayerModification/{package_id}";
-                    rr:class vocab:LayerModification ];
+  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/LayerModification/{package_id}"; ];
 
   rr:predicateObjectMap
   [
-    rr:predicate  vocab:x-debian ;
+    rr:predicate  owl:sameAs ;
     rr:objectMap  [ rr:template "http://packages.qa.debian.org/{package_name}" ]
   ];
 .
