@@ -1,0 +1,15 @@
+#shows the number of versions that have critical vulnerabilities for package.
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+
+SELECT distinct ?packagename ?packageversionnumber ?vulnerabilitylabel
+WHERE {
+  ?vulnerability vocab:severity "Critical" ;
+                 rdfs:label ?vulnerabilitylabel .
+  ?packageversion vocab:hasVulnerability ?vulnerability;
+                  rdfs:label ?packageversionnumber .
+  ?package vocab:hasVersion ?packageversion ;
+           rdfs:label ?packagename .
+  
+} limit 100
