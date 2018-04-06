@@ -6,6 +6,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @base <http://dockerpedia.inf.utfsm.cl/base/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
 
 #Table 0
 <TriplesMapImage>
@@ -31,13 +34,13 @@
 
     rr:predicateObjectMap
     [
-    rr:predicate  vocab:user ;
+    rr:predicate  dcterms:creator ;
     rr:objectMap  [ rr:column "\"user\""; ];
     ];
 
     rr:predicateObjectMap
     [
-    rr:predicate  vocab:description ;
+    rr:predicate  dcterms:description ;
     rr:objectMap  [ rr:column "\"description\""; ];
     ];
 
@@ -232,7 +235,7 @@
 
     rr:predicateObjectMap
     [
-      rr:predicate    vocab:description;
+      rr:predicate    dcterms:description;
       rr:objectMap    [ rr:column "\"description\"" ]
     ];
 
@@ -838,7 +841,7 @@ JOIN vulnerability AS v
 
   rr:predicateObjectMap
   [
-    rr:predicate  owl:sameAs ;
+    rr:predicate  rdfs:seeAlso ;
     rr:objectMap  [ rr:template "https://store.docker.com/community/images/{full_name}/dockerfile" ]
   ];
 .
