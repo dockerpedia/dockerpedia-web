@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  div#carouselExampleSlidesOnly.carousel.slide(data-ride="carousel")
+    div.carousel-inner
+      div.carousel-item.active
+        img.d-block.w-100(src="images/chicago.jpg", alt="First slide")
+      div.carousel-item
+        img.d-block.w-100(src="images/la.jpg", alt="Second slide")
+      div.carousel-item
+        img.d-block.w-100(src="images/ny.jpg", alt="Third slide")
+
+  main.container(role="main")
+
+    div.row
+      div.col-md-2
+      div.col-md-8
+        h2 Welcome to DockerPedia
+        p
+          b DockerPedia 
+          | is a ...
