@@ -70,8 +70,8 @@
 
   rr:logicalTable [ rr:tableName  "\"tag\"" ];
 
-    rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/Image/{id}";
-                    rr:class vocab:Image ];
+    rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/{id}";
+                    rr:class vocab:SoftwareImage ];
 
     rr:predicateObjectMap
     [
@@ -298,7 +298,7 @@
   rr:predicateObjectMap
   [
     rr:predicate  vocab:hasImage ;
-    rr:objectMap  [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/Image/{image_id}" ]
+    rr:objectMap  [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/{image_id}" ]
   ];
 .
 
@@ -316,8 +316,8 @@
       ON t.image_id = i.id
   """;];
 
-  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/Image/{image_id}";
-    rr:class vocab:Image ];
+  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/{image_id}";
+    rr:class vocab:SoftwareImage ];
 
   rr:predicateObjectMap
   [
@@ -349,7 +349,7 @@
     rr:predicateObjectMap
     [
       rr:predicate  vocab:isLayerOf ;
-      rr:objectMap  [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/Image/{tag_id}" ]
+      rr:objectMap  [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/{tag_id}" ]
     ];
 
 
@@ -370,8 +370,8 @@
     "layer".id = "tag_layer".layer_id AND "tag".id = "tag_layer".tag_id
   """;];
 
-    rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/Image/{tag_id}";
-                    rr:class vocab:Image ];
+    rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/{tag_id}";
+                    rr:class vocab:SoftwareImage ];
 
 
     rr:predicateObjectMap
