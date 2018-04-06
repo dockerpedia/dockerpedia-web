@@ -14,20 +14,25 @@ html(lang="en", ng-app="dockerpedia")
     script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js")
     // mine
     script(src="scripts/main.js")
+    link(rel="stylesheet", href="styles/style.css")
     title="DockerPedia"
   body
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light(ng-controller="mainCtrl")
-      a.navbar-brand(href="/") DockerPedia
-      button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarNavDropdown",
-                            aria-controls="navbarNavDropdown", aria-expanded="false", aria-label="Toggle navigation")
-        span.navbar-toggler-icon
-      div#navbarNavDropdown.navbar-collapse.collapse
-        ul.navbar-nav.mr-auto
-          li.nav-item(ng-class="!loc ? 'active' : '';")
-            a.nav-link(href="/") Home
-        ul.navbar-nav
-          li.nav-item(ng-class="loc == 'examples'? 'active' : '';")
-            a.nav-link(href="/examples") Examples
-          li.nav-item(ng-class="loc == 'query' ? 'active' : '';")
-            a.nav-link(href="/query") Query
-    block content
+    div#container
+      nav.navbar.navbar-expand-lg.navbar-light.bg-light(ng-controller="mainCtrl")
+        a.navbar-brand(href="/") DockerPedia
+        button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarNavDropdown",
+                              aria-controls="navbarNavDropdown", aria-expanded="false", aria-label="Toggle navigation")
+          span.navbar-toggler-icon
+        div#navbarNavDropdown.navbar-collapse.collapse
+          ul.navbar-nav.mr-auto
+            li.nav-item(ng-class="!loc ? 'active' : '';")
+              a.nav-link(href="/") Home
+          ul.navbar-nav
+            li.nav-item(ng-class="loc == 'examples'? 'active' : '';")
+              a.nav-link(href="/examples") Examples
+            li.nav-item(ng-class="loc == 'query' ? 'active' : '';")
+              a.nav-link(href="/query") Query
+      div#body
+        block content
+      div#footer
+        include footer

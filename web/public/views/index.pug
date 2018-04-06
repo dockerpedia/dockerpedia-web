@@ -1,13 +1,12 @@
 extends layout
 
 block content
-  div#carouselExampleSlidesOnly.carousel.slide(data-ride="carousel")
+  div.carousel.slide(data-ride="carousel")
     div.carousel-inner
       div.carousel-item.active
         img.d-block.w-100(src="images/dockerpedia.png", alt="First slide")
 
-  main.container(role="main")
-
+  main.container(role="main", style="padding-top: 15px")
     div.row
       div.col-md-2
       div.col-md-8
@@ -43,5 +42,3 @@ block content
           li
             a(href="#") Download dataset
         p
-
-  include footer
