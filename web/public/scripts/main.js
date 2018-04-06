@@ -96,8 +96,8 @@ WHERE {
   if (scope.loc == 'query') {
     //console.log(YASGUI.defaults);
     scope.yasgui = YASGUI(document.getElementById("yasgui"), {
-      yasqe: { sparql:{ endpoint:'http://localhost:3232/dockerpedia/sparql' } },
-      endpoint: 'http://localhost:3232/dockerpedia/sparql',
+      yasqe: { sparql:{ endpoint:'https://dockerpedia.inf.utfsm.cl/dockerpedia/sparql' } },
+      endpoint: 'https://dockerpedia.inf.utfsm.cl/dockerpedia/sparql',
       catalogueEndpoints: [],
     });
   } else if (scope.loc == 'examples') {
