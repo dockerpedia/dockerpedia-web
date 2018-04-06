@@ -780,3 +780,65 @@ JOIN vulnerability AS v
     rr:objectMap  [ rr:template "http://packages.qa.debian.org/{package_name}" ]
   ];
 .
+
+#Relation 20
+<TriplesMapFeatureversion-Dockerfile>
+  a rr:TriplesMap;
+
+  rr:logicalTable [ rr:sqlQuery """
+    select 
+      id,
+      full_name 
+    from image 
+    where is_automated;
+  """;];
+
+  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/DockerFile/{id}";
+                  rr:class vocab:DockerFile];
+
+.
+
+
+#Relation 21
+<TriplesMapFeatureversion-Repository-Dockerfile>
+  a rr:TriplesMap;
+
+  rr:logicalTable [ rr:sqlQuery """
+    select 
+      id,
+      full_name 
+    from image 
+    where is_automated;
+  """;];
+
+  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/DockerFile/{id}"; ];
+
+  rr:predicateObjectMap
+  [
+    rr:predicate  vocab:builds ;
+    rr:objectMap  [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/Repository/{id}" ]
+  ];
+
+.
+
+
+#Relation 22
+<TriplesMapFeatureversion-DockerfileSameAS>
+  a rr:TriplesMap;
+
+  rr:logicalTable [ rr:sqlQuery """
+    select 
+      id,
+      full_name 
+    from image 
+    where is_automated;
+  """;];
+
+  rr:subjectMap [ rr:template "http://dockerpedia.inf.utfsm.cl/resource/DockerFile/{id}"; ];
+
+  rr:predicateObjectMap
+  [
+    rr:predicate  owl:sameAs ;
+    rr:objectMap  [ rr:template "https://store.docker.com/community/images/{full_name}/dockerfile" ]
+  ];
+.
