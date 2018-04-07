@@ -1,0 +1,428 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#"
+     xml:base="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:wicus-stack="http://purl.org/net/wicus-stack#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:vann="http://purl.org/vocab/vann/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <owl:Ontology rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology">
+        <owl:imports rdf:resource="http://purl.org/net/wicus-stack"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/net/wicus-stack#hasVersion -->
+
+    <rdf:Description rdf:about="http://purl.org/net/wicus-stack#hasVersion">
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+    </rdf:Description>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#affectsOS -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#affectsOS">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareVulnerability"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#builds -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#builds">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#DockerFile"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareImage"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#composedBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#composedBy">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareImage"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#containPackages -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#containPackages"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#deployedOn -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#deployedOn">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwarePackage"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#FileSystem"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#fixPackageVersion -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#fixPackageVersion">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SecurityRevision"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#fixVulnerability -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#fixVulnerability">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SecurityRevision"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareVulnerability"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasFileSystem -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasFileSystem">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#FileSystem"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasImage -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasImage">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#DockerFile"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareImage"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasLayer -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasLayer">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareImage"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasPackages -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasPackages">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwarePackage"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasRevision -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasRevision">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SecurityRevision"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasVulnerability -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#hasVulnerability">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareVulnerability"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isAffectedBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isAffectedBy">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareVulnerability"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isLayerOf -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isLayerOf">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isModifiedBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isModifiedBy">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isPackageOf -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isPackageOf">
+        <rdfs:domain rdf:resource="http://purl.org/net/wicus-stack#SoftwareComponent"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isPresent -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isPresent"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isVersionOf -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#isVersionOf">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+        <rdfs:range rdf:resource="http://purl.org/net/wicus-stack#SoftwareComponent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#modifyLayer -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#modifyLayer">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#usesOS -->
+
+    <owl:ObjectProperty rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#usesOS">
+        <rdfs:domain rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+        <rdfs:range rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#DockerFile -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#DockerFile">
+        <rdfs:subClassOf rdf:resource="http://purl.org/net/wicus-stack#DeploymentScript"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#FileSystem -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#FileSystem"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageVersion -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageVersion">
+        <rdfs:subClassOf rdf:resource="http://purl.org/net/wicus-stack#Version"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#LayerModification -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#LayerModification"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#OperatingSystem"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion">
+        <rdfs:subClassOf rdf:resource="http://purl.org/net/wicus-stack#Version"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SecurityRevision -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SecurityRevision"/>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareImage -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareImage">
+        <rdfs:subClassOf rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwarePackage -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwarePackage">
+        <rdfs:subClassOf rdf:resource="http://purl.org/net/wicus-stack#SoftwareComponent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareVulnerability -->
+
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareVulnerability"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserver -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserver">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#DockerFile"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImage -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImage">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImageLayer1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImageLayer1">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImageLayer2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImageLayer2">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImageLayer3 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#linkeddatafragmensserverImageLayer3">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#ImageLayer"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#package1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#package1">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwarePackage"/>
+        <wicus-stack:hasVersion rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version11"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#package2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#package2">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwarePackage"/>
+        <wicus-stack:hasVersion rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version12"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#package3 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#package3">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwarePackage"/>
+        <wicus-stack:hasVersion rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version21"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version11 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version11">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+        <hasVulnerability rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#vulnerability123"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version12 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version12">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+        <hasVulnerability rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#vulnerability123"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version21 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#version21">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#PackageVersion"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#vulnerability123 -->
+
+    <owl:NamedIndividual rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#vulnerability123">
+        <rdf:type rdf:resource="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#SoftwareVulnerability"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi -->
+
