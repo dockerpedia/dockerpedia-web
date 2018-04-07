@@ -91,6 +91,7 @@ WHERE {
          vocab:hasLayer ?layer .
 } group by (?layer) order by desc(?count) limit 10`
   ];
+
   var absUrlArray = location.absUrl().split('/');
   scope.loc = absUrlArray[absUrlArray.length -1].split('?')[0].split('#')[0];
   if (scope.loc == 'query') {
@@ -113,4 +114,42 @@ WHERE {
       scope.yasqe.push(yasqeTMP);
     }
   }
+}])
+
+.controller('describeCtrl', ['$scope', '$location', '$http', function(scope, location, http) {
+  scope.absUrl   = location.absUrl()//.replace("localhost:7070","dockerpedia.inf.utfsm.cl");
+  scope.objProp  = {};
+  scope.dataProp = {};
+  scope.labels   = {}; //this is label to iri
+  scope.iri      = null;
+  scope.type     = null;
+
+  http.post('/api/describe', {iri: scope.absUrl }).then(
+    function onSuccess (response) {
+      if (response.data) {
+        scope.iri  = response.data['@id'];
+        scope.type = response.data['@type'];
+        delete response.data['@id'];
+        delete response.data['@type'];
+        for (var key in response.data) {
+          if (key[0] != '@') {
+            if (response.data[key].substring(0, 4) == 'http')
+              scope.objProp[key] = response.data[key];
+            else
+              scope.dataProp[key] = response.data[key];
+            delete response.data[key];
+          }
+        }
+        for (var key in response.data['@context']) {
+          scope.labels[key] = response.data['@context'][key]['@id'];
+          //TODO: ['@type'] has no type currently.
+        }
+        delete response.data['@context'];
+        //console.log(response.data); not saved data
+      } else {
+        console.log('/api/describe <'+scope.absUrl+'> returns nothing!')
+      }
+    },
+    function onError (response) { console.log('Error: ' + response.data); }
+  );
 }]);
