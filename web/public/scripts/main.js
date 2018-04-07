@@ -117,7 +117,7 @@ WHERE {
 }])
 
 .controller('describeCtrl', ['$scope', '$location', '$http', function(scope, location, http) {
-  scope.absUrl   = location.absUrl()//.replace("localhost:7070","dockerpedia.inf.utfsm.cl");
+  scope.absUrl   = location.absUrl().replace('#!#','#');//.replace("localhost:7070","dockerpedia.inf.utfsm.cl");
   scope.objProp  = {};
   scope.dataProp = {};
   scope.labels   = {}; //this is label to iri
@@ -127,6 +127,7 @@ WHERE {
   http.post('/api/describe', {iri: scope.absUrl }).then(
     function onSuccess (response) {
       if (response.data) {
+        console.log(response.data);
         scope.iri  = response.data['@id'];
         scope.type = response.data['@type'];
         delete response.data['@id'];

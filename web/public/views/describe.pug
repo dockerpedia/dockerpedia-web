@@ -13,7 +13,7 @@ block content
                 a(href="{{ labels[key] }}") {{ key }}
               td 
                 b {{ value }}
-            tr(ng-if(type))
+            tr(ng-if="type")
               th 
                 a(href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type") type
               td 
