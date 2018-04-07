@@ -119,7 +119,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
         delete response.data['@type'];
         for (var key in response.data) {
           if (key[0] != '@') {
-            if (response.data[key].substring(0, 4) == 'http')
+            if (typeof(response.data[key])=='string' && response.data[key].substring(0, 4) == 'http')
               scope.objProp[key] = response.data[key];
             else
               scope.dataProp[key] = response.data[key];
