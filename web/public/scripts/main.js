@@ -108,6 +108,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
   scope.labels   = {}; //this is label to iri
   scope.iri      = null;
   scope.type     = null;
+  scope.loading  = true;
 
   http.post('/api/describe', {iri: scope.absUrl }).then(
     function onSuccess (response) {
@@ -120,9 +121,17 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
         for (var key in response.data) {
           if (key[0] != '@') {
             if (typeof(response.data[key])=='string' && response.data[key].substring(0, 4) == 'http')
-              scope.objProp[key] = response.data[key];
+              if(response.data[key].constructor === Array) {
+                scope.objProp[key] = response.data[key];
+              } else {
+                scope.objProp[key] = [ response.data[key] ];
+              }
             else
-              scope.dataProp[key] = response.data[key];
+              if(response.data[key].constructor === Array) {
+                scope.dataProp[key] = response.data[key];
+              } else {
+                scope.dataProp[key] = [ response.data[key] ];
+              }
             delete response.data[key];
           }
         }
@@ -131,6 +140,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
           //TODO: ['@type'] has no type currently.
         }
         delete response.data['@context'];
+        scope.loading  = false;
         //console.log(response.data); not saved data
       } else {
         console.log('/api/describe <'+scope.absUrl+'> returns nothing!')
