@@ -6,13 +6,16 @@ block content
       div.col-md-2
       div.col-md-8
         h5(style="text-align: center; padding-bottom:10px;") {{ iri }}
+        div(ng-if="!iri")
+          h5(style="text-align: center; padding-bottom:10px;") {{ absUrl }}
+          h6(ng-if="!loading") Sorry! no description available.
         table.table.table-hover
           tbody
             tr(ng-repeat="(key, value) in dataProp")
               th 
                 a(href="{{ labels[key] }}") {{ key }}
               td 
-                b {{ value }}
+                b {{ value[0] }}
             tr(ng-if="type")
               th 
                 a(href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type") type
@@ -20,6 +23,6 @@ block content
                 a(href="{{ type }}") {{ type }}
             tr(ng-repeat="(key, value) in objProp")
               th 
-                a(href="{{ labels[key] }}") {{ key }}
+                a(href="{{labels[key]}}") {{ key }}
               td 
-                a(href="{{ value }}") {{ value }}
+                a(href="{{value[0]}}") {{ value[0] }}

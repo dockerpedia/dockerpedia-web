@@ -2,12 +2,17 @@ angular.module('dockerpedia', [])
 
 .controller('mainCtrl', ['$scope', '$location', function(scope, location) {
   scope.examples = [ 
-`PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+
+SELECT ?repo ?image WHERE { 
+  ?repo  a vocab:Repository ;
+         vocab:hasImage ?image.
+  ?image a vocab:Image .
+} limit 10`,
+`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
-SELECT ?packagename ?packageversionint
-WHERE {
+SELECT ?packagename ?packageversionint WHERE {
   ?image vocab:id 62434 .
   ?image vocab:hasLayer ?layer .
   ?modification vocab:modifiedLayer ?layer .
@@ -16,13 +21,10 @@ WHERE {
   ?package rdfs:label ?packagename .
   ?packageversion rdfs:label ?packageversionint
 } limit 500`,
-`PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
-SELECT ?packagename ?packageversionnumber ?vulnerabilityname ?severity
-
-WHERE {
+SELECT ?packagename ?packageversionnumber ?vulnerabilityname ?severity WHERE {
   ?image vocab:id 62434 .
   ?image vocab:hasLayer ?layer .
   ?modification vocab:modifiedLayer ?layer .
@@ -34,62 +36,44 @@ WHERE {
   ?vulnerability rdfs:label ?vulnerabilityname .
   ?vulnerability vocab:severity ?severity
 } limit 10000`,
-`#Ranking operating system 
-#shows a ranking of the most commonly used operating systems
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?osname (count(?osname) as ?count) WHERE { 
   { SELECT distinct ?image ?os WHERE {
-      ?image rdf:type vocab:Image .
+      ?image a vocab:Image .
       ?image vocab:hasLayer ?layer .
       ?layer vocab:useOS ?os .
     }
   } 
   ?os rdfs:label ?osname 
 } group by (?osname) order by desc(?count) limit 10`,
-`#Ranking packages
-#shows a ranking of the most commonly used packages
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
-
-SELECT ?packagename (count(?packagename) as ?count)
-WHERE {
+SELECT ?packagename (count(?packagename) as ?count) WHERE {
   ?image vocab:hasLayer ?layer .
   ?modification vocab:modifiedLayer ?layer .
   ?modification vocab:relatedPackage ?packageversion .
   ?package vocab:hasVersion ?packageversion .
   ?package rdfs:label ?packagename .
 } group by (?packagename) order by desc(?count) limit 10`,
-`#shows the number of versions that have critical vulnerabilities for package.
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+`PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
-SELECT distinct ?packagename ?packageversionnumber ?vulnerabilitylabel
-WHERE {
-  ?vulnerability vocab:severity "Critical" ;
-                 rdfs:label ?vulnerabilitylabel .
-  ?packageversion vocab:hasVulnerability ?vulnerability;
-                  rdfs:label ?packageversionnumber .
+SELECT ?layer (count(?layer) as ?count) WHERE {
+  ?image a vocab:Image ;
+         vocab:hasLayer ?layer .
+} group by (?layer) order by desc(?count) limit 10`,
+`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+
+SELECT ?packagename (count(?packagename) as ?count) WHERE {
+  ?vulnerability vocab:severity "Critical" .
+  ?packageversion vocab:hasVulnerability ?vulnerability.
   ?package vocab:hasVersion ?packageversion ;
            rdfs:label ?packagename .
-  
-} limit 100`,
-`#A ImageLayer can be used for multiples Image
-#What is the most commonly used layer?
-PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
-
-SELECT ?layer (count(?layer) as ?count)
-WHERE {
-  ?image rdf:type vocab:Image ;
-         vocab:hasLayer ?layer .
-} group by (?layer) order by desc(?count) limit 10`
+} group by (?packagename) order by desc(?count) limit 20`,
   ];
 
   var absUrlArray = location.absUrl().split('/');
@@ -117,12 +101,14 @@ WHERE {
 }])
 
 .controller('describeCtrl', ['$scope', '$location', '$http', function(scope, location, http) {
-  scope.absUrl   = location.absUrl().replace('#!#','#');//.replace("localhost:7070","dockerpedia.inf.utfsm.cl");
+  scope.absUrl   = location.absUrl().replace('#!#','#').replace("https","http");
+  //.replace("localhost:7070","dockerpedia.inf.utfsm.cl");
   scope.objProp  = {};
   scope.dataProp = {};
   scope.labels   = {}; //this is label to iri
   scope.iri      = null;
   scope.type     = null;
+  scope.loading  = true;
 
   http.post('/api/describe', {iri: scope.absUrl }).then(
     function onSuccess (response) {
@@ -134,10 +120,18 @@ WHERE {
         delete response.data['@type'];
         for (var key in response.data) {
           if (key[0] != '@') {
-            if (response.data[key].substring(0, 4) == 'http')
-              scope.objProp[key] = response.data[key];
+            if (typeof(response.data[key])=='string' && response.data[key].substring(0, 4) == 'http')
+              if(response.data[key].constructor === Array) {
+                scope.objProp[key] = response.data[key];
+              } else {
+                scope.objProp[key] = [ response.data[key] ];
+              }
             else
-              scope.dataProp[key] = response.data[key];
+              if(response.data[key].constructor === Array) {
+                scope.dataProp[key] = response.data[key];
+              } else {
+                scope.dataProp[key] = [ response.data[key] ];
+              }
             delete response.data[key];
           }
         }
@@ -146,6 +140,7 @@ WHERE {
           //TODO: ['@type'] has no type currently.
         }
         delete response.data['@context'];
+        scope.loading  = false;
         //console.log(response.data); not saved data
       } else {
         console.log('/api/describe <'+scope.absUrl+'> returns nothing!')
