@@ -1,0 +1,9 @@
+Flask
+Flask-Migrate
+Flask-SQLAlchemy
+psycopg2-binary
+flask-paginate
+tabulate
+PyYAML
+requests
+requestsexceptions
