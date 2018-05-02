@@ -1,6 +1,6 @@
 angular.module('dockerpedia', [])
 
-.controller('mainCtrl', ['$scope', '$location', function(scope, location) {
+.controller('mainCtrl', ['$scope', '$location', '$window', function(scope, location, window) {
   scope.examples = [ 
 `PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
@@ -88,13 +88,18 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
   } else if (scope.loc == 'examples') {
     var yasqeTMP;
     scope.yasqe = [];
-    YASQE.defaults.sparql.showQueryButton = false;
     YASQE.defaults.readOnly = true;
     YASQE.defaults.viewportMargin = Infinity;
     YASQE.defaults.createShareLink = null;
+    YASQE.defaults.sparql.showQueryButton = true;
+    YASQE.defaults.sparql.endpoint = "https://dockerpedia.inf.utfsm.cl/dockerpedia/sparql";
     for (var n in scope.examples) {
       yasqeTMP = YASQE(document.getElementById("yasqe"+n), {});
       yasqeTMP.setValue(scope.examples[n]);
+      yasqeTMP.query = function (s) {
+        q ='https://dockerpedia.inf.utfsm.cl/query?' + $.param(YASQE.createShareLink(this));
+        window.open(q, '_blank');
+      };
       scope.yasqe.push(yasqeTMP);
     }
   }
