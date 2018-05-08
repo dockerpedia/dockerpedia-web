@@ -1,9 +1,21 @@
 extends layout
 
 block content
+  //link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
+  script(src="scripts/vis-ctrl.js")
   script(src="scripts/d3.js")
   script(src="scripts/scatter.js")
-  main.container(role="main")
+
+  main.container(role="main", ng-controller="visCtrl")
     div.row
-      h1 Scatterplot Visualization
+      div.col-md-2
+      div.col-md-8
+        input.form-control(type="text",
+              placeholder="some user",
+              ng-model="selected",
+              typeahead-editable="false",
+              uib-typeahead="user for user in users | filter:$viewValue | limitTo:8")
+    div.row
+      button(ng-click="getData()") ASD
+    div.row
       scatter
