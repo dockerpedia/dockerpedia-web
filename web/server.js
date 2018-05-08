@@ -32,6 +32,7 @@ app.post('/api/describe', function(req, res) {
 });
 
 // ROUTES =====================================================================
+app.get('/visualization', function(req, res) {res.render(views+'visualization.pug'   );});
 app.get('/query',      function(req, res) {res.render(views+'query.pug'   );});
 app.get('/examples',   function(req, res) {res.render(views+'examples.pug');});
 app.get('/vocab*',     function(req, res) {res.render(views+'describe.pug');});

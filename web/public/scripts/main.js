@@ -1,4 +1,4 @@
-angular.module('dockerpedia', [])
+angular.module('dockerpedia.controllers', [])
 
 .controller('mainCtrl', ['$scope', '$location', '$window', function(scope, location, window) {
   scope.examples = [ 
