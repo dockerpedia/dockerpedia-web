@@ -5,7 +5,7 @@ angular.module('dockerpedia', [
   'dockerpedia.directives',
 ]);
 
-angular.module('d3', []);
+angular.module('d3v3', []);
 angular.module('dockerpedia.services', []);
 angular.module('dockerpedia.controllers', []);
-angular.module('dockerpedia.directives', ['d3']);
+angular.module('dockerpedia.directives', ['d3v3']);

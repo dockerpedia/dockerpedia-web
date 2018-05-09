@@ -1,7 +1,7 @@
 angular.module('dockerpedia.directives')
 .directive(
   'stacked', 
-  ['d3', function(d3) {
+  function() {
   return {
     restrict: 'EA',
     scope: { control: '=' },
@@ -104,4 +104,4 @@ d3.csv("data.csv", function(d, i, columns) {
 /*****************************************************/
     }
   };
-}]);
+});

@@ -1,7 +1,7 @@
 angular.module('dockerpedia.directives')
 .directive(
   'scatter', 
-  ['d3', function(d3) {
+  ['d3v3', function(d3) {
   return {
     restrict: 'EA',
     scope: { control: '=' },
