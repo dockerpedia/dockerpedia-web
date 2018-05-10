@@ -4,48 +4,45 @@ angular.module('dockerpedia.directives')
   function() {
   return {
     restrict: 'EA',
-    scope: { data: '=' },
+    scope: { data: '=', update: '='},
     link: function(scope, element, attrs) {
 /******************** D3 code here *******************/
-      console.log(scope.data) // <-- Data here!
-      /**** MAIN ****/
+      var data = []
+      scope.update = function () {
+        //console.log(scope.data) // <-- Data here!
+        console.log(scope.data['google'].images[0].packages);
+        data = [];
+        var all = scope.data['google'].images[0].packages;
+        for (n in all) {
+          console.log(all[n]);
+        };
+      };
+      /** MAIN SVG **/
+      var svg = d3.select(element[0]).append("svg")
+            .attr("width", 960)
+            .attr("height", 960);
+      var margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    var y = d3.scaleBand()          // x = d3.scaleBand()   
+        .rangeRound([0, height])    // .rangeRound([0, width])
+        .paddingInner(0.05)
+        .align(0.1);
 
-  /** MAIN SVG **/
-  var svg = d3.select(element[0]).append("svg")
-        .attr("width", 960)
-        .attr("height", 960);
-  var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var x = d3.scaleLinear()        // y = d3.scaleLinear()
+        .rangeRound([0, width]);    // .rangeRound([height, 0]);
 
-  var y = d3.scaleBand()          // x = d3.scaleBand()   
-    .rangeRound([0, height])    // .rangeRound([0, width])
-    .paddingInner(0.05)
-    .align(0.1);
+    var z = d3.scaleOrdinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-  var x = d3.scaleLinear()        // y = d3.scaleLinear()
-    .rangeRound([0, width]);    // .rangeRound([height, 0]);
-
-  var z = d3.scaleOrdinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-  d3.csv("data.csv", function(d, i, columns) {
-    for (i = 1, t = 0; i < columns.length; ++i) 
-      t += d[columns[i]] = +d[columns[i]];
-    d.total = t;
-    return d;
-  })
-
-  function draw(data) {
-    if (error) throw error;
-  //console.log(data)
+/*
   var keys = data.columns.slice(1);
 
   console.log(data)
   data.sort(function(a, b) { return b.total - a.total; });
-  y.domain(data.map(function(d) { return d.State; }));                  // x.domain...
+  y.domain(data.map(function(d) { return d.Package; }));                  // x.domain...
   x.domain([0, d3.max(data, function(d) { return d.total; })]).nice();  // y.domain...
   z.domain(keys);
 
@@ -57,7 +54,7 @@ angular.module('dockerpedia.directives')
     .selectAll("rect")
     .data(function(d) { return d; })
     .enter().append("rect")
-      .attr("y", function(d) { return y(d.data.State); })       //.attr("x", function(d) { return x(d.data.State); })
+      .attr("y", function(d) { return y(d.data.Package); })       //.attr("x", function(d) { return x(d.data.Package); })
       .attr("x", function(d) { return x(d[0]); })               //.attr("y", function(d) { return y(d[1]); })   
       .attr("width", function(d) { return x(d[1]) - x(d[0]); }) //.attr("height", function(d) { return y(d[0]) - y(d[1]); })
       .attr("height", y.bandwidth());                           //.attr("width", x.bandwidth());    
@@ -102,7 +99,8 @@ angular.module('dockerpedia.directives')
       .attr("y", 9.5)
       .attr("dy", "0.32em")
       .text(function(d) { return d; });
+      */
 /*****************************************************/
     }
   };
-};
+});
