@@ -10,13 +10,17 @@ angular.module('dockerpedia.controllers')
     "thefactory","gliderlabs"];
 
   scope.data = {};
+  scope.upd = null;
+  scope.upd2 = null;
+
   scope.getData = function () {
     var selected = scope.selected;
     if (selected && !scope.data[selected]) {
       http.post('/api/getJsonData', {user: selected }).then(
         function onSuccess (response) {
           scope.data[selected] = response.data;
-          console.log(response.data);
+          //console.log(response.data);
+          scope.upd();
         },
         function onError (response) { console.log('Error: ' + response.data); }
       );

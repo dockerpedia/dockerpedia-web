@@ -5,7 +5,7 @@ block content
   script(src="scripts/vis-ctrl.js")
   script(src="scripts/d3.js")
   script(src="scripts/d3.v4.min.js")
-  script(src="scripts/scatter.js")
+  script(src="scripts/scatter2.js")
   script(src="scripts/stacked.js")
 
   main.container(role="main", ng-controller="visCtrl")
@@ -18,7 +18,9 @@ block content
               typeahead-editable="false",
               uib-typeahead="user for user in users | filter:$viewValue | limitTo:8")
     div.row
-      button(ng-click="getData()") ASD
+      button(ng-click="getData()") UPDATE
     div.row
-      scatter(data="data")
-      stacked(data="data")
+      scatter(data="data", update="upd")
+      //input#myCheckbox(type="checkbox")
+      //| View in percentage
+      //stacked(data="data", update="upd2")
