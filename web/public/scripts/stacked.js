@@ -4,10 +4,10 @@ angular.module('dockerpedia.directives')
   function() {
   return {
     restrict: 'EA',
-    scope: { control: '=' },
+    scope: { data: '=' },
     link: function(scope, element, attrs) {
 /******************** D3 code here *******************/
-      console.log('hello word')
+      console.log(scope.data) // <-- Data here!
       /**** MAIN ****/
 
 
@@ -38,7 +38,7 @@ d3.csv("data.csv", function(d, i, columns) {
   return d;
 }, function(error, data) {
   if (error) throw error;
-  console.log(data)
+  //console.log(data)
   var keys = data.columns.slice(1);
 
   console.log(data)

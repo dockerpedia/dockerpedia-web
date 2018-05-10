@@ -4,10 +4,11 @@ angular.module('dockerpedia.directives')
   ['d3v3', function(d3) {
   return {
     restrict: 'EA',
-    scope: { control: '=' },
+    scope: { data: '=' },
     link: function(scope, element, attrs) {
 /******************** D3 code here *******************/
-      console.log('hello world')
+      console.log(scope.data) // <-- Data here!
+
       /**** MAIN ****/
       var width  =  920,
           height =  460;
