@@ -1,0 +1,67 @@
+{
+    "username": "microsoft",
+    "images": [
+    {
+        "name": "azure",
+        "last_update": "1980-01-02T00:00:00.000Z",
+        "total_vulnerabilities": 141,
+        "packages": [
+            {
+                "name": "wget",
+                "vulnerabilities": {
+                    "high": 2,
+                    "medium": 5,
+                    "low": 10
+                }
+            },
+            {
+                "name": "glibc",
+                "vulnerabilities": {
+                    "high": 2,
+                    "medium": 5,
+                    "low": 10
+                }
+            },
+            {
+                "name": "nginx",
+                "vulnerabilities": {
+                    "high": 2,
+                    "medium": 5,
+                    "low": 100
+                }
+            }            
+        ]
+    },
+    {
+        "name": "azure-v2",
+        "last_update": "1980-01-02T00:00:00.000Z",
+        "total_vulnerabilities": 51,
+        "packages": [
+            {
+                "name": "wget",
+                "vulnerabilities": {
+                    "high": 2,
+                    "medium": 5,
+                    "low": 10
+                }
+            },
+            {
+                "name": "glibc",
+                "vulnerabilities": {
+                    "high": 2,
+                    "medium": 5,
+                    "low": 10
+                }
+            },
+            {
+                "name": "nginx",
+                "vulnerabilities": {
+                    "high": 2,
+                    "medium": 5,
+                    "low": 10
+                }
+            }            
+        ]
+    }
+    ]
+}

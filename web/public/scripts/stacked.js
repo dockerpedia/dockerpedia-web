@@ -11,33 +11,35 @@ angular.module('dockerpedia.directives')
       /**** MAIN ****/
 
 
-      /** MAIN SVG **/
-      var svg = d3.select(element[0]).append("svg")
-            .attr("width", 960)
-            .attr("height", 960);
-      var margin = {top: 20, right: 20, bottom: 30, left: 40},
-        width = +svg.attr("width") - margin.left - margin.right,
-        height = +svg.attr("height") - margin.top - margin.bottom,
-        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  /** MAIN SVG **/
+  var svg = d3.select(element[0]).append("svg")
+        .attr("width", 960)
+        .attr("height", 960);
+  var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var y = d3.scaleBand()          // x = d3.scaleBand()   
-        .rangeRound([0, height])    // .rangeRound([0, width])
-        .paddingInner(0.05)
-        .align(0.1);
+  var y = d3.scaleBand()          // x = d3.scaleBand()   
+    .rangeRound([0, height])    // .rangeRound([0, width])
+    .paddingInner(0.05)
+    .align(0.1);
 
-    var x = d3.scaleLinear()        // y = d3.scaleLinear()
-        .rangeRound([0, width]);    // .rangeRound([height, 0]);
+  var x = d3.scaleLinear()        // y = d3.scaleLinear()
+    .rangeRound([0, width]);    // .rangeRound([height, 0]);
 
-    var z = d3.scaleOrdinal()
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+  var z = d3.scaleOrdinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-d3.csv("data.csv", function(d, i, columns) {
-  for (i = 1, t = 0; i < columns.length; ++i) 
-    t += d[columns[i]] = +d[columns[i]];
-  d.total = t;
-  return d;
-}, function(error, data) {
-  if (error) throw error;
+  d3.csv("data.csv", function(d, i, columns) {
+    for (i = 1, t = 0; i < columns.length; ++i) 
+      t += d[columns[i]] = +d[columns[i]];
+    d.total = t;
+    return d;
+  })
+
+  function draw(data) {
+    if (error) throw error;
   //console.log(data)
   var keys = data.columns.slice(1);
 
@@ -100,8 +102,7 @@ d3.csv("data.csv", function(d, i, columns) {
       .attr("y", 9.5)
       .attr("dy", "0.32em")
       .text(function(d) { return d; });
-});
 /*****************************************************/
     }
   };
-});
+};
