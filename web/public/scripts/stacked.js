@@ -4,13 +4,19 @@ angular.module('dockerpedia.directives')
   function() {
   return {
     restrict: 'EA',
-    scope: { data: '=' },
+    scope: { data: '=', update: '='},
     link: function(scope, element, attrs) {
 /******************** D3 code here *******************/
-      console.log(scope.data) // <-- Data here!
-      /**** MAIN ****/
-
-
+      var data = []
+      scope.update = function () {
+        //console.log(scope.data) // <-- Data here!
+        console.log(scope.data['google'].images[0].packages);
+        data = [];
+        var all = scope.data['google'].images[0].packages;
+        for (n in all) {
+          console.log(all[n]);
+        };
+      };
       /** MAIN SVG **/
       var svg = d3.select(element[0]).append("svg")
             .attr("width", 960)
@@ -31,19 +37,12 @@ angular.module('dockerpedia.directives')
     var z = d3.scaleOrdinal()
         .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-d3.csv("data.csv", function(d, i, columns) {
-  for (i = 1, t = 0; i < columns.length; ++i) 
-    t += d[columns[i]] = +d[columns[i]];
-  d.total = t;
-  return d;
-}, function(error, data) {
-  if (error) throw error;
-  //console.log(data)
+/*
   var keys = data.columns.slice(1);
 
   console.log(data)
   data.sort(function(a, b) { return b.total - a.total; });
-  y.domain(data.map(function(d) { return d.State; }));                  // x.domain...
+  y.domain(data.map(function(d) { return d.Package; }));                  // x.domain...
   x.domain([0, d3.max(data, function(d) { return d.total; })]).nice();  // y.domain...
   z.domain(keys);
 
@@ -55,7 +54,7 @@ d3.csv("data.csv", function(d, i, columns) {
     .selectAll("rect")
     .data(function(d) { return d; })
     .enter().append("rect")
-      .attr("y", function(d) { return y(d.data.State); })       //.attr("x", function(d) { return x(d.data.State); })
+      .attr("y", function(d) { return y(d.data.Package); })       //.attr("x", function(d) { return x(d.data.Package); })
       .attr("x", function(d) { return x(d[0]); })               //.attr("y", function(d) { return y(d[1]); })   
       .attr("width", function(d) { return x(d[1]) - x(d[0]); }) //.attr("height", function(d) { return y(d[0]) - y(d[1]); })
       .attr("height", y.bandwidth());                           //.attr("width", x.bandwidth());    
@@ -100,7 +99,7 @@ d3.csv("data.csv", function(d, i, columns) {
       .attr("y", 9.5)
       .attr("dy", "0.32em")
       .text(function(d) { return d; });
-});
+      */
 /*****************************************************/
     }
   };
