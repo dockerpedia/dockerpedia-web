@@ -7,7 +7,7 @@ angular.module('dockerpedia', [])
 SELECT ?repo ?image WHERE { 
   ?repo  a vocab:Repository ;
          vocab:hasImage ?image.
-  ?image a vocab:DockerImage .
+  ?image a vocab:SoftwareImage .
 } limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
@@ -41,7 +41,7 @@ PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?osname (count(?osname) as ?count) WHERE { 
   { SELECT distinct ?image ?os WHERE {
-      ?image a vocab:DockerImage .
+      ?image a vocab:SoftwareImage .
       ?image vocab:hasLayer ?layer .
       ?layer vocab:useOS ?os .
     }
@@ -62,7 +62,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?layer (count(?layer) as ?count) WHERE {
-  ?image a vocab:DockerImage ;
+  ?image a vocab:SoftwareImage ;
          vocab:hasLayer ?layer .
 } group by (?layer) order by desc(?count) limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
