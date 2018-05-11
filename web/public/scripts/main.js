@@ -13,7 +13,7 @@ SELECT ?repo ?image WHERE {
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?packagename ?packageversionint WHERE {
-  ?image vocab:id 62434 .
+  ?image vocab:id 1140801 .
   ?image vocab:hasLayer ?layer .
   ?modification vocab:modifiedLayer ?layer .
   ?modification vocab:relatedPackage ?packageversion .
@@ -25,7 +25,7 @@ SELECT ?packagename ?packageversionint WHERE {
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?packagename ?packageversionnumber ?vulnerabilityname ?severity WHERE {
-  ?image vocab:id 62434 .
+  ?image vocab:id 1140801 .
   ?image vocab:hasLayer ?layer .
   ?modification vocab:modifiedLayer ?layer .
   ?modification vocab:relatedPackage ?packageversion .
