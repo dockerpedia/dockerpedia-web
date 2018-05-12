@@ -13,12 +13,11 @@ block content
       div.col-md-2
       div.col-md-8
         input.form-control(type="text",
-              placeholder="some user",
+              placeholder="Search some user",
               ng-model="selected",
               typeahead-editable="false",
+              typeahead-on-select="getData()",
               uib-typeahead="user for user in users | filter:$viewValue | limitTo:8")
-    div.row
-      button(ng-click="getData()") UPDATE
     div.row
       scatter(data="data", update="upd", selected="selected", details="com")
     div.row
