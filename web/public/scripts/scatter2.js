@@ -4,15 +4,15 @@ angular.module('dockerpedia.directives')
   ['d3v3', function(d3) {
   return {
     restrict: 'EA',
-    scope: { data: '=', update: '='},
+    scope: { selected: '=', data: '=', update: '=', details: '='},
     link: function(scope, element, attrs) {
 /******************** D3 code here *******************/
       var parseDate = d3.time.format("%Y-%m-%d").parse;
       scope.update = function () {
         //console.log(scope.data) // <-- Data here!
-        console.log(scope.data['google'].images);
+        //console.log(scope.data['google'].images);
         var data = [];
-        var all = scope.data['google'].images;
+        var all = scope.data[scope.selected].images;
         var tmp = null;
         for (n in all) {
           split_n = all[n].name.split('-');
@@ -23,6 +23,7 @@ angular.module('dockerpedia.directives')
             sum = sum + p.critical + p.high + p.low + p.medium + p.unknown + p.negligible;
           }
           tmp = {
+            'id': n,
             'Cereal Name' : all[n].name,
             'Manufacturer' : split_n[split_n.length-1],
             'Calories' : parseDate( split_date[0] ),
@@ -31,9 +32,10 @@ angular.module('dockerpedia.directives')
           data.push(tmp);
         }
         //data.columns = ['critical', 'high', 'low', 'medium', 'negligible', 'package', 'unknown']
-        console.log ( data );
+        //console.log ( data );
         start(data);
       };
+
 
       /** MAIN SVG **/
 
@@ -129,6 +131,7 @@ var start = function(data) {
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));}) 
+      .on("click", function (d) { scope.details(d.id) })
       .on("mouseover", function(d) {
           tooltip.transition()
                .duration(200)

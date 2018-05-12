@@ -11,7 +11,7 @@ angular.module('dockerpedia.controllers')
 
   scope.data = {};
   scope.upd = null;
-  scope.upd2 = null;
+  scope.com = null;
 
   scope.getData = function () {
     var selected = scope.selected;

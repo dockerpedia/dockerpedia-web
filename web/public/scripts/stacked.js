@@ -4,14 +4,14 @@ angular.module('dockerpedia.directives')
   function() {
   return {
     restrict: 'EA',
-    scope: { data: '=', update: '='},
+    scope: { data: '=', update: '=', selected: '='},
     link: function(scope, element, attrs) {
 /******************** D3 code here *******************/
-      scope.update = function () {
+      scope.update = function (id) {
         //console.log(scope.data) // <-- Data here!
         //console.log(scope.data['google'].images[0].packages);
         var data = [];
-        var all = scope.data['google'].images[1].packages;
+        var all = scope.data[scope.selected].images[id].packages; //imge id
         var tmp = null;
         for (n in all) {
           tmp = {

@@ -20,7 +20,8 @@ block content
     div.row
       button(ng-click="getData()") UPDATE
     div.row
-      scatter(data="data", update="upd")
-      //input#myCheckbox(type="checkbox")
-      //| View in percentage
-      //stacked(data="data", update="upd2")
+      scatter(data="data", update="upd", selected="selected", details="com")
+    div.row
+      input#myCheckbox(type="checkbox")
+      | View in percentage
+      stacked(data="data", selected="selected", update="com")
