@@ -457,18 +457,20 @@ function setUpSvgCanvas(input) {
 
 
 function setUpColors() {
-    return d3.scaleOrdinal(d3.schemeCategory20);
+    return d3.scaleOrdinal().range(["#B07AA1", "#1170AA", "#5FA2CE", "#A3ACB9", "#FC7D0B", "#E15769"]);
+    //critical, high, medium, low, negligible, unknown
+    //["#E15769", "#FC7D0B", "#A3ACB9", "#5FA2CE", "#1170AA", "#B07AA1"]
 }
 
 
 // formatting Data to a more d3-friendly format
 // extracting packageNames and severityNames
 function formatData(data){
-
-    var severityNames = d3.keys(data[0]).filter(function(key) {return key !== 'package'; });
+    var severityNames = ["unknown", "negligible", "low", "medium", "high", "critical"]
     var packageNames = [];
     var blockData = [];
-    //console.log(data)
+    console.log(data)
+    data.sort(function(a, b) { return (b.critical * 3 + b.high * 2 + b.medium * 1 )   - (a.critical * 3 + a.high * 2 + a.medium * 1 )  });
 
     for(var i = 0; i < data.length; i++){
         var y = 0;
@@ -484,6 +486,8 @@ function formatData(data){
             blockData.push(block);
         }
     }
+
+
     return {
         blockData: blockData,
         packageNames: packageNames,
