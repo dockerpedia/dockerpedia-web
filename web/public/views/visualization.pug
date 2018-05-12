@@ -8,20 +8,23 @@ block content
   script(src="scripts/scatter2.js")
   script(src="scripts/stacked.js")
 
-  main.container(role="main", ng-controller="visCtrl")
+  main.container-fluid(role="main", ng-controller="visCtrl")
     div.row
       div.col-md-2
       div.col-md-8
         input.form-control(type="text",
-              placeholder="some user",
+              placeholder="Search some user",
               ng-model="selected",
               typeahead-editable="false",
+              typeahead-on-select="getData()",
               uib-typeahead="user for user in users | filter:$viewValue | limitTo:8")
     div.row
-      button(ng-click="getData()") UPDATE
+      div.col-md-8
+      div.col-md-4
+        input#myCheckbox(type="checkbox")
+        | View in percentage
     div.row
-      scatter(data="data", update="upd", selected="selected", details="com")
-    div.row
-      input#myCheckbox(type="checkbox")
-      | View in percentage
-      stacked(data="data", selected="selected", update="com")
+      div.col-md-8
+        scatter(data="data", update="upd", selected="selected", details="com")
+      div.col-md-4(style="height: 500px; overflow-y: scroll;")
+        stacked(data="data", selected="selected", update="com")

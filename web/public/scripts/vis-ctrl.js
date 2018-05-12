@@ -24,6 +24,8 @@ angular.module('dockerpedia.controllers')
         },
         function onError (response) { console.log('Error: ' + response.data); }
       );
+    } else if (selected) {
+      scope.upd();
     }
   };
 

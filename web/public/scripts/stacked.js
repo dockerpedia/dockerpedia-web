@@ -23,7 +23,9 @@ angular.module('dockerpedia.directives')
             package : all[n].name,
             unknown : all[n].unknown
           }
-          data.push(tmp);
+          if (tmp.critical || tmp.high || tmp.low || 
+              tmp.medium || tmp.negligible || tmp.unknown )
+            data.push(tmp);
         }
         data.columns = ['critical', 'high', 'low', 'medium', 'negligible', 'package', 'unknown']
         //console.log ( data );
@@ -33,14 +35,29 @@ angular.module('dockerpedia.directives')
 
 
 var start = function (data) {
-    var input = {'data': data, 'width':2000, 'height': 600},
-        canvas = setUpSvgCanvas(input);
-
-    drawBars(input, canvas); 
+  var parentWidth = element[0].parentElement.offsetWidth;
+  var input = {'data': data, 'width':parentWidth-30, 'height': Math.max(data.length*20, 200)},
+      canvas = setUpSvgCanvas(input);
+  drawBars(input, canvas); 
 }
 
+/*var tooltip = svg.append("g")
+  .attr("class", "tooltip")
+  .style("display", "none");
+    
+tooltip.append("rect")
+  .attr("width", 30)
+  .attr("height", 20)
+  .attr("fill", "white")
+  .style("opacity", 0.5);
 
-
+tooltip.append("text")
+  .attr("x", 15)
+  .attr("dy", "1.2em")
+  .style("text-anchor", "middle")
+  .attr("font-size", "12px")
+  .attr("font-weight", "bold");
+*/ 
 function drawBars(input, canvas) {
 
     var params = {'input': input, 'canvas': canvas};
@@ -68,17 +85,17 @@ function initialize(params) {
         packageNames = params.packageNames = formattedData.packageNames,
         severityNames = params.severityNames = formattedData.severityNames;
 
-    console.log(formattedData)
+    //console.log(formattedData)
     // initialize color
     var color = setUpColors().domain(severityNames);
 
     // initialize scales and axis
     var scales = initializeScales(width, height),
-        x = scales.x,
+        x = params.x = scales.x,
         y = params.y = scales.y;
 
-    x.domain(packageNames);
-    y.domain([0, d3.max(blockData, function(d) { return d.y1; })]);
+    y.domain(packageNames);
+    x.domain([0, d3.max(blockData, function(d) { return d.y1; })]);
 
     initializeAxis(svg, x, y, height, width);
 
@@ -88,11 +105,12 @@ function initialize(params) {
       .enter().append('g')
         .attr('class', 'bar');
 
+    //console.log(y.bandwidth())
     bar.append('rect')
-            .attr('x', function(d) { return x(d.x);})
-            .attr('y', function(d) {return y(0);})
-            .attr('width', x.bandwidth())
-            .attr('height', 0)
+            .attr('y', function(d) {return y(d.x);})
+            .attr('x', function(d) {return x(0);})
+            .attr("width", 0)
+            .attr('height', y.bandwidth())
             .attr('fill', function(d){ return color(d.cluster);});
 
     // heights is a dictionary to store bar height by cluster
@@ -146,7 +164,9 @@ function update(params){
     // retrieving params to avoid putting params.x everywhere
     var svg = params.canvas.svg,
         margin = params.canvas.margin,
+        x = params.x,
         y = params.y,
+
         blockData = params.blockData,
         heights = params.heights,
         chosen = params.chosen,
@@ -190,27 +210,28 @@ function update(params){
 
     // update Y axis
     if(chosen.cluster == null){
-        y.domain([0, d3.max(blockData, function(d) { return d.y1; })]);
+        x.domain([0, d3.max(blockData, function(d) { return d.y1; })]);
     }
     else{
-        y.domain([0, d3.max(heights[chosen.cluster])]);
+        x.domain([0, d3.max(heights[chosen.cluster])]);
     }
 
     if(newView){
-        y.domain([0, 1]);
+        x.domain([0, 1]);
     }
 
-    var axisY = d3.axisLeft(y)
-        .tickSize(-width);
+    var axisX = d3.axisBottom(x)
+        .tickSize(-height);
 
     if(newView){
-        axisY.tickFormat(d3.format(".0%"));
+         axisX.tickFormat(d3.format(".0%"));
     }
 
-    svg.selectAll('.axisY')
+
+    svg.selectAll('.axisX')
         .transition()
         .duration(transDuration)
-        .call(axisY);
+        .call(axisX);
 
 
     // update legend
@@ -254,16 +275,18 @@ function update(params){
         })
         .transition()
         .duration(transDuration)
-        .attr('y', function(d) { 
+        .attr('x', function(d) {
             return choice(chosen.cluster, d.cluster,
-                y(d.y1),
-                y(d.height),
-                myHeight(chosen, d, severityNames, packageNames, y, heights));})
-        .attr('height', function(d) { 
+                x(d.y0), //ok
+                x(0),
+                myHeight(chosen, d, severityNames, packageNames, x, heights));
+        })
+        .attr('width', function(d) { 
             return choice(chosen.cluster, d.cluster,
-                height - y(d.height),
-                height - y(d.height),
-                0);});
+                x(d.height), //ok
+                x(d.height),
+                0);
+        });
 
 }
 
@@ -293,15 +316,15 @@ function setUpMax(severityNames, blockData){
 
 // custom function to provide correct animation effect
 // bars should fade into the top of the remaining bar
-function myHeight(chosen, d, severityNames, packageNames, y, heights){
+function myHeight(chosen, d, severityNames, packageNames, x, heights){
     if(chosen.cluster == null){
         return 0;
     }
     if(severityNames.indexOf(chosen.cluster) > severityNames.indexOf(d.cluster)){
-        return y(0);
+        return 0;
     }
     else {
-        return y(heights[chosen.cluster][packageNames.indexOf(d.x)]);
+        return x(heights[chosen.cluster][packageNames.indexOf(d.x)]);
     }
 }
 
@@ -309,23 +332,24 @@ function myHeight(chosen, d, severityNames, packageNames, y, heights){
 // handy function to play the update game with the bars and legend
 function choice(variable, target, nullCase, targetCase, notTargetCase){
     switch(variable) {
-    case null:
-        return nullCase;
-    case target:
-        return targetCase;
-    default:
-        return notTargetCase;
-    }
+        case null:
+            return nullCase;
+        case target:
+            return targetCase;
+        default:
+            return notTargetCase;
+        }
 }
 
 
 function initializeScales(width, height){
-    var x = d3.scaleBand()
-    .rangeRound([0, width])
-    .padding(0.5);
+    var y = d3.scaleBand()
+    .rangeRound([0, height])    // .rangeRound([height, 0]);
+    .align(0.1);
 
-    var y = d3.scaleLinear()
-        .range([height, 0]);
+
+    var x = d3.scaleLinear()
+        .range([0, width]);
 
     return {
         x: x,
@@ -345,18 +369,30 @@ function initializeAxis(svg, x, y, height, width){
     svg.append('g')
         .attr('class', 'axisX')
         .attr('transform', 'translate(0,' + height + ')')
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x).ticks(null, "s"))                  //  .call(d3.axisLeft(y).ticks(null, "s"))
+        .append("text")
+          .attr("y", 35)                                             //     .attr("y", 2)
+          .attr("x", x(x.ticks().pop()) + 0.5)                      //     .attr("y", y(y.ticks().pop()) + 0.5)
+          .attr("dy", "0.32em")                                     //     .attr("dy", "0.32em")
+          .attr("fill", "#000")
+          .attr("font-weight", "bold")
+          .attr("text-anchor", "start")
+          .text("Vulnerabilities")
+          .attr("transform", "translate("+ (-width) +",-10)"); 
 }
 
 
 function setUpSvgCanvas(input) {
     // Set up the svg canvas
-    var margin = {top: 20, right: 80, bottom: 20, left: 80},
+    var margin = {top: 20, right: 100, bottom: 20, left: 80},
         width = input.width - margin.left -margin.right,
         height = input.height - margin.top -margin.bottom;
+  
+    var tmp = document.getElementById("stacked-svg");
+    if (tmp) tmp.parentNode.removeChild(tmp);
 
-    //var svg = d3.select('svg')
     var svg = d3.select(element[0]).append("svg")
+        .attr('id', 'stacked-svg')
         .attr('width', width + margin.left + margin.right )
         .attr('height', height + margin.top +margin.bottom )
         .append('g')
@@ -383,7 +419,7 @@ function formatData(data){
     var severityNames = d3.keys(data[0]).filter(function(key) {return key !== 'package'; });
     var packageNames = [];
     var blockData = [];
-    console.log(data)
+    //console.log(data)
 
     for(var i = 0; i < data.length; i++){
         var y = 0;
