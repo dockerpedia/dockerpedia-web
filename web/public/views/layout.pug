@@ -14,6 +14,8 @@ html(lang="en", ng-app="dockerpedia")
     script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js")
     script(src="https://www.googletagmanager.com/gtag/js?id=UA-117345866-1")
     // mine
+    script(src="scripts/ui-bootstrap-tpls-2.5.0.min.js")
+    script(src="scripts/app.js")
     script(src="scripts/main.js")
     script(src="scripts/analytics.js")
     link(rel="stylesheet", href="styles/style.css")
@@ -30,6 +32,8 @@ html(lang="en", ng-app="dockerpedia")
             li.nav-item(ng-class="!loc ? 'active' : '';")
               a.nav-link(href="/") Home
           ul.navbar-nav
+            li.nav-item(ng-class="loc == 'visualization' ? 'active' : '';")
+              a.nav-link(href="/visualization") Visualization
             li.nav-item(ng-class="loc == 'examples'? 'active' : '';")
               a.nav-link(href="/examples") Examples
             li.nav-item(ng-class="loc == 'query' ? 'active' : '';")

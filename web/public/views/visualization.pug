@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  //link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
+  script(src="scripts/vis-ctrl.js")
+  script(src="scripts/d3.js")
+  script(src="scripts/d3.v4.min.js")
+  script(src="scripts/scatter2.js")
+  script(src="scripts/stacked.js")
+
+  main.container(role="main", ng-controller="visCtrl")
+    div.row
+      div.col-md-2
+      div.col-md-8
+        input.form-control(type="text",
+              placeholder="some user",
+              ng-model="selected",
+              typeahead-editable="false",
+              uib-typeahead="user for user in users | filter:$viewValue | limitTo:8")
+    div.row
+      button(ng-click="getData()") UPDATE
+    div.row
+      scatter(data="data", update="upd", selected="selected", details="com")
+    div.row
+      input#myCheckbox(type="checkbox")
+      | View in percentage
+      stacked(data="data", selected="selected", update="com")
