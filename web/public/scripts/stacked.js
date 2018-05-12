@@ -79,6 +79,7 @@ function initialize(params) {
         width = params.width = canvas.width,
         height = params.height = canvas.height;
 
+
     // processing Data and extracting packageNames and severityNames
     var formattedData = formatData(input.data),
         blockData = params.blockData = formattedData.blockData,
@@ -112,6 +113,23 @@ function initialize(params) {
             .attr("width", 0)
             .attr('height', y.bandwidth())
             .attr('fill', function(d){ return color(d.cluster);});
+
+    var tooltip = params.tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    tooltip.append("rect")
+      .attr("width", 30)
+      .attr("height", 20)
+      .attr("fill", "black")
+      .style("opacity", 0.5);
+
+    tooltip.append("text")
+      .attr("x", 15)
+      .attr("dy", "1.2em")
+      .style("text-anchor", "middle")
+      .attr("font-size", "12px")
+      .attr("font-weight", "bold");
 
     // heights is a dictionary to store bar height by cluster
     // this hierarchy is important for animation purposes
@@ -166,7 +184,7 @@ function update(params){
         margin = params.canvas.margin,
         x = params.x,
         y = params.y,
-
+        tooltip = params.tooltip,
         blockData = params.blockData,
         heights = params.heights,
         chosen = params.chosen,
@@ -269,6 +287,37 @@ function update(params){
 
     // update bars
     bar.selectAll('rect')
+        // .on("mouseover", function(d) {
+        //     tooltip.transition()
+        //          .duration(200)
+        //          .style("opacity", .9);
+        //     tooltip.html(d["Cereal Name"]) //+ "<br/> (" + xValue(d) + ", " + yValue(d) + ")")
+        //          .style("left", (d3.event.pageX + 5) + "px")
+        //          .style("top", (d3.event.pageY - 28) + "px");
+        // })
+        // .on("mouseout", function(d) {
+        //     tooltip.transition()
+        //          .duration(500)
+        //          .style("opacity", 0);
+        // }
+
+        .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+            var xPosition = d3.event.pageX + 5;
+            var yPosition = d3.event.pageY - 28;
+            console.log(tooltip)
+            tooltip.style("left", xPosition + "px");
+            tooltip.style("top", yPosition + "px");
+            tooltip.select("text").text(d.height);
+
+        })
+        .on("mouseout", function(d) {
+            tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+        })
         .on('click', function(d){
             chosen.cluster = chosen.cluster === d.cluster ? null : d.cluster;
             update(params);
