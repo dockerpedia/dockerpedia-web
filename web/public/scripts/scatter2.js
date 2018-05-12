@@ -9,24 +9,22 @@ angular.module('dockerpedia.directives')
 /******************** D3 code here *******************/
       var parseDate = d3.time.format("%Y-%m-%d").parse;
       scope.update = function () {
-        //console.log(scope.data) // <-- Data here!
-        console.log(scope.data['google'].images);
+        var username = Object.keys(scope.data); // <-- Data here!
+        console.log(scope.data[username]);
         var data = [];
-        var all = scope.data['google'].images;
+        var all = scope.data[username].images;
         var tmp = null;
         for (n in all) {
-          split_n = all[n].name.split('-');
-          split_date = all[n].last_updated.split(' ');
-          sum = 0;
-          for (s in all[n].packages) {
-            p = all[n].packages[s]
-            sum = sum + p.critical + p.high + p.low + p.medium + p.unknown + p.negligible;
+          if (all[n].last_updated != null){
+            split_n = all[n].operating_system.split(':');
+            split_date = all[n].last_updated.split(' ');
           }
+
           tmp = {
             'Cereal Name' : all[n].name,
-            'Manufacturer' : split_n[split_n.length-1],
+            'Manufacturer' : split_n[0],
             'Calories' : parseDate( split_date[0] ),
-            'Protein (g)' : sum,
+            'Protein (g)' : all[n].total_vulnerabilities,
           }
           data.push(tmp);
         }
