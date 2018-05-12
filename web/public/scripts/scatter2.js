@@ -20,7 +20,7 @@ angular.module('dockerpedia.directives')
             tmp = {
               'id': n,
               'Cereal Name' : all[n].name,
-              'Manufacturer' : all[n].operating_system,
+              'Manufacturer' : all[n].operating_system.split(':')[0],
               'Calories' : parseDate( split_date[0] ),
               'Protein (g)' : all[n].total_vulnerabilities,
             }
