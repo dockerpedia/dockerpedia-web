@@ -41,23 +41,7 @@ var start = function (data) {
   drawBars(input, canvas); 
 }
 
-/*var tooltip = svg.append("g")
-  .attr("class", "tooltip")
-  .style("display", "none");
-    
-tooltip.append("rect")
-  .attr("width", 30)
-  .attr("height", 20)
-  .attr("fill", "white")
-  .style("opacity", 0.5);
 
-tooltip.append("text")
-  .attr("x", 15)
-  .attr("dy", "1.2em")
-  .style("text-anchor", "middle")
-  .attr("font-size", "12px")
-  .attr("font-weight", "bold");
-*/ 
 function drawBars(input, canvas) {
 
     var params = {'input': input, 'canvas': canvas};
@@ -79,6 +63,7 @@ function initialize(params) {
         width = params.width = canvas.width,
         height = params.height = canvas.height;
 
+
     // processing Data and extracting packageNames and severityNames
     var formattedData = formatData(input.data),
         blockData = params.blockData = formattedData.blockData,
@@ -99,12 +84,20 @@ function initialize(params) {
 
     initializeAxis(svg, x, y, height, width);
 
+    var tip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([-8, 0])
+        .html(function(d) { return "Vulnerabilities " + d.height; });
+    svg.call(tip);
+
     // initialize bars
     var bar = params.bar = svg.selectAll('.bar')
       .data(blockData)
       .enter().append('g')
-        .attr('class', 'bar');
-
+        .attr('class', 'bar')
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
+        
     //console.log(y.bandwidth())
     bar.append('rect')
             .attr('y', function(d) {return y(d.x);})
@@ -112,6 +105,12 @@ function initialize(params) {
             .attr("width", 0)
             .attr('height', y.bandwidth())
             .attr('fill', function(d){ return color(d.cluster);});
+
+    var tooltip = params.tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+
 
     // heights is a dictionary to store bar height by cluster
     // this hierarchy is important for animation purposes
@@ -166,7 +165,8 @@ function update(params){
         margin = params.canvas.margin,
         x = params.x,
         y = params.y,
-
+        tooltip = params.tooltip,
+        tip = params.tip,
         blockData = params.blockData,
         heights = params.heights,
         chosen = params.chosen,
@@ -363,11 +363,11 @@ function initializeAxis(svg, x, y, height, width){
         .tickSize(-width);
 
     svg.append('g')
-        .attr('class', 'axisY')
+        .classed('y axis', 'axisY')
         .call(yAxis);
 
     svg.append('g')
-        .attr('class', 'axisX')
+        .classed('x axis', 'axisX')
         .attr('transform', 'translate(0,' + height + ')')
         .call(d3.axisBottom(x).ticks(null, "s"))                  //  .call(d3.axisLeft(y).ticks(null, "s"))
         .append("text")
@@ -408,18 +408,20 @@ function setUpSvgCanvas(input) {
 
 
 function setUpColors() {
-    return d3.scaleOrdinal(d3.schemeCategory20);
+    return d3.scaleOrdinal().range(["#B07AA1", "#1170AA", "#5FA2CE", "#A3ACB9", "#FC7D0B", "#E15769"]);
+    //critical, high, medium, low, negligible, unknown
+    //["#E15769", "#FC7D0B", "#A3ACB9", "#5FA2CE", "#1170AA", "#B07AA1"]
 }
 
 
 // formatting Data to a more d3-friendly format
 // extracting packageNames and severityNames
 function formatData(data){
-
-    var severityNames = d3.keys(data[0]).filter(function(key) {return key !== 'package'; });
+    var severityNames = ["unknown", "negligible", "low", "medium", "high", "critical"]
     var packageNames = [];
     var blockData = [];
-    //console.log(data)
+    console.log(data)
+    data.sort(function(a, b) { return (b.critical * 3 + b.high * 2 + b.medium * 1 )   - (a.critical * 3 + a.high * 2 + a.medium * 1 )  });
 
     for(var i = 0; i < data.length; i++){
         var y = 0;
@@ -435,6 +437,8 @@ function formatData(data){
             blockData.push(block);
         }
     }
+
+
     return {
         blockData: blockData,
         packageNames: packageNames,
