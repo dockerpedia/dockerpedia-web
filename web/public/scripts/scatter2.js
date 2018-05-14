@@ -130,7 +130,7 @@ var start = function(data) {
           tooltip.transition()
                .duration(200)
                .style("opacity", .9);
-          tooltip.html(d["Cereal Name"]) //+ "<br/> (" + xValue(d) + ", " + yValue(d) + ")")
+          tooltip.html("Image: " + d["Cereal Name"]) //+ "<br/> (" + xValue(d) + ", " + yValue(d) + ")")
                .style("left", (d3.event.pageX + 5) + "px")
                .style("top", (d3.event.pageY - 28) + "px");
       })
