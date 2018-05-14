@@ -9,9 +9,11 @@
      xmlns:wicus-stack="http://purl.org/net/wicus-stack#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:vann="http://purl.org/vocab/vann/"
+     xmlns:prov="http://www.w3.org/ns/prov#"
      xmlns:dc="http://purl.org/dc/elements/1.1/">
     <owl:Ontology rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology">
         <owl:imports rdf:resource="http://purl.org/net/wicus-stack"/>
+        <owl:imports rdf:resource="http://www.w3.org/ns/prov-o-20130430"/>
     </owl:Ontology>
     
 
@@ -245,7 +247,9 @@
 
     <!-- http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image -->
 
-    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image"/>
+    <owl:Class rdf:about="http://www.inf.utfsm.cl/di/csrg/ontologies/2018/2/docker-ontology#Image">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+    </owl:Class>
     
 
 
