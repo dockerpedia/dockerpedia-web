@@ -3,11 +3,8 @@ angular.module('dockerpedia.controllers')
 
   scope.title = 'Viz viz';
   scope.selected = null;
-  scope.users = ["cfcommunity","google","mbabineau","jtarchie","pivotalcf","prom",
-    "gliderlabs","v2tec","kope","zzrot","datadog","portainer","newrelic","openshift",
-    "weaveworks","amazon","atmoz","pivotaldata","sysdig","pivotalservices","behance",
-    "yelp","frodenas","ljfranklin","iron","centurylink","pcfseceng","cloudfoundry",
-    "thefactory","gliderlabs"];
+  scope.users = ["google","pivotalcf","prom",
+    "gliderlabs","newrelic","weaveworks","sysdig"];
 
   scope.data = {};
   scope.upd = null;
