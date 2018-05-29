@@ -111,9 +111,21 @@ rect.parent,
 		width = divWidth -25,
 		height = 540 - margin.top - margin.bottom,
 		formatNumber = d3.format(".3n"),
-		colorDomain = [10485760, 224288000, 524288000],
-		colorRange = ['#4daf4a', '#377eb8', '#e41a1c'],
+		colorDomain = [9832021, 534856968, 1059881915], //[10485760, 224288000, 524288000],
+		colorRange = ['#91bfdb', '#ffffbf', '#fc8d59'], //['#4daf4a', '#377eb8', '#e41a1c'], de http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=3
 		transitioning;
+
+	// adding a color scale
+	var color = d3.scale.linear()
+		.domain(colorDomain)
+		.range(colorRange);
+
+  function setColorDomain (min, max) {
+    colorDomain[0] = min;
+    colorDomain[1] = (min+max)/2;
+    colorDomain[2] = max;
+    color.domain(colorDomain);
+  };
 
   function formatBytes(a,b){if(0==a)return"0 Bytes";var c=1024,d=b||2,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(d))+" "+e[f]}
 
@@ -126,10 +138,6 @@ rect.parent,
 		.domain([0, height])
 		.range([0, height]);
 
-	// adding a color scale
-	var color = d3.scale.linear()
-		.domain(colorDomain)
-		.range(colorRange);
 
 	// introduce color scale here
 	var treemap = d3.layout.treemap()
@@ -165,8 +173,7 @@ rect.parent,
 	  .attr("height", 30)
 	  .attr('class', 'legend')
 	  .selectAll("g")
-		  .data([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18])
-		  //.data([0,2,4,5,8,9,10,11,12,14,16,18])
+		  .data([0,1,2,3,4]) //line 225
 		  .enter()
 		  .append('g')
 
@@ -214,20 +221,22 @@ rect.parent,
 	  }
 
 	function colorIncrements(d){
-		return (colorDomain[colorDomain.length - 1] - colorDomain[0])/18*d + colorDomain[0];
+		return (colorDomain[colorDomain.length - 1] - colorDomain[0])/4*d + colorDomain[0];
 	}
 
+function createLegend () {
 	legend.append("rect")
-		.attr("x", function(d){return margin.left + d * 50})
+		.attr("x", function(d){return margin.left + d * 100})
 		.attr("y", 0)
-		.attr("fill", function(d) {return color(colorIncrements(d))})
-		.attr('width', '50px')
+		.attr("fill", function(d) { return color(colorIncrements(d))})
+		.attr('width', '100px')
 		.attr('height', '40px')
 
 	legend.append("text")
 			.text(function(d){return formatBytes(colorIncrements(d))})
 			.attr('y', 20)
-			.attr('x', function(d){return margin.left + d * 50 + 30});
+			.attr('x', function(d){return margin.left + d * 100 + 40});
+}
 
 	// determines if white or black will be better contrasting color
 	function getContrast50(hexcolor){
@@ -239,6 +248,14 @@ rect.parent,
 	  accumulate(root);
 	  layout(root);
 	  display(root);
+    var minSize = 10000000000, maxSize = 0;
+    root.children.forEach( function (d) {
+      if (d.full_size > maxSize) maxSize = d.full_size;
+      if (d.full_size < minSize) minSize = d.full_size;
+    });
+    console.log(minSize, maxSize);
+    setColorDomain(minSize, maxSize);
+    createLegend();
 
 	  function display(d) {
 		grandparent
@@ -251,7 +268,12 @@ rect.parent,
 		grandparent
 		  .datum(d.parent)
 		  .select("rect")
-		  .attr("fill", function(){console.log(color(d.full_size)); return color(d['full_size'])})
+		  .attr("fill", function(){
+        if ( (fs = parseFloat(d.full_size)) ) {
+          return color(fs);
+        }
+        return 'darkgray';
+      })
 
 		var g1 = svg.insert("g", ".grandparent")
 			.datum(d)
@@ -290,8 +312,11 @@ rect.parent,
 			.attr("class","foreignobj")
 			.append("xhtml:div")
 			.attr("dy", ".75em")
-			.html(function(d) { return '' +
-				' <p class="title"> ' + d.full_name + '</p>' +
+			.html(function(d) {
+        var title;
+        if (d.full_name) title = ' <p class="title"> ' + d.full_name + '</p>'
+        else title = '';
+        return title + 
         ' <p class="title"> ' + d.name + '</p>' +
 
 				' <p> Best image score : ' + d3.round(d.value,2) + '/100' +
@@ -353,7 +378,9 @@ rect.parent,
 			.attr("y", function(d) { return y(d.y); })
 			.attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
 			.attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
-			.attr("fill", function(d){return color(parseFloat(d.full_size));});
+			.attr("fill", function(d){
+        return color(parseFloat(d.full_size));
+        });
 	  }
 
 	  function foreign(foreign){ /* added */
@@ -365,13 +392,13 @@ rect.parent,
 
 	  function name(d) {
 		return d.parent
-			? "Budget du Département" + " - " + d.name + " -  Cliquez ici pour dézoomer"
-			: "Budget du Département - Cliquez pour zoomer";
+			? "Vulnerabilities for package - " + d.name + " - Click to zoom out."
+			: "Vulnerabilities for packages.";
 	  }
 
 	  function nameSave(d) {
 		return d.parent
-			? name(d.parent) + " - " + d.name + " -  Cliquez ici pour dézoomer"
+			? name(d.parent) + " - " + d.name + " -  Click to zoom out."
 			: d.name;
 	  }
 
