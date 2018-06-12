@@ -97,7 +97,7 @@ function treemap (d3) {
       .attr("height", 30)
       .attr('class', 'legend')
       .selectAll("g")
-        .data([0,1,2,3,4]) //line 225
+        .data(['A','B','C','D','F']) //line 225
         .enter()
         .append('g')
 
@@ -150,16 +150,22 @@ function treemap (d3) {
 
     function createLegend () {
       legend.append("rect")
-        .attr("x", function(d){return legendWidth - 530 - margin.left + d * 100})
+        .attr("x", function(_,d) { return legendWidth - 530 - margin.left + d * 100})
         .attr("y", 0)
-        .attr("fill", function(d) { return color(colorIncrements(d))})
+        .attr("fill", function(d) { 
+          return letterToColor(d);
+          //return color(colorIncrements(d))
+        })
         .attr('width', '100px')
         .attr('height', '40px')
 
       legend.append("text")
-          .text(function(d){return formatBytes(colorIncrements(d))})
+          .text(function(d){
+            return d;
+            //return formatBytes(colorIncrements(d))
+          })
           .attr('y', 20)
-          .attr('x', function(d){return legendWidth - 530 - margin.left + d * 100 + 40});
+          .attr('x', function(_,d){return legendWidth - 530 - margin.left + d * 100 + 40});
     }
 
     // determines if white or black will be better contrasting color
@@ -190,10 +196,13 @@ function treemap (d3) {
           .datum(d.parent)
           .select("rect")
           .attr("fill", function(){
-            if ( (fs = parseFloat(d.full_size)) ) {
+            if (d.parent)
+              return letterToColor(scoreToLetter(d));
+            return 'darkgray';
+            /*if ( (fs = parseFloat(d.full_size)) ) {
               return color(fs);
             }
-            return 'darkgray';
+            return 'darkgray';*/
           })
 
         var g1 = svg.insert("g", ".grandparent")
@@ -300,7 +309,8 @@ function treemap (d3) {
         .attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
         .attr("height", function(d) { return y(d.y + d.dy) - y(d.y); })
         .attr("fill", function(d){
-          return color(parseFloat(d.full_size));
+          return letterToColor(scoreToLetter(d));
+          //return color(parseFloat(d.full_size));
           });
       }
 
@@ -351,6 +361,7 @@ function treemap (d3) {
     }
 
     function computeValue (root) {
+      if (!root.children || !root.children[0].children) return;
       var maxSize = 0, minSize = root.children[0].children[0].full_size,
           maxPull = 0, minPull = root.children[0].pull_count;
       root.children.forEach( function (d) {
@@ -380,6 +391,15 @@ function treemap (d3) {
         if (encoding.size) d.value += sumSize/d.children.length;
         if (encoding.vulnerabilities) d.value += d.score;
       });
+    }
+
+    function letterToColor (letter) {
+      if (letter == 'A' || letter == 'A+') return '#2c7bb6';
+      if (letter == 'B') return '#abd9e9';
+      if (letter == 'C') return '#ffffbf';
+      if (letter == 'D') return '#fdae61';
+      if (letter == 'F') return '#d7191c';
+      return 'darkgray';
     }
 
   }
