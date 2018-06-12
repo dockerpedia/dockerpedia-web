@@ -50,6 +50,7 @@ app.post('/api/getJsonData', function(req, res) {
 
 // ROUTES =====================================================================
 app.get('/visualization', function(req, res) {res.render(views+'visualization.pug'   );});
+app.get('/visualization2', function(req, res) {res.render(views+'visualization2.pug'   );});
 app.get('/query',      function(req, res) {res.render(views+'query.pug'   );});
 app.get('/examples',   function(req, res) {res.render(views+'examples.pug');});
 app.get('/vocab*',     function(req, res) {res.render(views+'describe.pug');});

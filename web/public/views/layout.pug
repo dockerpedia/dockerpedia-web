@@ -9,6 +9,8 @@ html(lang="en", ng-app="dockerpedia")
     script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js")
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js")
+    // Font
+    link(href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet")
     // Angular
     script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js")
     script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js")
@@ -33,7 +35,9 @@ html(lang="en", ng-app="dockerpedia")
               a.nav-link(href="/") Home
           ul.navbar-nav
             li.nav-item(ng-class="loc == 'visualization' ? 'active' : '';")
-              a.nav-link(href="/visualization") Visualization
+              a.nav-link(href="/visualization") V1
+            li.nav-item(ng-class="loc == 'visualization2' ? 'active' : '';")
+              a.nav-link(href="/visualization2") V2
             li.nav-item(ng-class="loc == 'examples'? 'active' : '';")
               a.nav-link(href="/examples") Examples
             li.nav-item(ng-class="loc == 'query' ? 'active' : '';")
