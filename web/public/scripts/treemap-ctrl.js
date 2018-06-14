@@ -14,7 +14,7 @@ function treemapCtrl (http) {
   function search () {
     console.log('searching: ' + vm.searchTerm);
     //return test();
-    http.get('http://api.mosorio.me/api/v1/viz?query='+vm.searchTerm).then(
+    http.get('https://api.mosorio.me/api/v1/viz?query='+vm.searchTerm).then(
       function onSuccess (response) {
         vm.data = response.data;
         vm.upd(vm.data);
