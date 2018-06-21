@@ -47,7 +47,8 @@ rect.parent,
 }
 
 .legend {
-  margin-bottom:8px !important;
+  /*margin-bottom:8px !important;
+  background: gray;*/
 }
 
 .legend rect {
