@@ -94,12 +94,18 @@ function treemap (d3) {
     var legendWidth = document.getElementById('legend').parentElement.offsetWidth;
     var legend = d3.select("#legend").append("svg")
       .attr("width", legendWidth - 30)
-      .attr("height", 30)
+      .attr("height", 38)
       .attr('class', 'legend')
       .selectAll("g")
-        .data(['A','B','C','D','F']) //line 225
+        .data(['Risk:','A','B','C','D','F']) //line 225
         .enter()
         .append('g')
+
+      /*legend.append("text")
+          .text(function(d){ return d; })
+          .attr('y', 20)
+          .attr('x', 40);*/
+
 
     // functions
     function initialize(root) {
@@ -150,22 +156,36 @@ function treemap (d3) {
 
     function createLegend () {
       legend.append("rect")
-        .attr("x", function(_,d) { return legendWidth - 530 - margin.left + d * 100})
-        .attr("y", 0)
-        .attr("fill", function(d) { 
-          return letterToColor(d);
-          //return color(colorIncrements(d))
-        })
+        .attr("x", function(_,d) { return legendWidth - 390 - margin.left + d * 60})
+        .attr("y", 18)
+        .attr("fill", function(d) { return letterToColor(d); })
         .attr('width', '100px')
-        .attr('height', '40px')
+        .attr('height', '20px')
 
       legend.append("text")
-          .text(function(d){
+          .text(function (_, d) {
+            switch(d) {
+              case 1:
+                return 'Low';
+                break;
+              case 5:
+                return 'Critical';
+                break;
+              default:
+                return '';
+            }
             return d;
-            //return formatBytes(colorIncrements(d))
           })
-          .attr('y', 20)
-          .attr('x', function(_,d){return legendWidth - 530 - margin.left + d * 100 + 40});
+          .style('fill', 'darkOrange')
+          .style('text-anchor', 'start')
+          .attr('y', 12)
+          .attr('x', function (_,d) { return legendWidth - 390 - margin.left + d * 60 + 5});
+
+      legend.append("text")
+          .text(function (d) { return d; })
+          .style('fill', function (d) { return letterToLColor(d);})
+          .attr('y', 33)
+          .attr('x', function (_,d) { return legendWidth - 390 - margin.left + d * 60 + 30} );
     }
 
     // determines if white or black will be better contrasting color
@@ -173,6 +193,7 @@ function treemap (d3) {
       return (parseInt(hexcolor.replace('#', ''), 16) > 0xffffff/3) ? 'black':'white';
     }
 
+    createLegend();
     scope.update = function(root) {
       console.log(root);
       setColorDomain(root);
@@ -182,7 +203,6 @@ function treemap (d3) {
       accumulate(root);
       layout(root);
       display(root);
-      createLegend();
 
       function display(d) {
         grandparent
@@ -363,13 +383,15 @@ function treemap (d3) {
     function computeValue (root) {
       if (!root.children || !root.children[0].children) return;
       var maxSize = 0, minSize = root.children[0].children[0].full_size,
-          maxPull = 0, minPull = root.children[0].pull_count;
+          maxPull = 0, minPull = root.children[0].pull_count,
+          maxScore = 0;
       root.children.forEach( function (d) {
         if (d.pull_count < minPull) minPull = d.pull_count;
         if (d.pull_count > maxPull) maxPull = d.pull_count;
         d.children.forEach( function (l) {
           if (l.full_size < minSize) minSize = l.full_size;
           if (l.full_size > maxSize) maxSize = l.full_size;
+          if (l.score > maxScore) maxScore = l.score;
         });
       });
 
@@ -386,10 +408,10 @@ function treemap (d3) {
             sumSize += tmpSize;
             l.value += tmpSize;
           }
-          if (encoding.vulnerabilities) l.value += l.score;
+          if (encoding.vulnerabilities) l.value += 100 * l.score/maxScore;
         });
         if (encoding.size) d.value += sumSize/d.children.length;
-        if (encoding.vulnerabilities) d.value += d.score;
+        if (encoding.vulnerabilities) d.value += 100 * d.score/maxScore;
       });
     }
 
@@ -399,7 +421,13 @@ function treemap (d3) {
       if (letter == 'C') return '#ffffbf';
       if (letter == 'D') return '#fdae61';
       if (letter == 'F') return '#d7191c';
+      if (letter == legend.data()[0]) return "none";
       return 'darkgray';
+    }
+
+    function letterToLColor (letter) {
+      //if (letter == legend.data()[0]) return 'darkOrange';
+      return 'black';
     }
 
   }
