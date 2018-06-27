@@ -19,6 +19,7 @@ rect {
 rect.parent,
 .grandparent rect {
   stroke-width: 2px;
+	cursor: pointer;
 }
 
 .grandparent:hover rect {
@@ -73,11 +74,15 @@ rect.parent,
 }
 
 .textdiv {
-    font-family: "Open Sans",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    padding: 7px;
+  pointer-events: none;
+  font-family: "Open Sans",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  padding: 7px;
 	cursor: pointer;
 	overflow:none;
+ /*text-shadow: 2px 2px black;*/
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: white;
 }
 
 .textdiv .title {
