@@ -49,6 +49,7 @@ app.post('/api/getJsonData', function(req, res) {
 });
 
 // ROUTES =====================================================================
+app.get('/modal/:name', function (req, res) { res.render(views+'modal/' + req.params.name); });
 app.get('/visualization', function(req, res) {res.render(views+'visualization.pug'   );});
 app.get('/visualization2', function(req, res) {res.render(views+'visualization2.pug'   );});
 app.get('/query',      function(req, res) {res.render(views+'query.pug'   );});

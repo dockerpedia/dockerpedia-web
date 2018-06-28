@@ -1,0 +1,28 @@
+div.modal-desc
+  h1 {{ ctrl.getTitle() }}
+  hr
+  i {{ ctrl.getDescription() }}
+  table.image-table
+    tr
+      th(rowspan="4")
+        div.image-score(style="color:{{ctrl.getColor();}};") {{ ctrl.getLetter() }}
+          span.tooltiptext Vulnerabilities:&nbsp;
+            div(ng-repeat="(a,b) in ctrl.getVulnerabilities()") - {{b}} {{a}}
+      td 
+        strong Label:&nbsp;
+        span.image-ver {{ ctrl.getLabel() }}
+    tr
+      td 
+        strong Last updated:&nbsp;
+        | {{ ctrl.getLastUpdated() }}
+    tr
+      td 
+        strong Installed packages:&nbsp;
+        | {{ ctrl.getInstalledPackages() }}
+    tr
+      td 
+        strong Image size:&nbsp;
+        | {{ ctrl.getSize() }}
+  div
+    b DockerHub: 
+    a.image-link(href="{{ ctrl.getUrl() }}", target="_blank") {{ ctrl.getUrl() }}

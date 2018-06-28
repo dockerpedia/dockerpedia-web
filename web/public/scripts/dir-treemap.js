@@ -1,8 +1,8 @@
 angular.module('dockerpedia.directives').directive('treemap', treemap);
 
-treemap.$inject = ['d3v3'];
+treemap.$inject = ['d3v3', '$uibModal'];
 
-function treemap (d3) {
+function treemap (d3, $uibModal) {
   var directive = {
     link: link,
     restrict: 'EA',
@@ -25,10 +25,10 @@ function treemap (d3) {
         colorRange = ['#a1d76a', '#f7f7f7', '#e9a3c9'], //http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=3
         transitioning;
 
-	  // adding a color scale
-	  var color = d3.scale.linear()
-		    .domain(colorDomain)
-		    .range(colorRange);
+    // adding a color scale
+    var color = d3.scale.linear()
+        .domain(colorDomain)
+        .range(colorRange);
 
     function setColorDomain (root) {
       var min = 10000000000, max = 0;
@@ -247,7 +247,7 @@ function treemap (d3) {
         g.append("rect")
           .attr("class", "parent")
           .on("click", function (d) {
-            if (!d._children) console.log(d);
+            if (!d._children) modal(d);
           })
           .call(rect)
           .append("title");
@@ -442,6 +442,26 @@ function treemap (d3) {
       if (letter == 'F') return 'white';
       if (letter == legend.data()[0]) return "none";
       return 'black';
+    }
+
+    function modal (d) {
+      var letter = scoreToLetter(d);
+      var extra = {
+        score: d.score,
+        letter: scoreToLetter(d),
+        color: letterToColor(scoreToLetter(d)),
+        size: formatBytes(d.full_size),
+      }
+      $uibModal.open({
+        animation: true,
+        templateUrl: '/modal/image-description',
+        controller: 'describeImageModal',
+        controllerAs: 'ctrl',
+        resolve: {
+          image: () => d,
+          extra: () => extra,
+        }
+      }).result.then(function(){}, function(res){});
     }
   }
 }
