@@ -7,13 +7,13 @@ angular.module('dockerpedia.controllers', [])
 SELECT ?repo ?image WHERE { 
   ?repo  a vocab:Repository ;
          vocab:hasImage ?image.
-  ?image a vocab:Image .
+  ?image a vocab:SoftwareImage .
 } limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?packagename ?packageversionint WHERE {
-  ?image vocab:id 62434 .
+  ?image vocab:id 1140801 .
   ?image vocab:hasLayer ?layer .
   ?modification vocab:modifiedLayer ?layer .
   ?modification vocab:relatedPackage ?packageversion .
@@ -25,7 +25,7 @@ SELECT ?packagename ?packageversionint WHERE {
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?packagename ?packageversionnumber ?vulnerabilityname ?severity WHERE {
-  ?image vocab:id 62434 .
+  ?image vocab:id 1140801 .
   ?image vocab:hasLayer ?layer .
   ?modification vocab:modifiedLayer ?layer .
   ?modification vocab:relatedPackage ?packageversion .
@@ -41,7 +41,7 @@ PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?osname (count(?osname) as ?count) WHERE { 
   { SELECT distinct ?image ?os WHERE {
-      ?image a vocab:Image .
+      ?image a vocab:SoftwareImage .
       ?image vocab:hasLayer ?layer .
       ?layer vocab:useOS ?os .
     }
@@ -62,7 +62,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?layer (count(?layer) as ?count) WHERE {
-  ?image a vocab:Image ;
+  ?image a vocab:SoftwareImage ;
          vocab:hasLayer ?layer .
 } group by (?layer) order by desc(?count) limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
