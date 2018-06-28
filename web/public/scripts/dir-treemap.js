@@ -9,6 +9,7 @@ function treemap (d3, $uibModal) {
     scope: { 
       update: '=',
       encoding: '=',
+      test: '=',
     },
   };
   return directive;
@@ -194,8 +195,10 @@ function treemap (d3, $uibModal) {
     }
 
     createLegend();
+
     scope.update = function(root) {
-      console.log(root);
+      if (scope.transition) scope.transition(scope.lastRoot);
+      scope.lastRoot = root;
       setColorDomain(root);
       computeScore(root);
       computeValue(root);
@@ -314,6 +317,7 @@ function treemap (d3, $uibModal) {
           transitioning = false;
           });
         }
+        scope.transition = transition;
 
         return g;
       }
@@ -361,6 +365,12 @@ function treemap (d3, $uibModal) {
         ? name(d.parent) + " - " + d.name + " -  Click to zoom out."
         : d.name;
       }
+
+    scope.test = function() {
+      scope.transition(root);
+      computeValue(root);
+      layout(root);
+    };
 
     };
 

@@ -8,8 +8,20 @@ function treemapCtrl (http) {
   vm.searchTerm = '';
   vm.data = null;
   vm.upd = null;
+  vm.test = null;
   vm.search = search;
   vm.encode = {size: true, popularity: true, vulnerabilities: true};
+  vm.encodeToggle = encodeToggle;
+
+  function encodeToggle (key) {
+    if (vm.encode[key] == false) vm.encode[key] = true;
+    else {
+      var i = 0;
+      for (var k in vm.encode) if (vm.encode[k]) i +=1;
+      if (i>=2) vm.encode[key] = false;
+    }
+    vm.test();
+  }
 
   function search () {
     console.log('searching: ' + vm.searchTerm);
