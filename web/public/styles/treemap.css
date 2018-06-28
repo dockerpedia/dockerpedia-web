@@ -19,6 +19,7 @@ rect {
 rect.parent,
 .grandparent rect {
   stroke-width: 2px;
+	cursor: pointer;
 }
 
 .grandparent:hover rect {
@@ -73,11 +74,15 @@ rect.parent,
 }
 
 .textdiv {
-    font-family: "Open Sans",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    padding: 7px;
+  pointer-events: none;
+  font-family: "Open Sans",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  padding: 7px;
 	cursor: pointer;
 	overflow:none;
+ /*text-shadow: 2px 2px black;*/
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: white;
 }
 
 .textdiv .title {
@@ -94,3 +99,88 @@ rect.parent,
 	font-size:10px !important;
 }
 
+
+
+.fade.in {
+    opacity: 1;
+}
+
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+       -o-transform: translate(0, 0);
+          transform: translate(0, 0);
+}
+
+.modal-backdrop.in {
+    filter: alpha(opacity=50);
+    opacity: .5;
+}
+
+.modal-desc {
+  padding: 5px 15px 5px 15px;
+}
+
+.modal-desc > h1 {
+  text-align: center;
+}
+
+.image-ver {
+  background-color: yellow;
+  padding: 4px;
+  border: 1px solid black;
+}
+
+.image-score {
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  text-align: center;
+  font-size: 50px;
+  width: 120px;
+  border-right: 1px solid black;
+  margin-right: 15px;
+	cursor: help;
+}
+
+.image-table {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.image-score > .tooltiptext {
+  text-align: left !important;
+  font-size: 14px;
+  visibility: hidden;
+  width: 120px;
+  background-color: darkgray;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding-left: 10px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.image-score:hover .tooltiptext {
+    visibility: visible;
+}
+
+.image-link {
+  padding-bottom: 10px;
+}
+
+.dropdown-item > input {
+  pointer-events: none;
+}
+
+.dropdown-item {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}

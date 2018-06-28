@@ -1,14 +1,15 @@
 angular.module('dockerpedia.directives').directive('treemap', treemap);
 
-treemap.$inject = ['d3v3'];
+treemap.$inject = ['d3v3', '$uibModal'];
 
-function treemap (d3) {
+function treemap (d3, $uibModal) {
   var directive = {
     link: link,
     restrict: 'EA',
     scope: { 
       update: '=',
       encoding: '=',
+      test: '=',
     },
   };
   return directive;
@@ -25,10 +26,10 @@ function treemap (d3) {
         colorRange = ['#a1d76a', '#f7f7f7', '#e9a3c9'], //http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=3
         transitioning;
 
-	  // adding a color scale
-	  var color = d3.scale.linear()
-		    .domain(colorDomain)
-		    .range(colorRange);
+    // adding a color scale
+    var color = d3.scale.linear()
+        .domain(colorDomain)
+        .range(colorRange);
 
     function setColorDomain (root) {
       var min = 10000000000, max = 0;
@@ -182,8 +183,8 @@ function treemap (d3) {
           .attr('x', function (_,d) { return legendWidth - 390 - margin.left + d * 60 + 5});
 
       legend.append("text")
-          .text(function (d) { return d; })
-          .style('fill', function (d) { return letterToLColor(d);})
+          .text(function (d) { return d.length == 1 ? '' : d; })
+          .style('fill', 'black')
           .attr('y', 33)
           .attr('x', function (_,d) { return legendWidth - 390 - margin.left + d * 60 + 30} );
     }
@@ -195,7 +196,8 @@ function treemap (d3) {
 
     createLegend();
     scope.update = function(root) {
-      console.log(root);
+      if (scope.transition) scope.transition(scope.lastRoot);
+      scope.lastRoot = root;
       setColorDomain(root);
       computeScore(root);
       computeValue(root);
@@ -246,6 +248,9 @@ function treemap (d3) {
 
         g.append("rect")
           .attr("class", "parent")
+          .on("click", function (d) {
+            if (!d._children) modal(d);
+          })
           .call(rect)
           .append("title");
 
@@ -263,14 +268,11 @@ function treemap (d3) {
           .append("xhtml:div")
           .attr("dy", ".75em")
           .html(function(d) {
-            var title;
-            if (d.full_name) title = ' <p class="title"> ' + d.full_name + '</p>'
-            else title = '';
+            var title = '<p class="title"> ' + (d.full_name?d.full_name:d.name) + '</p>';
             return title + 
-            ' <p class="title"> ' + d.name + '</p>' +
-            ' <p> Last updated : ' + (d.last_updated ? d.last_updated.split('T')[0]: 'unknown') +
-            ' <p> Best image score : ' + scoreToLetter(d) + //' (' + d.value + ')' +
-            ' <p> Image size: ' + formatBytes(d.full_size);
+            '<p>Last updated: ' + (d.last_updated ? d.last_updated.split('T')[0]: 'unknown') + '</p>' +
+            '<p>Best image score: ' + scoreToLetter(d) + '</p>' +//' (' + d.value + ')' +
+            '<p>Image size: ' + formatBytes(d.full_size) + '</p>';
             ;})
           .attr("class","textdiv"); //textdiv class allows us to style the text easily with CSS
 
@@ -314,6 +316,7 @@ function treemap (d3) {
           transitioning = false;
           });
         }
+        scope.transition = transition;
 
         return g;
       }
@@ -342,9 +345,18 @@ function treemap (d3) {
       }
 
       function name(d) {
-      return d.parent
-        ? "Vulnerabilities for package - " + d.name + " - Click to zoom out."
-        : "Vulnerabilities for packages.";
+        if (d.parent)
+          return "Versions of " + d.name + " - Click to zoom out.";
+        var encoding = scope.encoding, 
+            arr = [];
+        for (key in encoding) if (encoding[key]) arr.push(key);
+        var i, s = arr[0];
+        if (arr.length > 1) 
+          for (i = 1; i < arr.length; i++) {
+            if (i == arr.length-1) s += ' & ' + arr[i];
+            else s+= ', ' + arr[i];
+          }
+        return "Images by " + s;
       }
 
       function nameSave(d) {
@@ -352,6 +364,12 @@ function treemap (d3) {
         ? name(d.parent) + " - " + d.name + " -  Click to zoom out."
         : d.name;
       }
+
+    scope.test = function() {
+      scope.transition(root);
+      computeValue(root);
+      layout(root);
+    };
 
     };
 
@@ -374,9 +392,8 @@ function treemap (d3) {
           if (l.vulnerabilities_medium > 0)   l.score -=  30 - 20 * (1-Math.min(l.vulnerabilities_medium, 15));
           if (l.vulnerabilities_low > 0)      l.score -=  20 - 10 * (1-Math.min(l.vulnerabilities_low, 23));
           if (l.score < 0 ) l.score = 0;
-          d.score += l.score;
+          if (d.score < l.score) d.score = l.score;
         });
-        d.score /= d.children.length;
       });
     }
 
@@ -384,7 +401,8 @@ function treemap (d3) {
       if (!root.children || !root.children[0].children) return;
       var maxSize = 0, minSize = root.children[0].children[0].full_size,
           maxPull = 0, minPull = root.children[0].pull_count,
-          maxScore = 0;
+          maxScore = 0, minScore = root.children[0].score;
+
       root.children.forEach( function (d) {
         if (d.pull_count < minPull) minPull = d.pull_count;
         if (d.pull_count > maxPull) maxPull = d.pull_count;
@@ -392,6 +410,7 @@ function treemap (d3) {
           if (l.full_size < minSize) minSize = l.full_size;
           if (l.full_size > maxSize) maxSize = l.full_size;
           if (l.score > maxScore) maxScore = l.score;
+          if (l.score < minScore) minScore = l.score;
         });
       });
 
@@ -425,10 +444,34 @@ function treemap (d3) {
       return 'darkgray';
     }
 
-    function letterToLColor (letter) {
-      //if (letter == legend.data()[0]) return 'darkOrange';
+    function fcolor (letter) {
+      if (letter == 'A' || letter == 'A+') return 'white';
+      if (letter == 'B') return 'black';
+      if (letter == 'C') return 'black';
+      if (letter == 'D') return 'black';
+      if (letter == 'F') return 'white';
+      if (letter == legend.data()[0]) return "none";
       return 'black';
     }
 
+    function modal (d) {
+      var letter = scoreToLetter(d);
+      var extra = {
+        score: d.score,
+        letter: scoreToLetter(d),
+        color: letterToColor(scoreToLetter(d)),
+        size: formatBytes(d.full_size),
+      }
+      $uibModal.open({
+        animation: true,
+        templateUrl: '/modal/image-description',
+        controller: 'describeImageModal',
+        controllerAs: 'ctrl',
+        resolve: {
+          image: () => d,
+          extra: () => extra,
+        }
+      }).result.then(function(){}, function(res){});
+    }
   }
 }
