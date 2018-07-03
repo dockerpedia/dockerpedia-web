@@ -44,3 +44,4 @@ block content
       div.col-md-8
         div#legend()
     treemap#chart(update="ctrl.upd", encoding="ctrl.encode", test="ctrl.test", ng-hide="!ctrl.data")
+    div.alert.alert-warning(role="alert", ng-hide="!ctrl.noResults") No results found!

@@ -12,6 +12,7 @@ function treemapCtrl (http) {
   vm.search = search;
   vm.encode = {size: true, popularity: true, vulnerabilities: true};
   vm.encodeToggle = encodeToggle;
+  vm.noResults = false;
 
   function encodeToggle (key) {
     if (vm.encode[key] == false) vm.encode[key] = true;
@@ -24,12 +25,15 @@ function treemapCtrl (http) {
   }
 
   function search () {
-    console.log('searching: ' + vm.searchTerm);
-    //return test();
     http.get('https://api.mosorio.me/api/v1/viz?query='+vm.searchTerm).then(
       function onSuccess (response) {
-        vm.data = response.data;
-        vm.upd(vm.data);
+        if (response.data.children.length == 0)
+          vm.noResults = true;
+        else {
+          vm.noResults = false;
+          vm.data = response.data;
+          vm.upd(vm.data);
+        }
       },
       function onError (response) { console.log('Error: ' + response.data); }
     );
