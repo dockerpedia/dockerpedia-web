@@ -195,7 +195,6 @@ function treemap (d3, $uibModal) {
     }
 
     createLegend();
-
     scope.update = function(root) {
       if (scope.transition) scope.transition(scope.lastRoot);
       scope.lastRoot = root;
@@ -398,6 +397,7 @@ function treemap (d3, $uibModal) {
       var maxSize = 0, minSize = root.children[0].children[0].full_size,
           maxPull = 0, minPull = root.children[0].pull_count,
           maxScore = 0, minScore = root.children[0].score;
+
       root.children.forEach( function (d) {
         if (d.pull_count < minPull) minPull = d.pull_count;
         if (d.pull_count > maxPull) maxPull = d.pull_count;
