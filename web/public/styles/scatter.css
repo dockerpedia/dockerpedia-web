@@ -66,3 +66,16 @@
   background-color: #337ab7;
   outline: 0;
 }
+
+text {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+  cursor: default;
+}
+
+.label {
+  text-anchor: middle !important;
+  font-size: 16px !important;
+}
