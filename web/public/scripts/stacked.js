@@ -4,35 +4,33 @@ angular.module('dockerpedia.directives')
   function() {
   return {
     restrict: 'EA',
-    scope: { data: '=', update: '=', selected: '='},
+    scope: {update: '='},
     link: function(scope, element, attrs) {
 /******************** D3 code here *******************/
-      scope.update = function (id) {
-        //console.log(scope.data) // <-- Data here!
-        //console.log(scope.data['google'].images[0].packages);
-        var data = [];
-        var all = scope.data[scope.selected].images[id].packages; //imge id
-        var tmp = null;
-        for (n in all) {
-          tmp = {
-            critical : all[n].critical,
-            high : all[n].high,
-            low : all[n].low,
-            medium : all[n].medium,
-            negligible : all[n].negligible,
-            package : all[n].name,
-            unknown : all[n].unknown
-          }
-          if (tmp.critical || tmp.high || tmp.low || 
-              tmp.medium || tmp.negligible || tmp.unknown )
+      scope.update = function (array) {
+        console.log(array);
+        var i, package;
+        var data = [], tmp = null;
+        for (i in array) {
+          package = array[i];
+          if (package.summary) {
+            console.log(package.summary);
+            tmp = {
+              package: package.name,
+              unknown: package.summary.Unknown || 0,
+              negligible: package.summary.Negligible || 0,
+              low: package.summary.Low || 0,
+              medium: package.summary.Medium || 0,
+              high: package.summary.High || 0,
+              critical: package.summary.Critical || 0,
+            }
             data.push(tmp);
+          }
         }
-        data.columns = ['critical', 'high', 'low', 'medium', 'negligible', 'package', 'unknown']
-        //console.log ( data );
+        data.columns = ['package', 'unknown', 'negligible', 'low', 'medium', 'high', 'critical']
         start(data);
+        return;
       };
-
-
 
 var start = function (data) {
   var parentWidth = element[0].parentElement.offsetWidth;
@@ -446,11 +444,6 @@ function formatData(data){
     };
 
 }
-
-
-
-
-
 
 /*****************************************************/
     }

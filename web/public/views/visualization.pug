@@ -59,6 +59,6 @@ block content
         | &nbsp; View in percentage
     div.row
       div.col-md-8
-        scatter(data="ctrl.data", update="ctrl.upd", selected="ctrl.selected", details="ctrl.com")
+        scatter(update="ctrl.upd", details="ctrl.getPackages")
       div.col-md-4(style="height: 500px; overflow-y: scroll;")
-        stacked(data="ctrl.data", selected="ctrl.selected", update="ctrl.com")
+        stacked(update="ctrl.com")

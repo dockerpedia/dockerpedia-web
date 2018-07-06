@@ -4,13 +4,12 @@ scatterCtrl.$inject = ['$http'];
 
 function scatterCtrl (http) {
   var vm = this;
-  vm.selected = null;
   vm.searchTerm = 'weaveworks';
   vm.noResults = false;
-  vm.data = {};
   vm.upd = null;
   vm.com = null;
   vm.search = search;
+  vm.getPackages = getPackages;
 
   function search () {
     //post
@@ -27,22 +26,14 @@ function scatterCtrl (http) {
     );
   };
 
-  function search2 () {
-    var selected = vm.searchTerm;
-    vm.selected = selected;
-    if (selected && !vm.data[selected]) {
-      http.post('/api/getJsonData', {user: selected }).then(
-        function onSuccess (response) {
-          vm.data[selected] = response.data;
-          console.log(response.data);
-          vm.upd();
-        },
-        function onError (response) { console.log('Error: ' + response.data); }
-      );
-    } else if (selected) {
-      vm.upd();
-    }
-  };
+  function getPackages (id) {
+    http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
+      function onSuccess (response) {
+        vm.com(response.data);
+      },
+      function onError (response) { console.log('Error: ' + response.data); }
+    );
+  }
 
 	$('#search-input').keypress(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);

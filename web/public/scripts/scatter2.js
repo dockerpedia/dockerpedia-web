@@ -7,8 +7,6 @@ function scatter (d3) {
     link: link,
     restrict: 'EA',
     scope: {
-      selected: '=',
-      data: '=',
       update: '=',
       details: '='
     },
@@ -121,10 +119,7 @@ function scatter (d3) {
           .attr("cx", xMap)
           .attr("cy", yMap)
           .style("fill", function(d) { return color(cValue(d));}) 
-          .on("click", function (d) { 
-            console.log(d);
-            scope.details(d.id) 
-          })
+          .on("click", function (d) { scope.details(d.id) })
           .on("mouseover", function(d) {
             var tip = "<h6>" + d.type + ":" + d.name + "</h6><hr>" +
                       "<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
