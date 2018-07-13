@@ -11,8 +11,33 @@ block content
 
   link(rel="stylesheet", href="styles/scatter.css")
 
-  main.container-fluid(role="main", ng-controller="visCtrl")
-    div.row(style="margin-top:10px; margin-bottom: 10px;")
+  main.container-fluid(role="main", ng-controller="scatterCtrl as ctrl")
+    div.row(style="margin-top:10px; margin-bottom: -10px;")
+      div.col-md-4
+        div.input-group.mb-3
+          div.input-group-prepend
+            button#dropdownMenuButton.btn.dropdown-toggle.btn-outline-secondary(
+                type="button",
+                data-toggle="dropdown",
+                aria-haspopup="true"
+                aria-expanded="false")
+              i.fa.fas.fa-cog
+            div.dropdown-menu(aria-labelledby="dropdownMenuButton")
+              h6.dropdown-header Options:
+              div.dropdown-item
+                input#myCheckbox(type="checkbox")
+                | &nbsp; View vulnerabilities as percentage
+          input#search-input.form-control(
+              ng-submit="ctrl.search()",
+              ng-model="ctrl.searchTerm",
+              type="text",
+              placeholder="Search a package",
+              aria-label="Package name",
+              aria-describedby="basic-addon2")
+          div.input-group-append
+            button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
+              i.fa.fa-search.fa-fw
+    //div.row(style="margin-top:10px; margin-bottom: 10px;")
       div.col-md-4
         input.form-control(type="text",
               placeholder="Search some user to show the images",
@@ -34,6 +59,6 @@ block content
         | &nbsp; View in percentage
     div.row
       div.col-md-8
-        scatter(data="data", update="upd", selected="selected", details="com")
+        scatter(update="ctrl.upd", details="ctrl.getPackages")
       div.col-md-4(style="height: 500px; overflow-y: scroll;")
-        stacked(data="data", selected="selected", update="com")
+        stacked(update="ctrl.com")

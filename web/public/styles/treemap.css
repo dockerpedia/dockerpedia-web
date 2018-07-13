@@ -86,9 +86,9 @@ rect.parent,
 }
 
 .textdiv .title {
-    font-size: 102%;
-    font-weight: bold;
-    margin-top: 8px;
+  font-size: 102%;
+  font-weight: bold;
+  margin-top: 8px;
 	font-size:11px !important;
 }
 
@@ -99,10 +99,8 @@ rect.parent,
 	font-size:10px !important;
 }
 
-
-
 .fade.in {
-    opacity: 1;
+  opacity: 1;
 }
 
 .modal.in .modal-dialog {
@@ -112,8 +110,8 @@ rect.parent,
 }
 
 .modal-backdrop.in {
-    filter: alpha(opacity=50);
-    opacity: .5;
+  filter: alpha(opacity=50);
+  opacity: .5;
 }
 
 .modal-desc {
@@ -164,7 +162,7 @@ rect.parent,
 }
 
 .image-score:hover .tooltiptext {
-    visibility: visible;
+  visibility: visible;
 }
 
 .image-link {

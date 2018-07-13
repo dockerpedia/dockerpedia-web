@@ -256,14 +256,10 @@ function treemap (d3, $uibModal) {
 
         /* Adding a foreign object instead of a text object, allows for text wrapping */
         g.append("foreignObject")
-            .call(rect)
-            /* open new window based on the json's URL value for leaf nodes */
-            /* Firefox displays this on top
-            .on("click", function(d) {
-              if(!d.children){
-                window.open(d.url);
-            }
-          })*/
+          .on("click", function (d) {
+            if (!d._children) modal(d);
+          })
+          .call(rect)
           .attr("class","foreignobj")
           .append("xhtml:div")
           .attr("dy", ".75em")
@@ -398,7 +394,6 @@ function treemap (d3, $uibModal) {
     }
 
     function computeValue (root) {
-      if (!root.children || !root.children[0].children) return;
       var maxSize = 0, minSize = root.children[0].children[0].full_size,
           maxPull = 0, minPull = root.children[0].pull_count,
           maxScore = 0, minScore = root.children[0].score;

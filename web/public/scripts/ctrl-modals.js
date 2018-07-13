@@ -3,7 +3,6 @@ describeImageModal.$inject = ['$scope','$uibModalInstance', 'image', 'extra']
 function describeImageModal ($scope, $uibModalInstance, image, extra) {
   var ctrl = this;
   ctrl.image = image;
-  console.log(image);
   ctrl.getTitle = getTitle;
   ctrl.getLabel = getLabel;
   ctrl.getDescription = getDescription;
