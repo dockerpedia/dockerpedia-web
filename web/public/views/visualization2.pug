@@ -12,7 +12,7 @@ block content
   main.container-fluid(role="main", ng-controller="treemapCtrl as ctrl")
     div.row(style="margin-top:10px; margin-bottom: -10px;")
       div.col-md-4
-        div.input-group.mb-3
+        div.input-group.mb-3#step1
           div.input-group-prepend
             button#dropdownMenuButton.btn.dropdown-toggle.btn-outline-secondary(
                 type="button",
@@ -20,7 +20,7 @@ block content
                 aria-haspopup="true"
                 aria-expanded="false")
               i.fa.fas.fa-cog
-            div.dropdown-menu(aria-labelledby="dropdownMenuButton")
+            div#dropdownMenu.dropdown-menu(aria-labelledby="dropdownMenuButton")
               h6.dropdown-header Box size encoding attributes:
               div.dropdown-item(ng-click="ctrl.encodeToggle('size'); $event.stopPropagation();")
                 input(type="checkbox", ng-model="ctrl.encode.size")
@@ -38,10 +38,14 @@ block content
               placeholder="Search a package",
               aria-label="Package name",
               aria-describedby="basic-addon2")
-          div.input-group-append
+          div#step1.input-group-append
             button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
               i.fa.fa-search.fa-fw
-      div.col-md-8
-        div#legend()
-    treemap#chart(update="ctrl.upd", encoding="ctrl.encode", test="ctrl.test", ng-hide="!ctrl.data")
+      div.col-md-7
+        div.pull-right#legend()
+      div.col-md-1
+        button.btn.btn-outline-secondary(type="button", ng-click="ctrl.tutorial()")
+          i.fa.fas.fa-question
+    //div#step2
     div.alert.alert-warning(role="alert", ng-hide="!ctrl.noResults") No results found!
+    treemap#chart(update="ctrl.upd", encoding="ctrl.encode", test="ctrl.test", ng-hide="!ctrl.data")

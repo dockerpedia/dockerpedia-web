@@ -1,9 +1,9 @@
 angular.module('dockerpedia.controllers').controller('treemapCtrl', treemapCtrl);
 
-treemapCtrl.$inject = ['$http']
+treemapCtrl.$inject = ['$http', '$timeout']
 
 
-function treemapCtrl (http) {
+function treemapCtrl (http, $timeout) {
   var vm = this;
   vm.searchTerm = '';
   vm.data = null;
@@ -13,6 +13,37 @@ function treemapCtrl (http) {
   vm.encode = {size: true, popularity: true, vulnerabilities: true};
   vm.encodeToggle = encodeToggle;
   vm.noResults = false;
+  vm.tutorial = tutorial;
+
+  function tutorial () {
+    var intro = introJs();
+    intro.setOptions({
+      steps: [
+        { intro: "This visualization will guide you to select the best image available of some package." },
+        { element: '#step1', intro: "You can search some package writing its name here." },
+        { element: '#step1', intro: "As example we can search <strong> ruby </strong>." },
+        { element: '#chart', intro: "The results of your search are displayed here.", position: 'top'},
+        { element: '#legend', intro: "The colors encode the vulnerabilities of the packages." },
+        { element: '#dropdownMenuButton', intro: "You can change the area codification here." },
+        //{ element: '#dropdownMenu', intro: "Chose at least one and the size of the elements in the treemap will change." },
+      ]
+    });
+    intro.start().onbeforechange(function () {
+      switch (intro._currentStep) {
+        case 2:
+          writeRuby();
+        break;
+      }
+    });
+  }
+
+
+  function writeRuby () {
+    $timeout(s=>{vm.searchTerm = 'r'}, 300);
+    $timeout(s=>{vm.searchTerm += 'u'}, 600);
+    $timeout(s=>{vm.searchTerm += 'b'}, 900);
+    $timeout(s=>{vm.searchTerm += 'y'; vm.search()}, 1200);
+  }
 
   function encodeToggle (key) {
     if (vm.encode[key] == false) vm.encode[key] = true;

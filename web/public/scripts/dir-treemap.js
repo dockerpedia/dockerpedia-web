@@ -94,7 +94,7 @@ function treemap (d3, $uibModal) {
 
     var legendWidth = document.getElementById('legend').parentElement.offsetWidth;
     var legend = d3.select("#legend").append("svg")
-      .attr("width", legendWidth - 30)
+      .attr("width", 360)
       .attr("height", 38)
       .attr('class', 'legend')
       .selectAll("g")
@@ -157,10 +157,10 @@ function treemap (d3, $uibModal) {
 
     function createLegend () {
       legend.append("rect")
-        .attr("x", function(_,d) { return legendWidth - 390 - margin.left + d * 60})
+        .attr("x", function(_,d) { return d * 60})
         .attr("y", 18)
         .attr("fill", function(d) { return letterToColor(d); })
-        .attr('width', '100px')
+        .attr('width', '60px')
         .attr('height', '20px')
 
       legend.append("text")
@@ -180,13 +180,13 @@ function treemap (d3, $uibModal) {
           .style('fill', 'darkOrange')
           .style('text-anchor', 'start')
           .attr('y', 12)
-          .attr('x', function (_,d) { return legendWidth - 390 - margin.left + d * 60 + 5});
+          .attr('x', function (_,d) { return d * 60 + 5});
 
       legend.append("text")
           .text(function (d) { return d.length == 1 ? '' : d; })
           .style('fill', 'black')
           .attr('y', 33)
-          .attr('x', function (_,d) { return legendWidth - 390 - margin.left + d * 60 + 30} );
+          .attr('x', function (_,d) { return d * 60 + 30} );
     }
 
     // determines if white or black will be better contrasting color
