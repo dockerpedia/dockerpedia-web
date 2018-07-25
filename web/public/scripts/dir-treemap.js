@@ -212,6 +212,12 @@ function treemap (d3, $uibModal) {
           .on("click", transition)
           .select("text")
           .text(name(d))
+          .attr('fill', function (){
+            if (d.parent)
+              if (scoreToLetter(d)[0] == 'A' || scoreToLetter(d)[0] == 'F')
+                return 'white';
+            return 'black';
+          })
 
         // color header based on grandparent's color
         grandparent
@@ -270,7 +276,8 @@ function treemap (d3, $uibModal) {
             '<p>Best image score: ' + scoreToLetter(d) + '</p>' +//' (' + d.value + ')' +
             '<p>Image size: ' + formatBytes(d.full_size) + '</p>';
             ;})
-          .attr("class","textdiv"); //textdiv class allows us to style the text easily with CSS
+          .attr("class", d => {console.log(); return 'textdiv score'+ scoreToLetter(d)[0]; });
+          //.attr("class","textdiv"); //textdiv class allows us to style the text easily with CSS
 
         function transition(d) {
           if (transitioning || !d) return;

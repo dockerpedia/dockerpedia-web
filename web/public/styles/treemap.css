@@ -83,8 +83,7 @@ rect.parent,
 	cursor: pointer;
 	overflow:none;
  /*text-shadow: 2px 2px black;*/
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  color: white;
+  /*color: white;*/
 }
 
 .textdiv .title {
@@ -99,6 +98,15 @@ rect.parent,
 	margin:0 0 4px !important;
 	padding:0px;
 	font-size:10px !important;
+}
+
+.scoreA, .scoreF {
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.scoreB, .scoreC, .scoreD {
+  color: black;
 }
 
 .fade.in {
