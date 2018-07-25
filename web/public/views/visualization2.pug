@@ -41,11 +41,10 @@ block content
           div#step1.input-group-append
             button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
               i.fa.fa-search.fa-fw
-      div.col-md-7
+      div.col-md-8
         div.pull-right#legend()
-      div.col-md-1
-        button.btn.btn-outline-secondary(type="button", ng-click="ctrl.tutorial()")
-          i.fa.fas.fa-question
-    //div#step2
     div.alert.alert-warning(role="alert", ng-hide="!ctrl.noResults") No results found!
     treemap#chart(update="ctrl.upd", encoding="ctrl.encode", test="ctrl.test", ng-hide="!ctrl.data")
+    div(ng-hide="ctrl.data", style="display:table; height: 400px; width:100%;")
+      div(style="display:table-cell; vertical-align: middle;")
+        h3#tutor(ng-click="ctrl.tutorial()") Need help? Click here to run the tutorial!

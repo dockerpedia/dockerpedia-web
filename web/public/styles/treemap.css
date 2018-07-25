@@ -1,6 +1,8 @@
 #chart {
-  max-width: 100%;
+  /*max-width: 100%;*/
   overflow:auto;
+  width:calc(100% - 30px);
+  height:620px;
 }
 
 text {
@@ -181,4 +183,13 @@ rect.parent,
   -ms-user-select: none;
   user-select: none;
   cursor: pointer;
+}
+#tutor {
+  text-align: center;
+  cursor:pointer;
+}
+#tutor:hover {
+  text-width: bold;
+  color: steelblue;
+  text-decoration: underline;
 }
