@@ -1,6 +1,6 @@
 angular.module('dockerpedia.controllers').controller('describeImageModal', describeImageModal);
-describeImageModal.$inject = ['$scope','$uibModalInstance', 'image', 'extra']
-function describeImageModal ($scope, $uibModalInstance, image, extra) {
+describeImageModal.$inject = ['$scope','$uibModalInstance', 'image', 'extra', '$http']
+function describeImageModal ($scope, $uibModalInstance, image, extra, $http) {
   var ctrl = this;
   ctrl.image = image;
   ctrl.getTitle = getTitle;
@@ -13,6 +13,17 @@ function describeImageModal ($scope, $uibModalInstance, image, extra) {
   ctrl.getColor = getColor;
   ctrl.getUrl = getUrl;
   ctrl.getVulnerabilities = getVulnerabilities;
+
+  getPackages(image.id);
+
+  function getPackages (id) {
+    $http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
+      function onSuccess (response) {
+        console.log(response.data);
+      },
+      function onError (response) { console.log('Error: ' + response.data); }
+    );
+  }
 
   function getTitle () {
     return ctrl.image.parent.full_name;
