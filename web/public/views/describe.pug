@@ -10,7 +10,7 @@ block content
         div.row.row-table(ng-repeat="(i, res) in ctrl.properties", ng-init="ctrl.getValues(res)")
           div.col-md-3.row-table-title
             a(href="{{ res.uri.value }}") {{ res.label? res.uri.label : ctrl.toPrefix(res.uri.value) }}
-          div.col-md-9.row-table-values
+          div.col-md-9.row-table-values(style="max-height:400px; overflow-y: scroll;")
             div(ng-repeat="(i, v) in ctrl.values[res.uri.value]")
               a(ng-if="v.uri.type=='uri'", href="{{ v.uri.value }}") {{ v.label ? v.label.value : ctrl.toPrefix(v.uri.value) }}
               b(ng-if="v.uri.type!='uri'") {{ v.uri.value }}
