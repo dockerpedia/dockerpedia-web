@@ -23,6 +23,20 @@ div.modal-desc
       td 
         strong Image size:&nbsp;
         | {{ ctrl.getSize() }}
-  div
-    b DockerHub: 
-    a.image-link(href="{{ ctrl.getUrl() }}", target="_blank") {{ ctrl.getUrl() }}
+  div(style="text-align: center;")
+    a.image-link(href="{{ ctrl.getUrl() }}", target="_blank") {{ 'dockerHub/'+ctrl.getTitle() }}
+
+  div.div-table(ng-repeat="title in ['Critical', 'High', 'Medium', 'Low']",
+                ng-class="ctrl.active[title] ? 'active' : '';",
+                ng-if="ctrl.data[title].length > 0",
+                ng-init="ctrl.active[title]=false;")
+    div.table-header(ng-click="ctrl.active[title] = !ctrl.active[title];",
+                     ng-class="'v'+title") {{ title }} ({{ ctrl.data[title].length }})
+      i.pull-right.fa(ng-class="ctrl.active[title] ? 'fa-angle-up' : 'fa-angle-down';")
+    div.table-body
+      div.row.row-table(ng-repeat="(i,obj) in ctrl.data[title]")
+        div.col-4 {{ obj.package }}
+        div.col-3 {{ obj.version }}
+        div.col-5 
+          a(href="{{ obj.link }}") {{ obj.name }}
+

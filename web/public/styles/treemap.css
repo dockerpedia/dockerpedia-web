@@ -201,3 +201,49 @@ rect.parent,
   color: steelblue;
   text-decoration: underline;
 }
+
+.div-table {
+  margin-bottom: 10px;
+  max-height: 24px;
+  -webkit-transition: max-height 0.4s ease-in-out;
+  transition: max-height 0.4s ease-in-out;
+  overflow: hidden;
+}
+
+.div-table.active {
+  max-height: 324px;
+}
+
+.div-table > .table-header {
+  font-weight: bold;
+  padding: 0px 10px 0px 10px;
+}
+
+.div-table > .table-body {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.div-table.active > .table-body {
+  border-bottom: 1px solid #D3D3D3;
+  border-right: 1px solid #D3D3D3;
+  border-left: 1px solid #D3D3D3;
+}
+
+.vCritical {
+  background-color: #d7191c;
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.vHigh {
+  background-color: #fdae61;
+}
+
+.vMedium {
+  background-color: #ffffbf;
+}
+
+.vLow {
+  background-color: #abd9e9;
+}

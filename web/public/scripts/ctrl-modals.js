@@ -14,12 +14,50 @@ function describeImageModal ($scope, $uibModalInstance, image, extra, $http) {
   ctrl.getUrl = getUrl;
   ctrl.getVulnerabilities = getVulnerabilities;
 
+  ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
+  ctrl.active = {Critical: false, High: false, Medium: false, Low: false};
+
   getPackages(image.id);
 
   function getPackages (id) {
     $http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
       function onSuccess (response) {
-        console.log(response.data);
+        ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
+        var s, p, i, j, target;
+        for (i in response.data) {
+          s = response.data[i];
+          for (j in s.vulnerabilities) {
+            p = s.vulnerabilities[j];
+            switch (p.severity) {
+              case 'Critical':
+              case 'Defcon1':
+                target = ctrl.data.Critical;
+                break;
+              case 'High':
+                target = ctrl.data.High;
+                break;
+              case 'Medium':
+                target = ctrl.data.Medium;
+                break;
+              case 'Low':
+              case 'Negligible':
+              case 'Unknown':
+                target = ctrl.data.Low;
+                break;
+              default:
+                console.log(p);
+            }
+            target.push({
+              name: p.name,
+              severity: p.severity,
+              link: p.link,
+              meta: p.metadata,
+              package: s.name,
+              version: s.version,
+            });
+          }
+        }
+        console.log(ctrl.data);
       },
       function onError (response) { console.log('Error: ' + response.data); }
     );
