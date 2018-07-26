@@ -2,7 +2,6 @@ angular.module('dockerpedia.controllers').controller('treemapCtrl', treemapCtrl)
 
 treemapCtrl.$inject = ['$http', '$timeout']
 
-
 function treemapCtrl (http, $timeout) {
   var vm = this;
   vm.searchTerm = '';

@@ -1,6 +1,8 @@
 #chart {
-  max-width: 100%;
+  /*max-width: 100%;*/
   overflow:auto;
+  width:calc(100% - 30px);
+  height:620px;
 }
 
 text {
@@ -81,8 +83,7 @@ rect.parent,
 	cursor: pointer;
 	overflow:none;
  /*text-shadow: 2px 2px black;*/
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-  color: white;
+  /*color: white;*/
 }
 
 .textdiv .title {
@@ -97,6 +98,15 @@ rect.parent,
 	margin:0 0 4px !important;
 	padding:0px;
 	font-size:10px !important;
+}
+
+.scoreA, .scoreF {
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.scoreB, .scoreC, .scoreD {
+  color: black;
 }
 
 .fade.in {
@@ -118,8 +128,25 @@ rect.parent,
   padding: 5px 15px 5px 15px;
 }
 
-.modal-desc > h1 {
+.modal-desc > a:hover {
+  color: steelblue;
+  text-decoration: underline;
+}
+
+.modal-desc > a {
   text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: .5rem;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.2;
+  color: black;
+  display: block;
+}
+
+.modal-desc > a > i {
+  padding-left: 3px;
+  font-size: 0.6em;
 }
 
 .image-ver {
@@ -165,10 +192,6 @@ rect.parent,
   visibility: visible;
 }
 
-.image-link {
-  padding-bottom: 10px;
-}
-
 .dropdown-item > input {
   pointer-events: none;
 }
@@ -181,4 +204,60 @@ rect.parent,
   -ms-user-select: none;
   user-select: none;
   cursor: pointer;
+}
+#tutor {
+  text-align: center;
+  cursor:pointer;
+}
+#tutor:hover {
+  text-width: bold;
+  color: steelblue;
+  text-decoration: underline;
+}
+
+.div-table {
+  margin-bottom: 10px;
+  max-height: 24px;
+  -webkit-transition: max-height 0.4s ease-in-out;
+  transition: max-height 0.4s ease-in-out;
+  overflow: hidden;
+}
+
+.div-table.active {
+  max-height: 324px;
+}
+
+.div-table > .table-header {
+  font-weight: bold;
+  padding: 0px 10px 0px 10px;
+  cursor: pointer;
+}
+
+.div-table > .table-body {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.div-table.active > .table-body {
+  border-bottom: 1px solid #D3D3D3;
+  border-right: 1px solid #D3D3D3;
+  border-left: 1px solid #D3D3D3;
+}
+
+.vCritical {
+  background-color: #d7191c;
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.vHigh {
+  background-color: #fdae61;
+}
+
+.vMedium {
+  background-color: #ffffbf;
+}
+
+.vLow {
+  background-color: #abd9e9;
 }

@@ -50,11 +50,11 @@ function describeCtrl (scope, location, http) {
   }
 
   /* query helpers */
-  function valuesQuery (uri, prop) {
+  function valuesQuery (uri, prop) { //TODO: limit, offset and pagination.
     q = 'SELECT DISTINCT ?uri ?label WHERE {\n';
     q+= '  <' + uri + '> <' + prop + '> ?uri .\n';
     q+= '  OPTIONAL {?uri <http://www.w3.org/2000/01/rdf-schema#label> ?label .} \n'
-    q+= '}';
+    q+= '} limit 30';
     return q;
   }
 

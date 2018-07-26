@@ -1,4 +1,4 @@
-angular.module('dockerpedia.controllers', [])
+angular.module('dockerpedia.controllers', ['angular-loading-bar', 'ngAnimate'])
 
 .controller('mainCtrl', ['$scope', '$location', '$window', function(scope, location, window) {
   scope.examples = [ 

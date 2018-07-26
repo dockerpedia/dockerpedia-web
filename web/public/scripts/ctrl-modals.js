@@ -1,6 +1,6 @@
 angular.module('dockerpedia.controllers').controller('describeImageModal', describeImageModal);
-describeImageModal.$inject = ['$scope','$uibModalInstance', 'image', 'extra']
-function describeImageModal ($scope, $uibModalInstance, image, extra) {
+describeImageModal.$inject = ['$scope','$uibModalInstance', 'image', 'extra', '$http']
+function describeImageModal ($scope, $uibModalInstance, image, extra, $http) {
   var ctrl = this;
   ctrl.image = image;
   ctrl.getTitle = getTitle;
@@ -13,6 +13,60 @@ function describeImageModal ($scope, $uibModalInstance, image, extra) {
   ctrl.getColor = getColor;
   ctrl.getUrl = getUrl;
   ctrl.getVulnerabilities = getVulnerabilities;
+  ctrl.hasData = hasData;
+
+  ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
+  ctrl.active = {Critical: false, High: false, Medium: false, Low: false};
+
+  getPackages(image.id);
+
+  function getPackages (id) {
+    $http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
+      function onSuccess (response) {
+        ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
+        var s, p, i, j, target;
+        for (i in response.data) {
+          s = response.data[i];
+          for (j in s.vulnerabilities) {
+            p = s.vulnerabilities[j];
+            switch (p.severity) {
+              case 'Critical':
+              case 'Defcon1':
+                target = ctrl.data.Critical;
+                break;
+              case 'High':
+                target = ctrl.data.High;
+                break;
+              case 'Medium':
+                target = ctrl.data.Medium;
+                break;
+              case 'Low':
+              case 'Negligible':
+              case 'Unknown':
+                target = ctrl.data.Low;
+                break;
+              default:
+                console.log(p);
+            }
+            target.push({
+              name: p.name,
+              severity: p.severity,
+              link: p.link,
+              meta: p.metadata,
+              package: s.name,
+              version: s.version,
+            });
+          }
+        }
+        console.log(ctrl.data);
+      },
+      function onError (response) { console.log('Error: ' + response.data); }
+    );
+  }
+
+  function hasData () {
+    return (ctrl.data.Critical || ctrl.data.High || ctrl.data.Medium || ctrl.data.Low);
+  }
 
   function getTitle () {
     return ctrl.image.parent.full_name;
