@@ -13,6 +13,7 @@ function describeImageModal ($scope, $uibModalInstance, image, extra, $http) {
   ctrl.getColor = getColor;
   ctrl.getUrl = getUrl;
   ctrl.getVulnerabilities = getVulnerabilities;
+  ctrl.hasData = hasData;
 
   ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
   ctrl.active = {Critical: false, High: false, Medium: false, Low: false};
@@ -61,6 +62,10 @@ function describeImageModal ($scope, $uibModalInstance, image, extra, $http) {
       },
       function onError (response) { console.log('Error: ' + response.data); }
     );
+  }
+
+  function hasData () {
+    return (ctrl.data.Critical || ctrl.data.High || ctrl.data.Medium || ctrl.data.Low);
   }
 
   function getTitle () {

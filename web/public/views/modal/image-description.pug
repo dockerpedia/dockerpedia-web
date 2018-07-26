@@ -1,5 +1,7 @@
 div.modal-desc
-  h1 {{ ctrl.getTitle() }}
+  a.image-link(href="{{ ctrl.getUrl() }}", target="_blank") {{ ctrl.getTitle() }}   
+    i.fa.fa-external-link(aria-hidden="true")
+  div(style="text-align: center;")
   hr
   i {{ ctrl.getDescription() }}
   table.image-table
@@ -23,9 +25,7 @@ div.modal-desc
       td 
         strong Image size:&nbsp;
         | {{ ctrl.getSize() }}
-  div(style="text-align: center;")
-    a.image-link(href="{{ ctrl.getUrl() }}", target="_blank") {{ 'dockerHub/'+ctrl.getTitle() }}
-
+  strong(ng-if="ctrl.hasData()") Vulnerabilities:
   div.div-table(ng-repeat="title in ['Critical', 'High', 'Medium', 'Low']",
                 ng-class="ctrl.active[title] ? 'active' : '';",
                 ng-if="ctrl.data[title].length > 0",

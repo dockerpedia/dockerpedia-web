@@ -128,8 +128,25 @@ rect.parent,
   padding: 5px 15px 5px 15px;
 }
 
-.modal-desc > h1 {
+.modal-desc > a:hover {
+  color: steelblue;
+  text-decoration: underline;
+}
+
+.modal-desc > a {
   text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: .5rem;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.2;
+  color: black;
+  display: block;
+}
+
+.modal-desc > a > i {
+  padding-left: 3px;
+  font-size: 0.6em;
 }
 
 .image-ver {
@@ -175,10 +192,6 @@ rect.parent,
   visibility: visible;
 }
 
-.image-link {
-  padding-bottom: 10px;
-}
-
 .dropdown-item > input {
   pointer-events: none;
 }
@@ -217,6 +230,7 @@ rect.parent,
 .div-table > .table-header {
   font-weight: bold;
   padding: 0px 10px 0px 10px;
+  cursor: pointer;
 }
 
 .div-table > .table-body {
