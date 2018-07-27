@@ -24,8 +24,10 @@ function describeCtrl (scope, location, http) {
     vm.properties = data.results.bindings;
   });
 
-  function getValues (prop) {
-    execQuery(valuesQuery(vm.uri, prop.uri.value), data => {
+  function getValues (prop, i) {
+    if (i > 0) prop.step += 1;
+    if (i < 0) prop.step -= 1;
+    execQuery(valuesQuery(vm.uri, prop.uri.value, prop.step), data => {
       vm.values[prop.uri.value] = data.results.bindings;
     });
   }
@@ -50,11 +52,11 @@ function describeCtrl (scope, location, http) {
   }
 
   /* query helpers */
-  function valuesQuery (uri, prop) { //TODO: limit, offset and pagination.
+  function valuesQuery (uri, prop, step) { //TODO: limit, offset and pagination.
     q = 'SELECT DISTINCT ?uri ?label WHERE {\n';
     q+= '  <' + uri + '> <' + prop + '> ?uri .\n';
     q+= '  OPTIONAL {?uri <http://www.w3.org/2000/01/rdf-schema#label> ?label .} \n'
-    q+= '} limit 30';
+    q+= '} limit 11 offset ' + (step)*10;
     return q;
   }
 
