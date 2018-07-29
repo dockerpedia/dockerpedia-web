@@ -14,6 +14,13 @@
 
 .dot {
   fill-opacity: .5;
+  cursor:pointer;
+}
+
+.dot.active {
+  fill-opacity: .9;
+  stroke-width: 1px;
+  stroke:rgb(0,0,0);
 }
 
 .d3-tip {
@@ -50,6 +57,17 @@
   fill: #333;
 }
 
+#scatter-svg > g > .legend > rect {
+  fill-opacity: .7;
+  cursor:pointer;
+}
+
+#scatter-svg > g > .legend.active > rect {
+  fill-opacity: .95;
+  stroke-width: 1px;
+  stroke:rgb(0,0,0);
+}
+
 .dropdown-menu>li>a {
   display: block;
   padding: 3px 20px;
@@ -73,6 +91,10 @@ text {
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
   cursor: default;
+}
+
+#scatter-svg {
+  /*border: 1px solid red;*/
 }
 
 .label {
@@ -99,4 +121,8 @@ text {
 
 .tooltip > i {
   word-wrap: break-word;
+}
+
+.bar {
+  cursor:pointer;
 }

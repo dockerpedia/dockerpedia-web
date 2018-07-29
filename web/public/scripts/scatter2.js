@@ -58,9 +58,11 @@ function scatter (d3) {
         .style("opacity", 0);
 
     var svg = null;
+    var data = null;
 
     // load data
     function start (data, repos, enc) {
+      data = data;
       lastYear = 0;
       if (color) color = d3.scale.category10();
       if (svg) {
@@ -114,7 +116,10 @@ function scatter (d3) {
       svg.selectAll(".dot")
           .data(data)
         .enter().append("circle")
-          .attr("class", "dot")
+          .attr("class", d => {
+            if (d.op) return 'dot active';
+            else return 'dot';
+          })
           .attr("r", 5.5)
           .attr("cx", xMap)
           .attr("cy", yMap)
@@ -138,12 +143,29 @@ function scatter (d3) {
           });
 
       // draw legend
+      var typeActive = {};
+      color.domain().forEach(t => { typeActive[t] = false;});
       var legend = svg.selectAll(".legend")
           .data(color.domain())
         .enter().append("g")
           .attr("class", "legend")
           .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; })
-          .on("click", function (d) {console.log(d);})
+          .on("click", function (type) {
+            typeActive[type] = !typeActive[type];
+            /* false when all true
+            var all = true;
+            for (key in typeActive) all = all && typeActive[key];
+            if (all)
+              for (key in typeActive) typeActive[key] = false;*/
+            svg.selectAll(".dot").attr("class", d => {
+              if (typeActive[d.type]) return 'dot active';
+              else return 'dot';
+            })
+            svg.selectAll(".legend").attr("class", d => {
+              if (typeActive[d]) return 'legend active';
+              return 'legend';
+            });
+          })
           .on("mouseover", function(d) {
             var tip = "<h6>" + d + "</h6><hr>";
             if (repos[d].description) tip += "<i>" + repos[d].description + "</i><br/>";
@@ -200,11 +222,11 @@ function scatter (d3) {
                         image.vulnerabilities_unknown;
             image.getY = function () {return this[enc.y]; };
             image.getX = function () {return this[enc.x]; };
+            image.op = false;
             if (image.vuln !=0 || image.name == "latest") data.push(image);
           }
         }
       }
-      console.log(data);
       start(data, repos, enc);
     };
   }
