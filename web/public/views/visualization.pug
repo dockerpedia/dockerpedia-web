@@ -52,10 +52,10 @@ block content
               select#yEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.yAxis")
                 option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
             .col-auto.my-1
-              label.mr-sm-2(for='rEncode') Radius:
+              label.mr-sm-2(for='rEncode') Size:
             .col-auto.my-1
-              select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.radius")
-                option(ng-repeat="(name, obj) in ctrl.conf.radiusOpts", value="{{name}}") {{ name }}
+              select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.size")
+                option(ng-repeat="(name, obj) in ctrl.conf.sizeOpts", value="{{name}}") {{ name }}
             .col-auto.my-1
               label.mr-sm-2(for='cEncode') Categories:
             .col-auto.my-1
