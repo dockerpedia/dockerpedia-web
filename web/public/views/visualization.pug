@@ -5,7 +5,12 @@ block content
   script(src="scripts/vis-ctrl.js")
   script(src="scripts/d3.js")
   script(src="scripts/d3.v4.min.js")
-  script(src="scripts/scatter2.js")
+  script(src="scripts/scatter3.js")
+  //script(src="//d3js.org/d3.v3.min.js", charset="utf-8");
+  //script(src="//d3js.org/d3-path.v0.1.min.js")
+  //script(src="//d3js.org/d3-shape.v0.6.min.js")
+  //script(src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js")
+  script(src="scripts/shapes.js")
   script(src="scripts/stacked.js")
   script(src="scripts/d3-tip.js")
 
@@ -14,7 +19,7 @@ block content
   main.container-fluid(role="main", ng-controller="scatterCtrl as ctrl")
     div.row(style="margin-top:10px; margin-bottom: -10px;")
       div.col-md-4
-        div.input-group.mb-3
+        div.input-group.mb-3(style="margin-top: 4px;")
           div.input-group-prepend
             button#dropdownMenuButton.btn.dropdown-toggle.btn-outline-secondary(
                 type="button",
@@ -37,28 +42,49 @@ block content
           div.input-group-append
             button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
               i.fa.fa-search.fa-fw
-    //div.row(style="margin-top:10px; margin-bottom: 10px;")
-      div.col-md-4
-        input.form-control(type="text",
-              placeholder="Search some user to show the images",
-              ng-model="selected",
-              typeahead-editable="false",
-              typeahead-on-select="getData()",
-              uib-typeahead="user for user in users | filter:$viewValue | limitTo:8")
-        //div.input-group.mb-3
-          input#search-input.form-control(
-              type="text",
-              placeholder="Search a username",
-              aria-label="Username",
-              aria-describedby="basic-addon2")
-          div.input-group-append
-            button.btn.btn-outline-secondary(type="button") Search
-      div.col-md-6
-      div.col-md-2
-        input#myCheckbox(type="checkbox", style="margin-top:10px;")
-        | &nbsp; View in percentage
+
+      div.col-md-8
+        form
+          .form-row.align-items-center
+            .col-auto.my-1
+              label.mr-sm-2(for='yEncode') Y Axis:
+            .col-auto.my-1
+              select#yEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.yAxis")
+                option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
+            .col-auto.my-1
+              label.mr-sm-2(for='rEncode') Radius:
+            .col-auto.my-1
+              select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.radius")
+                option(ng-repeat="(name, obj) in ctrl.conf.radiusOpts", value="{{name}}") {{ name }}
+            .col-auto.my-1
+              label.mr-sm-2(for='cEncode') Categories:
+            .col-auto.my-1
+              select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.category")
+                option(ng-repeat="(name, obj) in ctrl.conf.categoryOpts", value="{{name}}") {{ name }}
+            .col-auto.my-1
+              label.mr-sm-2(for='cEncode') Shapes:
+            .col-auto.my-1
+              select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.shape")
+                option(ng-repeat="(name, obj) in ctrl.conf.shapeOpts", value="{{name}}") {{ name }}
+            .col-auto.my-1
+              button.btn.btn-outline-secondary(type='button', ng-click="ctrl.setConf()")
+                i.fa.fa-refresh
+
     div.row
       div.col-md-8
-        scatter(update="ctrl.upd", details="ctrl.getPackages")
-      div.col-md-4(style="height: 500px; overflow-y: scroll;")
+        scatter(start="ctrl.start", update="ctrl.update", details="ctrl.getPackages", ctrl-data="ctrl.scatter")
+      //div.col-md-4(style="height: 500px; overflow-y: scroll;")
+        //stacked(update="ctrl.com")
+      div.col-md-4(style="margin-top:9px;")
+        .legend-box
+          div(ng-repeat="(i, val) in ctrl.scatter.categories") 
+            .small-box(style="background-color: {{ val.color }}")
+            | {{ val.name }}
+            i.fa.fa-trash.pull-right(ng-click="ctrl.rmCat(val.name)")
+        .legend-box
+          div(ng-repeat="(i, val) in ctrl.scatter.shapes") 
+            shape(type="val.shape")
+            | {{ val.name }}
+            i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
         stacked(update="ctrl.com")
+        //pre Model: {{ctrl.conf | json}} 

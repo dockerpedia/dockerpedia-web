@@ -1,52 +1,54 @@
-angular.module('dockerpedia.directives')
-.directive(
-  'stacked', 
-  function() {
-  return {
+angular.module('dockerpedia.directives').directive('stacked', stacked);
+
+stacked.$inject = [];
+
+function stacked () {
+  var directive = {
+    link: link,
     restrict: 'EA',
-    scope: {update: '='},
-    link: function(scope, element, attrs) {
-/******************** D3 code here *******************/
-      scope.update = function (array) {
-        console.log(array);
-        var i, package;
-        var data = [], tmp = null;
-        for (i in array) {
-          package = array[i];
-          if (package.summary) {
-            console.log(package.summary);
-            tmp = {
-              package: package.name,
-              unknown: package.summary.Unknown || 0,
-              negligible: package.summary.Negligible || 0,
-              low: package.summary.Low || 0,
-              medium: package.summary.Medium || 0,
-              high: package.summary.High || 0,
-              critical: package.summary.Critical || 0,
-            }
-            data.push(tmp);
+    scope: {
+      update: '=',
+    },
+  };
+  return directive;
+
+  function link (scope, element, attrs) {
+    scope.update = function (array) {
+      console.log(array);
+      var i, package;
+      var data = [], tmp = null;
+      for (i in array) {
+        package = array[i];
+        if (package.summary) {
+          tmp = {
+            package: package.name,
+            Low: (package.summary.Low || 0) + (package.summary.Unknown || 0) + (package.summary.Negligible || 0) ,
+            Medium: package.summary.Medium || 0,
+            High: package.summary.High || 0,
+            Critical: package.summary.Critical || 0,
           }
+          data.push(tmp);
         }
-        data.columns = ['package', 'unknown', 'negligible', 'low', 'medium', 'high', 'critical']
-        start(data);
-        return;
-      };
+      }
+      data.columns = ['Package', 'Low', 'Medium', 'High', 'Critical']
+      start(data);
+      return;
+    };
+/******************** D3 code here *******************/
 
-var start = function (data) {
-  var parentWidth = element[0].parentElement.offsetWidth;
-  var input = {'data': data, 'width':parentWidth-30, 'height': Math.max(data.length*20, 200)},
-      canvas = setUpSvgCanvas(input);
-  drawBars(input, canvas); 
-}
+    var start = function (data) {
+      var parentWidth = element[0].parentElement.offsetWidth;
+      var input = {'data': data, 'width':parentWidth-30, 'height': Math.max(data.length*20, 200)},
+          canvas = setUpSvgCanvas(input);
+      drawBars(input, canvas); 
+    }
 
 
-function drawBars(input, canvas) {
-
-    var params = {'input': input, 'canvas': canvas};
-    initialize(params);
-    update(params);
-
-}
+    function drawBars(input, canvas) {
+        var params = {'input': input, 'canvas': canvas};
+        initialize(params);
+        update(params);
+    }
 
 
 function initialize(params) {
@@ -406,7 +408,9 @@ function setUpSvgCanvas(input) {
 
 
 function setUpColors() {
-    return d3.scaleOrdinal().range(["#B07AA1", "#1170AA", "#5FA2CE", "#A3ACB9", "#FC7D0B", "#E15769"]);
+    //http://colorbrewer2.org/#type=sequential&scheme=OrRd&n=4
+    return d3.scaleOrdinal().range([ '#d7301f', '#fc8d59', '#fdcc8a', '#fef0d9', ]);
+    //return d3.scaleOrdinal().range(["#B07AA1", "#1170AA", "#5FA2CE", "#A3ACB9", "#FC7D0B", "#E15769"]);
     //critical, high, medium, low, negligible, unknown
     //["#E15769", "#FC7D0B", "#A3ACB9", "#5FA2CE", "#1170AA", "#B07AA1"]
 }
@@ -415,11 +419,14 @@ function setUpColors() {
 // formatting Data to a more d3-friendly format
 // extracting packageNames and severityNames
 function formatData(data){
-    var severityNames = ["unknown", "negligible", "low", "medium", "high", "critical"]
+    //var severityNames = ["unknown", "negligible", "low", "medium", "high", "critical"]
+    var severityNames = ["Critical", "High", "Medium", "Low"];
     var packageNames = [];
     var blockData = [];
-    console.log(data)
-    data.sort(function(a, b) { return (b.critical * 3 + b.high * 2 + b.medium * 1 )   - (a.critical * 3 + a.high * 2 + a.medium * 1 )  });
+    data = data.sort(function(a, b) { 
+      return (a.Critical + a.High + a.Medium + a.Low) < (b.Critical + b.High + b.Medium + b.Low);
+        //return (b.critical * 3 + b.high * 2 + b.medium * 1 )   - (a.critical * 3 + a.high * 2 + a.medium * 1 );
+    });
 
     for(var i = 0; i < data.length; i++){
         var y = 0;
@@ -436,7 +443,6 @@ function formatData(data){
         }
     }
 
-
     return {
         blockData: blockData,
         packageNames: packageNames,
@@ -446,6 +452,5 @@ function formatData(data){
 }
 
 /*****************************************************/
-    }
-  };
-});
+  }
+}

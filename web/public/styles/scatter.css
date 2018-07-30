@@ -1,3 +1,37 @@
+.legend-box {
+  width: 49%;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.legend-box > div {
+  padding: 5px 10px 0px 2em;
+  position: relative;
+}
+
+.legend-box > div:hover {
+  background-color: rgba(0,0,0,.075);
+}
+
+.small-box {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  width: 1.2em;
+  height: 1.2em;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.legend-box > div > shape {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+}
+
+.dot, .bar {
+  cursor:pointer;
+}
+/*
 .axis path,
 .axis line {
   fill: none;
@@ -31,7 +65,7 @@
   font-size: 13px;
 }
 
-/* Creates a small triangle extender for the tooltip */
+/* Creates a small triangle extender for the tooltip *
 .d3-tip:after {
   box-sizing: border-box;
   display: inline;
@@ -44,7 +78,7 @@
   text-align: center;
 }
 
-/* Style northward tooltips differently */
+/* Style northward tooltips differently *
 .d3-tip.n:after {
   margin: -1px 0 0 0;
   top: 100%;
@@ -83,7 +117,7 @@
   text-decoration: none;
   background-color: #337ab7;
   outline: 0;
-}
+}*/
 
 text {
   -webkit-user-select: none; /* Safari */
@@ -96,11 +130,11 @@ text {
 #scatter-svg {
   /*border: 1px solid red;*/
 }
-
+/*
 .label {
   text-anchor: middle !important;
   font-size: 16px !important;
-}
+}*/
 
 .tooltip {
   background: lightgrey;
@@ -123,6 +157,54 @@ text {
   word-wrap: break-word;
 }
 
-.bar {
-  cursor:pointer;
+rect.scatter-rect {
+  fill: transparent;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.1);
+  shape-rendering: crispEdges;
+}
+
+.axisLine {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: rgba(0, 0, 0, 0.5);
+  stroke-width: 2px;
+}
+
+.dot {
+  fill-opacity: .5;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
 }
