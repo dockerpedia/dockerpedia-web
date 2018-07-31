@@ -48,26 +48,33 @@ function scatterCtrl (http, d3) {
     yAxisOpts: {
       'Vulnerabilities': { getY: d => {return d.vuln},      yLabel: 'Vulnerabilities', yTick: d => {return d} },
       'Packages':        { getY: d => {return d.packages},  yLabel: 'Packages',        yTick: d => {return d} },
+      'Score':           { getY: d => {return d.value},     yLabel: 'Score',           yTick: d => {return d} },
       'Size':            { getY: d => {return d.full_size}, yLabel: 'Size', yTick: d => {return formatBytes(d,0)} },
     },
     sizeOpts: {
       'None':     { getR: d => {return 100} },
-      'Packages': { getR: d => {return d.packages} },
-      'Size':     { getR: d => {return d.full_size} },
+      'Packages': { getR: d => {return 70 + (d.packages/vm.filters.packages.opts.ceil)*200} },
+      'Size':     { getR: d => {return 70 + (d.full_size/vm.filters.size.opts.ceil)*200} },
     },
     categoryOpts: {
       'Repository': { getC: d => {return d.parent.name} },
       'User':       { getC: d => {return d.parent.namespace} },
+      'SO':         { getC: d => {
+        if (sp = d.operating_system.split(':') ) {
+          return sp[0];
+        }
+        return d.operating_system;
+      } },
     },
     shapeOpts: {
+      'Repository': { getS: d => {return d.parent.name} },
       'User':       { getS: d => {return d.parent.namespace} },
       'SO':         { getS: d => {
         if (sp = d.operating_system.split(':') ) {
           return sp[0];
         }
-        return d.operating_system
+        return d.operating_system;
       } },
-      'Repository': { getS: d => {return d.parent.name} },
     }
   };
 
@@ -170,13 +177,9 @@ function scatterCtrl (http, d3) {
     vm.scatter.categories = vm.scatter.categories.filter(cat => {
       return (cat.name != name);
     });
-    /*vm.scatter.data = vm.scatter.data.filter(obj => {
+    vm.scatter.data = vm.scatter.data.filter(obj => {
       return (vm.scatter.getC(obj) != name);
-    });*/
-    for (var i = vm.scatter.data.length-1; i >= 0; i--) {
-      if (vm.scatter.getC(vm.scatter.data[i]) == name)
-        vm.scatter.data.splice(i, 1);
-    }
+    });
     if (vm.scatter.refresh) vm.scatter.refresh();
   }
 

@@ -29,7 +29,7 @@ function scatter (d3) {
     
     var parentWidth = element[0].parentElement.offsetWidth;
 
-    var margin = { top: 10, right: 20, bottom: 50, left: 70 },
+    var margin = { top: 8, right: 15, bottom: 50, left: 70 },
         outerWidth = parentWidth,
         outerHeight = 600,
         width = outerWidth - margin.left - margin.right,
@@ -170,9 +170,9 @@ function start () {
       .attr("x2", 0)
       .attr("y2", height);
 
-  var dots = objects.selectAll(".dot")
-      .data(scope.binding.data);
-  dots.enter().append("path")
+  objects.selectAll(".dot")
+      .data(scope.binding.data)
+        .enter().append("path")
       .classed("dot", true)
       .classed("active", d => {return d.active})
       .classed("marked", d => {return d.marked})
@@ -196,6 +196,10 @@ function start () {
     //TODO: dots move around
     updateCfg();
     updateCategories(color);
+    if (scope.binding.data.length == 0) {
+      objects.selectAll(".dot").data(scope.binding.data).exit().remove();
+      return null;
+    }
     zoomBeh.x(x.domain(getXDomain()))
            .y(y.domain(getYDomain()));
 
@@ -206,7 +210,7 @@ function start () {
     svg.select(".x.axis").duration(750).call(xAxis).select(".label").text(scope.binding.xLabel);
     svg.select(".y.axis").duration(750).call(yAxis).select(".label").text(scope.binding.yLabel);
 
-    var objs = dots.data(scope.binding.data);
+    var objs = objects.selectAll(".dot").data(scope.binding.data)
     // Remove old dots
     objs.exit().remove();
 

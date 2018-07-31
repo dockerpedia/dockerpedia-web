@@ -63,6 +63,12 @@
   cursor:pointer;
 }
 
+.filter-legend {
+  padding-top: 14px;
+  text-align: right;
+  font-weight: bold;
+}
+
 .dot, .bar {
   cursor:pointer;
 }
