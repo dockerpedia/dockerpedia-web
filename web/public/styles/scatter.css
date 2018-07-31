@@ -1,8 +1,28 @@
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+  cursor: initial;
+}
+
+.legend-select > .input-group-prepend > .input-group-text {
+  border-bottom-left-radius: 0;
+}
+
+.legend-select > .custom-select {
+  border-bottom-right-radius: 0;
+}
+
 .legend-box {
   vertical-align:top;
-  width: 49%;
-  border: 1px solid #d3d3d3;
+  width: 100%;
   display: inline-block;
+  border-right: 1px solid #d3d3d3;
+  border-left: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
 }
 
 .legend-box > div {
@@ -12,6 +32,15 @@
 
 .legend-box > div:hover {
   background-color: rgba(0,0,0,.075);
+}
+
+.legend-box > div.active {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.legend-box > div.active > .small-box{
+  border: 2px solid black;
 }
 
 .small-box {
@@ -31,43 +60,25 @@
 
 .legend-box > div > i {
   padding-top: 5px;
+  cursor:pointer;
 }
 
 .dot, .bar {
   cursor:pointer;
 }
-/*
-.axis path,
-.axis line {
-  fill: none;
-  stroke: rgba(0, 0, 0, 0.1);
-  shape-rendering: crispEdges;
-}
-
-.axisLine {
-  fill: none;
-  shape-rendering: crispEdges;
-  stroke: rgba(0, 0, 0, 0.5);
-  stroke-width: 2px;
-}
 
 .dot {
-  fill-opacity: .5;
-  cursor:pointer;
+  fill-opacity: .05;
 }
 
 .dot.active {
+  fill-opacity: .6;
+}
+
+.dot.marked {
   fill-opacity: .9;
   stroke-width: 1px;
   stroke:rgb(0,0,0);
-}
-
-.d3-tip {
-  line-height: 1;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  font-size: 13px;
 }
 
 /* Creates a small triangle extender for the tooltip *
@@ -179,10 +190,6 @@ rect.scatter-rect {
   shape-rendering: crispEdges;
   stroke: rgba(0, 0, 0, 0.5);
   stroke-width: 2px;
-}
-
-.dot {
-  fill-opacity: .5;
 }
 
 .d3-tip {

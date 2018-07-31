@@ -7,24 +7,29 @@ function scatter (d3) {
     link: link,
     restrict: 'EA',
     scope: {
-      start: '=',
-      update: '=',
+      binding: '=',
       details: '=',
-      ctrlData: '=',
     },
   };
   return directive;
 
   function link (scope, element, attrs) {
-    scope.start = start;
+    scope.binding.start = start;
     // add the tooltip area to the webpage
     var tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
+
+    function createTip (d) {
+      var tip = "<h6>" + d.parent.name + ":" + d.name + "</h6><hr>" +
+                "<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
+                "<b> Vulnerabilities: </b>" + d.vuln + "<br/>";
+      return tip;
+    }
     
     var parentWidth = element[0].parentElement.offsetWidth;
 
-    var margin = { top: 10, right: 20, bottom: 50, left: 50 },
+    var margin = { top: 10, right: 20, bottom: 50, left: 70 },
         outerWidth = parentWidth,
         outerHeight = 600,
         width = outerWidth - margin.left - margin.right,
@@ -38,48 +43,39 @@ function scatter (d3) {
     var y = d3.scale.linear()
         .range([height, 0]).nice();
 
-    var data, getX, getY, getR, getC, getS;
+    var getX, getY, getR, getC, getS, yTick;
 
     function updateCfg () {
-      data = scope.ctrlData.data;
-      getX = scope.ctrlData.getX;
-      getY = scope.ctrlData.getY;
-      getR = scope.ctrlData.getR;
-      getC = scope.ctrlData.getC;
-      getS = scope.ctrlData.getS;
+      //data = scope.binding.data;
+      getX = scope.binding.getX;
+      getY = scope.binding.getY;
+      getR = scope.binding.getR;
+      getC = scope.binding.getC;
+      getS = scope.binding.getS;
+      yTick = scope.binding.yTick;
     }
 
     function updateCategories (color) {
-      var mySet = new Set();
-      scope.ctrlData.categories = [];
-      scope.ctrlData.data.forEach(obj => {
-        mySet.add(scope.ctrlData.getC(obj));
+      scope.binding.categories.forEach(cat => {
+        cat.color = color(cat.name);
       });
-      mySet.forEach(name => {
-        scope.ctrlData.categories.push( {name: name, color: color(name) } );
+      scope.binding.shapes.forEach(sha => {
+        sha.shape = getShape(sha.name);
       });
-
-      var mySet = new Set();
-      scope.ctrlData.shapes = [];
-      scope.ctrlData.data.forEach(obj => {
-        mySet.add(scope.ctrlData.getS(obj));
-      });
-      mySet.forEach(name => {
-        scope.ctrlData.shapes.push( {name: name, shape: getShape(name) } );
-      });
-
     }
 
     function getXDomain () {
-      var xExtent = d3.extent(data, function(d) { return getX(d); }),
+      var filtered = scope.binding.data.filter(d => {return d.active});
+      var xExtent = d3.extent(filtered, function(d) { return getX(d); }),
           xMin = d3.time.month.offset(xExtent[0], -1),
           xMax = d3.time.month.offset(xExtent[1], +1);
       return [xMin, xMax];
     }
 
     function getYDomain () {
-      var yMax = d3.max(data, function(d) { return getY(d); }) + 2,
-          yMin = d3.min(data, function(d) { return getY(d); }),
+      var filtered = scope.binding.data.filter(d => {return d.active});
+      var yMax = d3.max(filtered, function(d) { return getY(d); }) + 2,
+          yMin = d3.min(filtered, function(d) { return getY(d); }),
           yMin = yMin > -2 ? -2 : yMin;
       return [yMin, yMax];
     }
@@ -96,17 +92,9 @@ function scatter (d3) {
 
 function start () {
   updateCfg();
-  console.log(data);
-  /*var xExtent = d3.extent(data, function(d) { return getX(d); }),
-      xMin = d3.time.month.offset(xExtent[0], -1),
-      xMax = d3.time.month.offset(xExtent[1], +1);
 
-  var yMax = d3.max(data, function(d) { return getY(d); }) * 1.05,
-      yMin = d3.min(data, function(d) { return getY(d); }),
-      yMin = yMin > 0 ? 0 : yMin;*/
-
-  x.domain(getXDomain());// [xMin, xMax]);
-  y.domain(getYDomain());//[yMin, yMax]);
+  x.domain(getXDomain());
+  y.domain(getYDomain());
 
   var xAxis = d3.svg.axis()
       .scale(x)
@@ -116,7 +104,8 @@ function start () {
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
-      .tickSize(-width);
+      .tickSize(-width)
+      .tickFormat(yTick);
 
   var color = d3.scale.category10();
 
@@ -134,15 +123,6 @@ function start () {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(zoomBeh);
 
-  /*var tip = d3.tip()
-      .attr("class", "d3-tip")
-      .offset([-10, 0])
-      .html(function(d) {
-        return xCat + ": " + d[xCat] + "<br>" + yCat + ": " + d[yCat];
-      });
-
-  svg.call(tip);*/
-
   svg.append("rect")
       .classed("scatter-rect", true)
       .attr("width", width)
@@ -157,7 +137,7 @@ function start () {
       .attr("x", width)
       .attr("y", margin.bottom - 10)
       .style("text-anchor", "end")
-      .text(scope.ctrlData.xLabel);
+      .text(scope.binding.xLabel);
 
   svg.append("g")
       .classed("y axis", true)
@@ -165,10 +145,10 @@ function start () {
     .append("text")
       .classed("label", true)
       .attr("transform", "rotate(-90)")
-      .attr("y", -margin.left)
+      .attr("y", -margin.left + 2)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text(scope.ctrlData.yLabel);
+      .text(scope.binding.yLabel);
 
   var objects = svg.append("svg")
       .classed("objects", true)
@@ -190,101 +170,69 @@ function start () {
       .attr("x2", 0)
       .attr("y2", height);
 
-  objects.selectAll(".dot")
-      .data(data)
-    .enter().append("path")
+  var dots = objects.selectAll(".dot")
+      .data(scope.binding.data);
+  dots.enter().append("path")
       .classed("dot", true)
-      //.attr("d", d3.svg.symbol().type("triangle-up"))
+      .classed("active", d => {return d.active})
+      .classed("marked", d => {return d.marked})
       .attr("d", d3.svg.symbol()
         .size(d => {return getR(d)})
         .type(d => {return getShape(getS(d)) }))
-      //.attr("r", function (d) { return 6 * Math.sqrt(getR(d) / Math.PI); })
       .attr("transform", transform)
       .style("fill", function(d) { return color(getC(d)); })
-      //.on("click", d=>{console.log(d);})
       .on("click", function (d) { scope.details(d.id) })
-      //tooltip
       .on("mouseover", function(d) {
-        var tip = "<h6>" + d.parent.name + ":" + d.name + "</h6><hr>" +
-                  "<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
-                  "<b> Vulnerabilities: </b>" + d.vuln + "<br/>";
-        tooltip.transition()
-            .duration(200)
-            .style("opacity", .9);
-        tooltip.html(tip)
+        tooltip.transition().duration(200).style("opacity", .9);
+        tooltip.html(createTip(d))
             .style("left", (d3.event.pageX + 10) + "px")
             .style("top", (d3.event.pageY - 40) + "px");
       })
       .on("mouseout", function(d) {
-        tooltip.transition()
-            .duration(500)
-            .style("opacity", 0);
-      })
-      ;/*.on("mouseover", tip.show)
-      .on("mouseout", tip.hide);*/
-
-  /*var legend = svg.selectAll(".legend")
-      .data(color.domain())
-    .enter().append("g")
-      .classed("legend", true)
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  legend.append("circle")
-      .attr("r", 3.5)
-      .attr("cx", width + 20)
-      .attr("fill", color);
-
-  legend.append("text")
-      .attr("x", width + 26)
-      .attr("dy", ".35em")
-      .text(function(d) { return d; });*/
+        tooltip.transition().duration(500).style("opacity", 0);
+      });
 
   function change() {
+    //TODO: dots move around
     updateCfg();
+    updateCategories(color);
     zoomBeh.x(x.domain(getXDomain()))
            .y(y.domain(getYDomain()));
 
     var svg = d3.select(element[0]).transition();
+    // Update axis tick
+    yAxis.tickFormat(yTick);
     // Update axis label
-    svg.select(".x.axis").duration(750).call(xAxis).select(".label").text(scope.ctrlData.xLabel);
-    svg.select(".y.axis").duration(750).call(yAxis).select(".label").text(scope.ctrlData.yLabel);
+    svg.select(".x.axis").duration(750).call(xAxis).select(".label").text(scope.binding.xLabel);
+    svg.select(".y.axis").duration(750).call(yAxis).select(".label").text(scope.binding.yLabel);
+
+    var objs = dots.data(scope.binding.data);
     // Remove old dots
-    objects.selectAll(".dot").data(data).exit().remove();
+    objs.exit().remove();
+
+    // Create new dots
+    objs.enter().append("path")
+        .classed("dot", true)
+        .on("click", function (d) { scope.details(d.id) })
+        .on("mouseover", function(d) {
+          tooltip.transition().duration(200).style("opacity", .9);
+          tooltip.html(createTip(d))
+              .style("left", (d3.event.pageX + 10) + "px")
+              .style("top", (d3.event.pageY - 40) + "px");
+        })
+        .on("mouseout", function(d) {
+          tooltip.transition().duration(500).style("opacity", 0);
+        });
+
     // Update existing dots
-    objects.selectAll(".dot").transition().duration(1000)
+    objs.classed("active", d => {return d.active})
+        .classed("marked", d => {return d.marked});
+    objs.transition().duration(1000)
         .style("fill", function(d) { return color(getC(d)); })
         .attr("d", d3.svg.symbol()
           .size(d => {return getR(d)})
           .type(d => {return getShape(getS(d)) }))
         .attr("transform", transform);
-    // Create new dots
-    objects.selectAll(".dot").data(data).enter().append("path")
-        .classed("dot", true)
-        .attr("d", d3.svg.symbol()
-          .size(d => {return getR(d)})
-          .type(d => {return getShape(getS(d)) }))
-        .attr("transform", transform)
-        .style("fill", function(d) { return color(getC(d)); })
-        //.on("click", d=>{console.log(d);});
-        .on("click", function (d) { scope.details(d.id) })
-        .on("mouseover", function(d) {
-          var tip = "<h6>" + d.parent.name + ":" + d.name + "</h6><hr>" +
-                    "<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
-                    "<b> Vulnerabilities: </b>" + d.vuln + "<br/>";
-          tooltip.transition()
-              .duration(200)
-              .style("opacity", .9);
-          tooltip.html(tip)
-              .style("left", (d3.event.pageX + 10) + "px")
-              .style("top", (d3.event.pageY - 40) + "px");
-        })
-        .on("mouseout", function(d) {
-          tooltip.transition()
-              .duration(500)
-              .style("opacity", 0);
-        });
-      
-    updateCategories(color);
   }
 
   function zoom() {
@@ -300,7 +248,7 @@ function start () {
   }
   
   updateCategories(color);
-  scope.ctrlData.refresh = change;
+  scope.binding.refresh = change;
 }
 
 

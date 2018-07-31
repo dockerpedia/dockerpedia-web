@@ -10,11 +10,16 @@ block content
   //script(src="//d3js.org/d3-path.v0.1.min.js")
   //script(src="//d3js.org/d3-shape.v0.6.min.js")
   //script(src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js")
+  // Slider
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/6.6.1/rzslider.min.js")
+  link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/6.6.1/rzslider.min.css")
+
   script(src="scripts/shapes.js")
   script(src="scripts/stacked.js")
   script(src="scripts/d3-tip.js")
 
   link(rel="stylesheet", href="styles/scatter.css")
+  link(rel="stylesheet", href="styles/slider.css")
 
   main.container-fluid(role="main", ng-controller="scatterCtrl as ctrl")
     div.row(style="margin-top:10px; margin-bottom: -10px;")
@@ -56,35 +61,68 @@ block content
             .col-auto.my-1
               select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.size")
                 option(ng-repeat="(name, obj) in ctrl.conf.sizeOpts", value="{{name}}") {{ name }}
-            .col-auto.my-1
-              label.mr-sm-2(for='cEncode') Categories:
-            .col-auto.my-1
-              select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.category")
-                option(ng-repeat="(name, obj) in ctrl.conf.categoryOpts", value="{{name}}") {{ name }}
-            .col-auto.my-1
-              label.mr-sm-2(for='cEncode') Shapes:
-            .col-auto.my-1
-              select#rEncode.custom-select.mr-sm-2(ng-model="ctrl.conf.shape")
-                option(ng-repeat="(name, obj) in ctrl.conf.shapeOpts", value="{{name}}") {{ name }}
-            .col-auto.my-1
-              button.btn.btn-outline-secondary(type='button', ng-click="ctrl.setConf()")
-                i.fa.fa-refresh
 
     div.row
       div.col-md-8
-        scatter(start="ctrl.start", update="ctrl.update", details="ctrl.getPackages", ctrl-data="ctrl.scatter")
-      //div.col-md-4(style="height: 500px; overflow-y: scroll;")
-        //stacked(update="ctrl.com")
+        scatter(details="ctrl.getPackages", binding="ctrl.scatter")
       div.col-md-4(style="margin-top:9px;")
-        .legend-box
-          div(ng-repeat="(i, val) in ctrl.scatter.categories") 
-            .small-box(style="background-color: {{ val.color }}")
-            | {{ val.name }}
-            i.fa.fa-trash.pull-right(ng-click="ctrl.rmCat(val.name)")
-        .legend-box
-          div(ng-repeat="(i, val) in ctrl.scatter.shapes") 
-            shape(type="val.shape")
-            | {{ val.name }}
-            i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
+        form
+          .form-row
+            .form-group.col-md-6
+              .input-group.legend-select
+                .input-group-prepend
+                  .input-group-text Color:
+                select.custom-select(ng-model="ctrl.conf.category", ng-change="ctrl.setConf()")
+                  option(ng-repeat="(name, obj) in ctrl.conf.categoryOpts", value="{{name}}") {{ name }}
+              .legend-box
+                div.noselect(ng-repeat="(i, val) in ctrl.scatter.categories",
+                             ng-click="ctrl.markCat(val)",
+                             ng-class="val.marked ? 'active' : ''")
+                  .small-box(style="background-color: {{ val.color }}")
+                  | {{ val.name }}
+                  i.fa.fa-trash.pull-right(ng-click="ctrl.rmCat(val.name)")
+            .form-group.col-md-6
+              .input-group.legend-select
+                .input-group-prepend
+                  .input-group-text Shape:
+                select.custom-select(ng-model="ctrl.conf.shape", ng-change="ctrl.setConf()")
+                  option(ng-repeat="(name, obj) in ctrl.conf.shapeOpts", value="{{name}}") {{ name }}
+              .legend-box
+                div.noselect(ng-repeat="(i, val) in ctrl.scatter.shapes",
+                             ng-click="ctrl.markShape(val)",
+                             ng-class="val.marked ? 'active' : ''")
+                  shape(type="val.shape")
+                  | {{ val.name }}
+                  i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
+
+        h4 Filters:
+        .container
+          .row
+            .col-md-4 Size:
+            rzslider.col-md-8(rz-slider-model="ctrl.filters.size.min",
+                     rz-slider-high="ctrl.filters.size.max", rz-slider-options="ctrl.filters.size.opts")
+          .row
+            .col-md-4 Vulnerabilities:
+            rzslider.col-md-8(rz-slider-model="ctrl.filters.vuln.min",
+                     rz-slider-high="ctrl.filters.vuln.max", rz-slider-options="ctrl.filters.vuln.opts")
+          .row
+            .col-md-4 Packages:
+            rzslider.col-md-8(rz-slider-model="ctrl.filters.packages.min",
+                     rz-slider-high="ctrl.filters.packages.max", rz-slider-options="ctrl.filters.packages.opts")
+          .row
+            .col-md-4 Score:
+            rzslider.col-md-8(rz-slider-model="ctrl.filters.score.min",
+                     rz-slider-high="ctrl.filters.score.max", rz-slider-options="ctrl.filters.score.opts")
+          .row
+            .col-md-4 Text:
+            //input.col-md-8(type="text", ng-model="ctrl.filter.text")
+            div.input-group.col-md-8(style="padding: 0;")
+              input#filter-input.form-control(
+                  ng-model="ctrl.filters.text",
+                  type="text",
+                  placeholder="Text filter")
+              div.input-group-append
+                button.btn.btn-outline-secondary(type="button", ng-click="ctrl.applyFilters()")
+                  i.fa.fa-refresh.fa-fw
+
         stacked(update="ctrl.com")
-        //pre Model: {{ctrl.conf | json}} 
