@@ -10,9 +10,6 @@ block content
   //script(src="//d3js.org/d3-path.v0.1.min.js")
   //script(src="//d3js.org/d3-shape.v0.6.min.js")
   //script(src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js")
-  // Slider
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/6.6.1/rzslider.min.js")
-  link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/6.6.1/rzslider.min.css")
 
   script(src="scripts/shapes.js")
   script(src="scripts/stacked.js")
@@ -70,7 +67,7 @@ block content
         .row
           scatter(details="ctrl.getPackages", binding="ctrl.scatter")
 
-      div.col-md-4
+      div.col-md-4(style="padding-left: 0px;")
         form
           .form-row
             .form-group.col-md-6
