@@ -1,30 +1,93 @@
-.axis path,
-.axis line {
-  fill: none;
-  stroke: rgba(0, 0, 0, 0.1);
-  shape-rendering: crispEdges;
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+  cursor: initial;
 }
 
-.axisLine {
-  fill: none;
-  shape-rendering: crispEdges;
-  stroke: rgba(0, 0, 0, 0.5);
-  stroke-width: 2px;
+.legend-select > .input-group-prepend > .input-group-text {
+  border-bottom-left-radius: 0;
+}
+
+.legend-select > .custom-select {
+  border-bottom-right-radius: 0;
+}
+
+.legend-box {
+  vertical-align:top;
+  width: 100%;
+  display: inline-block;
+  border-right: 1px solid #d3d3d3;
+  border-left: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.legend-box > div {
+  padding: 5px 10px 5px 2em;
+  position: relative;
+}
+
+.legend-box > div:hover {
+  background-color: rgba(0,0,0,.075);
+}
+
+.legend-box > div.active {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.legend-box > div.active > .small-box{
+  border: 2px solid black;
+}
+
+.small-box {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  width: 1.2em;
+  height: 1.2em;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.legend-box > div > shape {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+}
+
+.legend-box > div > i {
+  padding-top: 5px;
+  cursor:pointer;
+}
+
+.filter-legend {
+  padding-top: 14px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.dot, .bar {
+  cursor:pointer;
 }
 
 .dot {
-  fill-opacity: .5;
+  fill-opacity: .05;
 }
 
-.d3-tip {
-  line-height: 1;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  font-size: 13px;
+.dot.active {
+  fill-opacity: .6;
 }
 
-/* Creates a small triangle extender for the tooltip */
+.dot.marked {
+  fill-opacity: .9;
+  stroke-width: 1px;
+  stroke:rgb(0,0,0);
+}
+
+/* Creates a small triangle extender for the tooltip *
 .d3-tip:after {
   box-sizing: border-box;
   display: inline;
@@ -37,7 +100,7 @@
   text-align: center;
 }
 
-/* Style northward tooltips differently */
+/* Style northward tooltips differently *
 .d3-tip.n:after {
   margin: -1px 0 0 0;
   top: 100%;
@@ -48,6 +111,17 @@
 .axis text {
   font-size: 13px;
   fill: #333;
+}
+
+#scatter-svg > g > .legend > rect {
+  fill-opacity: .7;
+  cursor:pointer;
+}
+
+#scatter-svg > g > .legend.active > rect {
+  fill-opacity: .95;
+  stroke-width: 1px;
+  stroke:rgb(0,0,0);
 }
 
 .dropdown-menu>li>a {
@@ -65,7 +139,7 @@
   text-decoration: none;
   background-color: #337ab7;
   outline: 0;
-}
+}*/
 
 text {
   -webkit-user-select: none; /* Safari */
@@ -75,10 +149,14 @@ text {
   cursor: default;
 }
 
+#scatter-svg {
+  /*border: 1px solid red;*/
+}
+/*
 .label {
   text-anchor: middle !important;
   font-size: 16px !important;
-}
+}*/
 
 .tooltip {
   background: lightgrey;
@@ -99,4 +177,52 @@ text {
 
 .tooltip > i {
   word-wrap: break-word;
+}
+
+rect.scatter-rect {
+  fill: transparent;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.1);
+  shape-rendering: crispEdges;
+}
+
+.axisLine {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: rgba(0, 0, 0, 0.5);
+  stroke-width: 2px;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
 }

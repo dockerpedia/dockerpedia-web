@@ -1,4 +1,5 @@
 angular.module('dockerpedia', [
+  'rzModule',
   'ui.bootstrap',
   'dockerpedia.services',
   'dockerpedia.controllers',

@@ -1,0 +1,36 @@
+.rzslider .rz-bar {
+  height: 2px;
+}
+
+.rzslider .rz-pointer {
+  width: 12px;
+  height: 12px;
+  /*top: auto; /* to remove the default positioning */
+  /*bottom: 0;*/
+  top: -5px;
+  background-color: #steelblue;
+  border: 1px solid blue;
+  /*border-top-left-radius: 3px;
+  border-top-right-radius: 3px;*/
+  border-radius: 6px;
+}
+
+.rzslider .rz-pointer:after {
+  display: none;
+}
+
+.rzslider .rz-bubble {
+  bottom: 14px;
+}
+
+.rzslider .rz-limit {
+  font-weight: bold;
+}
+
+.rzslider .rz-tick {
+  width: 1px;
+  height: 10px;
+  margin-left: 4px;
+  border-radius: 0;
+  top: -1px;
+}

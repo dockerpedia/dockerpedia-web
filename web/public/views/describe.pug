@@ -7,13 +7,17 @@ block content
       div.col-md-1
       div.col-md-10
         h5(style="text-align: center; padding-bottom:10px;") {{ ctrl.uri }}
-        div.row.row-table(ng-repeat="(i, res) in ctrl.properties", ng-init="ctrl.getValues(res)")
+        div.row.row-table(ng-repeat="(i, res) in ctrl.properties", ng-init="res.step = 0; ctrl.getValues(res, 0)")
           div.col-md-3.row-table-title
             a(href="{{ res.uri.value }}") {{ res.label? res.uri.label : ctrl.toPrefix(res.uri.value) }}
-          div.col-md-9.row-table-values(style="max-height:400px; overflow-y: scroll;")
-            div(ng-repeat="(i, v) in ctrl.values[res.uri.value]")
+          div.col-md-9.row-table-values
+            div(ng-repeat="(i, v) in ctrl.values[res.uri.value] | limitTo:10 ")
               a(ng-if="v.uri.type=='uri'", href="{{ v.uri.value }}") {{ v.label ? v.label.value : ctrl.toPrefix(v.uri.value) }}
               b(ng-if="v.uri.type!='uri'") {{ v.uri.value }}
+            div(ng-if="ctrl.values[res.uri.value].length > 10 || res.step>0", )
+              i.pull-right.fa.fa-chevron-right(ng-if="ctrl.values[res.uri.value].length > 10", ng-click="ctrl.getValues(res, 1);")
+              i.pull-right.fa.fa-chevron-left(ng-if="res.step>0", ng-click="ctrl.getValues(res, -1);")
+              div.pull-right(style="margin-right: 10px; display: inline-block;") Page {{res.step + 1}}
           
         //div.table-responsive
           table.table.table-hover
