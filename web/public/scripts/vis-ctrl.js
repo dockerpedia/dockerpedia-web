@@ -52,7 +52,7 @@ function scatterCtrl (http, d3) {
   }
 
   vm.conf = {
-    yAxis: 'Vulnerabilities', size: 'None', category: 'Repository', shape: 'SO',
+    yAxis: 'Vulnerabilities', size: 'None', category: 'Risk', shape: 'SO',
     yAxisOpts: {
       'Vulnerabilities': { getY: d => {return d.vuln},      yLabel: 'Vulnerabilities', yTick: d => {return d} },
       'Packages':        { getY: d => {return d.packages},  yLabel: 'Packages',        yTick: d => {return d} },
@@ -65,6 +65,7 @@ function scatterCtrl (http, d3) {
       'Size':     { getR: d => {return 70 + (d.full_size/vm.filters.size.opts.ceil)*200} },
     },
     categoryOpts: {
+      'Risk':       { getC: d => {return d.risk} },
       'Repository': { getC: d => {return d.parent.name} },
       'User':       { getC: d => {return d.parent.namespace} },
       'SO':         { getC: d => {
