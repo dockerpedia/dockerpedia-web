@@ -56,7 +56,7 @@ function treemapCtrl (http, $timeout) {
 
   function search () {
     //images per repo
-    http.post('https://api.mosorio.me/api/v1/viz2', {package: vm.searchTerm, images: 40}).then(
+    http.post('https://api.dockerpedia.inf.utfsm.cl/api/v1/viz2', {package: vm.searchTerm, images: 40}).then(
       function onSuccess (response) {
         if (response.data.result.children.length == 0)
           vm.noResults = true;

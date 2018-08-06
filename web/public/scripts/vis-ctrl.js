@@ -234,7 +234,7 @@ function scatterCtrl (http, d3) {
   var parseDate = d3.time.format("%Y-%m-%d").parse;
   function search () {
     //images per repo
-    http.post('https://api.mosorio.me/api/v1/viz2', {user: vm.searchTerm, images: 100}).then(
+    http.post('https://api.dockerpedia.inf.utfsm.cl/api/v1/viz2', {user: vm.searchTerm, images: 100}).then(
         function onSuccess (response) {
         if (response.data.count == 0)
           vm.noResults = true;
@@ -274,7 +274,7 @@ function scatterCtrl (http, d3) {
   };
 
   function getPackages (id) {
-    http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
+    http.get('https://api.dockerpedia.inf.utfsm.cl/api/v1/images/'+id+'/packages').then(
       function onSuccess (response) {
         vm.com(response.data);
       },
