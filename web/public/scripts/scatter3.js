@@ -29,7 +29,7 @@ function scatter (d3) {
     
     var parentWidth = element[0].parentElement.offsetWidth;
 
-    var margin = { top: 8, right: 15, bottom: 50, left: 70 },
+    var margin = { top: 15, right: 15, bottom: 50, left: 70 },
         outerWidth = parentWidth,
         outerHeight = 600,
         width = outerWidth - margin.left - margin.right,
@@ -175,7 +175,6 @@ function start () {
         .enter().append("path")
       .classed("dot", true)
       .classed("active", d => {return d.active})
-      .classed("marked", d => {return d.marked})
       .attr("d", d3.svg.symbol()
         .size(d => {return getR(d)})
         .type(d => {return getShape(getS(d)) }))
@@ -229,8 +228,7 @@ function start () {
         });
 
     // Update existing dots
-    objs.classed("active", d => {return d.active})
-        .classed("marked", d => {return d.marked});
+    objs.classed("active", d => {return d.active });
     objs.transition().duration(1000)
         .style("fill", function(d) { return color(getC(d)); })
         .attr("d", d3.svg.symbol()

@@ -15,6 +15,14 @@ function scatterCtrl (http, d3) {
   vm.markShape = markShape;
   vm.getPackages = getPackages;
   vm.applyFilters = applyFilter;
+  vm.categoryMarked = false;
+  vm.shapeMarked = false;
+  vm.show = {
+    categories: true,
+    shapes: true,
+    filters: true,
+    graph: false
+  };
 
   vm.scatter = {
     data: [],
@@ -124,15 +132,17 @@ function scatterCtrl (http, d3) {
   }
 
   function updateData () {
-    // Filters
+    // Check filter status
     var b1 = (vm.filters.size.max == vm.filters.size.opts.ceil),
         b2 = (vm.filters.vuln.max == vm.filters.vuln.opts.ceil);
         b3 = (vm.filters.score.max == vm.filters.score.opts.ceil);
         b4 = (vm.filters.packages.max == vm.filters.packages.opts.ceil);
+
     // Categories and shapes
     lastConf.category = vm.conf.category;
     lastConf.shape = vm.conf.shape;
     var cat = new Set(), sha = new Set();
+
     // Data
     vm.scatter.data = [];
     vm.scatter.raw.filter(obj => {return obj.active}).forEach(repo => {
@@ -150,11 +160,13 @@ function scatterCtrl (http, d3) {
         vm.scatter.data.push(image);
       });
     });
+
     // Filters
     if (b1) vm.filters.size.max = vm.filters.size.opts.ceil;
     if (b2) vm.filters.vuln.max = vm.filters.vuln.opts.ceil;
     if (b3) vm.filters.score.max = vm.filters.score.opts.ceil;
     if (b4) vm.filters.packages.max = vm.filters.packages.opts.ceil;
+
     // Categories and shapes
     var newCat = [], newSha = [], old;
     cat.forEach(name => {
@@ -195,25 +207,33 @@ function scatterCtrl (http, d3) {
 
   function markCategory (obj) {
     obj.marked = !obj.marked;
-    vm.scatter.data.forEach(image => {
-      if (vm.scatter.getC(image) == obj.name)
-        image.marked = obj.marked;
-    });
-    if (vm.scatter.refresh) vm.scatter.refresh();
+    if (vm.scatter.categories.filter(cat => {return cat.marked}).length == 0)
+      vm.categoryMarked = false;
+    else
+      vm.categoryMarked = true;
+    applyFilter();
   }
 
   function markShape (obj) {
     obj.marked = !obj.marked;
-    vm.scatter.data.forEach(image => {
-      if (vm.scatter.getS(image) == obj.name)
-        image.marked = obj.marked;
-    });
-    if (vm.scatter.refresh) vm.scatter.refresh();
+    if (vm.scatter.shapes.filter(sha => {return sha.marked}).length == 0)
+      vm.shapeMarked = false;
+    else
+      vm.shapeMarked = true;
+    applyFilter();
   }
 
   function applyFilter () {
+    var categories, shapes;
+    if (vm.categoryMarked) 
+      categories = vm.scatter.categories.filter(cat => { return cat.marked }).map(cat => {return cat.name});
+    if (vm.shapeMarked)
+      shapes = vm.scatter.shapes.filter(sha => { return sha.marked }).map(sha => {return sha.name});
+
     vm.scatter.data.forEach(image => {
-      image.active = (image.full_size <= vm.filters.size.max &&
+      image.active = (( !vm.categoryMarked || categories.includes( vm.scatter.getC(image) ) ) && 
+                      ( !vm.shapeMarked || shapes.includes( vm.scatter.getS(image) ) ) &&
+                      image.full_size <= vm.filters.size.max &&
                       image.full_size >= vm.filters.size.min && 
                       image.vuln <= vm.filters.vuln.max &&
                       image.vuln >= vm.filters.vuln.min &&
@@ -227,11 +247,11 @@ function scatterCtrl (http, d3) {
                         image.parent.description.includes(vm.filters.text) //TODO desc
                       ));
     });
-    //console.log(vm.scatter.data.filter(d=>{return !d.active}))
+
     if (vm.scatter.refresh) vm.scatter.refresh();
   }
 
-  var parseDate = d3.time.format("%Y-%m-%d").parse;
+  var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S").parse;
   function search () {
     //post
     http.post('https://api.mosorio.me/api/v1/viz', {user: vm.searchTerm}).then(
@@ -240,7 +260,6 @@ function scatterCtrl (http, d3) {
           vm.noResults = true;
         else {
           vm.noResults = false;
-          //vm.update(response.data.result)
           var first = (vm.scatter.raw.length == 0);
           var filtered = response.data.result.children.filter(obj => { return (obj.children); });
           var split_date;
@@ -249,9 +268,8 @@ function scatterCtrl (http, d3) {
             repo.active = true;
             repo.children = repo.children.filter(obj => { return (obj.last_updated); });
             repo.children.forEach( image => {
-              split_date = image.last_updated.split('T');
+              split_date = image.last_updated.split('.');
               image.active = true;
-              image.marked = false;
               image.parent = repo;
               image.date = parseDate( split_date[0] );
               image.vuln = image.vulnerabilities_critical +
@@ -264,6 +282,20 @@ function scatterCtrl (http, d3) {
             });
             vm.scatter.raw.push(repo);
           });
+
+          var sorted, uniq, lastValue;
+          filtered.forEach(repo => {
+            sorted = repo.children.sort((a,b) => { return b.date - a.date; });
+            uniq = [];
+            sorted.forEach(img => {
+              if (img.vuln != lastValue) {
+                uniq.push(img);
+              }
+              lastValue = img.vuln;
+            });
+            repo.children = uniq;
+          })
+
           updateData();
           if (first) vm.scatter.start();
           else vm.scatter.refresh();
