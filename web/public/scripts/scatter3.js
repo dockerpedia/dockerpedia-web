@@ -107,7 +107,30 @@ function start () {
       .tickSize(-width)
       .tickFormat(yTick);
 
-  var color = d3.scale.category10();
+  var d3color = d3.scale.category10();
+  var color = function (token) {
+    var c;
+    switch (token) {
+      case "none":
+        c = '#2c7bb6';
+        break;
+      case "low":
+        c = '#abd9e9';
+        break;
+      case "medium":
+        c = '#ffffbf';
+        break;
+      case "high":
+        c = '#fdae61';
+        break;
+      case "critical":
+        c = '#d7191c';
+        break;
+      default:
+        c = d3color(token);
+    }
+    return c;
+  }
 
   var zoomBeh = d3.behavior.zoom()
       .x(x)
