@@ -233,9 +233,9 @@ function scatterCtrl (http, d3) {
 
   var parseDate = d3.time.format("%Y-%m-%d").parse;
   function search () {
-    //post
-    http.post('https://api.mosorio.me/api/v1/viz', {user: vm.searchTerm}).then(
-      function onSuccess (response) {
+    //images per repo
+    http.post('https://api.mosorio.me/api/v1/viz2', {user: vm.searchTerm, images: 100}).then(
+        function onSuccess (response) {
         if (response.data.count == 0)
           vm.noResults = true;
         else {
