@@ -1,15 +1,10 @@
 extends layout
 
 block content
-  //link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
   script(src="scripts/vis-ctrl.js")
   script(src="scripts/d3.js")
   script(src="scripts/d3.v4.min.js")
   script(src="scripts/scatter3.js")
-  //script(src="//d3js.org/d3.v3.min.js", charset="utf-8");
-  //script(src="//d3js.org/d3-path.v0.1.min.js")
-  //script(src="//d3js.org/d3-shape.v0.6.min.js")
-  //script(src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js")
 
   script(src="scripts/shapes.js")
   script(src="scripts/stacked.js")
@@ -48,7 +43,7 @@ block content
                 button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
                   i.fa.fa-search.fa-fw
 
-          div.col-md-6
+          //div.col-md-6
             form
               .form-row
                 .form-group.col-md-6
@@ -67,38 +62,48 @@ block content
         .row
           scatter(details="ctrl.getPackages", binding="ctrl.scatter")
 
-      div.col-md-4(style="padding-left: 0px;")
+      div.col-md-4(style="padding-left: 0px; padding-top:51px;")
         form
           .form-row
             .form-group.col-md-6
-              .input-group.legend-select
+              .legend-title.noselect(ng-class="ctrl.show.categories ? 'active' : ''") Color by risk:
+                i.pull-right.fa(ng-class="ctrl.show.categories ? 'fa-angle-up' : 'fa-angle-down';",
+                                ng-click="ctrl.show.categories = !ctrl.show.categories")
+              //.input-group.legend-select
                 .input-group-prepend
-                  .input-group-text Color:
-                select.custom-select(ng-model="ctrl.conf.category", ng-change="ctrl.setConf()")
+                  .input-group-text Color by:
+                select.custom-select(ng-model="ctrl.conf.category", ng-change="ctrl.setConf()", disabled)
                   option(ng-repeat="(name, obj) in ctrl.conf.categoryOpts", value="{{name}}") {{ name }}
-              .legend-box
+              .legend-box(ng-class="ctrl.show.categories ? 'active' : ''")
                 div.noselect(ng-repeat="(i, val) in ctrl.scatter.categories",
                              ng-click="ctrl.markCat(val)",
                              ng-class="val.marked ? 'active' : ''")
                   .small-box(style="background-color: {{ val.color }}")
-                  | {{ val.name }}
+                  .name {{ val.name }}
                   i.fa.fa-trash.pull-right(ng-click="ctrl.rmCat(val.name)")
+                  i.fa.pull-right(ng-class="(val.marked || !ctrl.categoryMarked) ? 'fa-eye' : 'fa-eye-slash'")
             .form-group.col-md-6
-              .input-group.legend-select
+              .legend-title.noselect(ng-class="ctrl.show.shapes ? 'active' : ''") Shape by OS:
+                i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';",
+                                ng-click="ctrl.show.shapes = !ctrl.show.shapes")
+              //.input-group.legend-select
                 .input-group-prepend
-                  .input-group-text Shape:
-                select.custom-select(ng-model="ctrl.conf.shape", ng-change="ctrl.setConf()")
+                  .input-group-text Shape by
+                select.custom-select(ng-model="ctrl.conf.shape", ng-change="ctrl.setConf()", disabled)
                   option(ng-repeat="(name, obj) in ctrl.conf.shapeOpts", value="{{name}}") {{ name }}
-              .legend-box
+              .legend-box(ng-class="ctrl.show.shapes ? 'active' : ''")
                 div.noselect(ng-repeat="(i, val) in ctrl.scatter.shapes",
                              ng-click="ctrl.markShape(val)",
                              ng-class="val.marked ? 'active' : ''")
                   shape(type="val.shape")
-                  | {{ val.name }}
+                  .name {{ val.name }}
                   i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
+                  i.fa.pull-right(ng-class="(val.marked || !ctrl.shapeMarked) ? 'fa-eye' : 'fa-eye-slash'")
 
-        h5 Filters:
-        .container
+        .filter-title.noselect(ng-class="ctrl.show.filters ? 'active' : ''") Filters:
+          i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';",
+                          ng-click="ctrl.show.filters = !ctrl.show.filters")
+        .container.filter-box(ng-class="ctrl.show.filters ? 'active' : ''")
           .row
             .col-md-4.filter-legend Size:
             rzslider.col-md-8(rz-slider-model="ctrl.filters.size.min",
@@ -111,14 +116,13 @@ block content
             .col-md-4.filter-legend Packages:
             rzslider.col-md-8(rz-slider-model="ctrl.filters.packages.min",
                      rz-slider-high="ctrl.filters.packages.max", rz-slider-options="ctrl.filters.packages.opts")
-          .row
+          //.row
             .col-md-4.filter-legend Score:
             rzslider.col-md-8(rz-slider-model="ctrl.filters.score.min",
                      rz-slider-high="ctrl.filters.score.max", rz-slider-options="ctrl.filters.score.opts")
           .row
-            .col-md-4.filter-legend Text:
-            //input.col-md-8(type="text", ng-model="ctrl.filter.text")
-            div.input-group.col-md-8(style="padding: 0;")
+            //.col-md-4.filter-legend Text:
+            div.input-group.col-md-12(style="padding: 0;")
               input#filter-input.form-control(
                   ng-model="ctrl.filters.text",
                   type="text",

@@ -65,7 +65,10 @@ function describeImageModal ($scope, $uibModalInstance, image, extra, $http) {
   }
 
   function hasData () {
-    return (ctrl.data.Critical || ctrl.data.High || ctrl.data.Medium || ctrl.data.Low);
+    return (ctrl.data.Critical.length != 0 ||
+            ctrl.data.High.length != 0 ||
+            ctrl.data.Medium.length != 0 ||
+            ctrl.data.Low.length != 0);
   }
 
   function getTitle () {

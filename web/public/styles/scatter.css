@@ -8,6 +8,26 @@
   cursor: initial;
 }
 
+.noselect > .name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: calc(100% - 42px);
+  display: inline-block;
+  overflow: hidden;
+}
+
+.legend-title {
+  border: 1px solid #d3d3d3;
+  padding: 4px 12px 4px 12px;
+  background-color: rgb(233, 236, 239);
+  border-radius: 4px;
+}
+
+.legend-title.active {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
 .legend-select > .input-group-prepend > .input-group-text {
   border-bottom-left-radius: 0;
 }
@@ -20,9 +40,17 @@
   vertical-align:top;
   width: 100%;
   display: inline-block;
+  max-height: 0px;
+  overflow: hidden;
+  transition: all linear 0.5s;
+}
+
+.legend-box.active {
   border-right: 1px solid #d3d3d3;
   border-left: 1px solid #d3d3d3;
   border-bottom: 1px solid #d3d3d3;
+  max-height: 260px;
+  overflow-y: scroll;
 }
 
 .legend-box > div {
@@ -59,14 +87,51 @@
 }
 
 .legend-box > div > i {
-  padding-top: 5px;
+  padding-top: 4px;
   cursor:pointer;
+}
+
+.filter-title {
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  padding: 4px 12px 4px 12px;
+  background-color: rgb(233, 236, 239);
+}
+
+.filter-title.active {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.filter-box {
+  width: 100%;
+  max-height: 0px;
+  overflow: hidden;
+  transition: all linear 0.5s;
+}
+
+.filter-box.active {
+  border-right: 1px solid #d3d3d3;
+  border-left: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+  max-height: 260px;
+  overflow-y: scroll;
+}
+
+
+.filter-box > .row {
+  padding: 4px 12px 4px 12px;
 }
 
 .filter-legend {
   padding-top: 14px;
   text-align: right;
   font-weight: bold;
+}
+
+.filter-title > i, .legend-title > i {
+  margin-top: 4px;
+  cursor:pointer;
 }
 
 .dot, .bar {
@@ -81,11 +146,11 @@
   fill-opacity: .6;
 }
 
-.dot.marked {
+/*.dot.marked { old
   fill-opacity: .9;
   stroke-width: 1px;
   stroke:rgb(0,0,0);
-}
+}*/
 
 /* Creates a small triangle extender for the tooltip *
 .d3-tip:after {

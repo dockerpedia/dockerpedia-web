@@ -29,7 +29,7 @@ function scatter (d3) {
     
     var parentWidth = element[0].parentElement.offsetWidth;
 
-    var margin = { top: 8, right: 15, bottom: 50, left: 70 },
+    var margin = { top: 15, right: 15, bottom: 50, left: 70 },
         outerWidth = parentWidth,
         outerHeight = 600,
         width = outerWidth - margin.left - margin.right,
@@ -107,7 +107,30 @@ function start () {
       .tickSize(-width)
       .tickFormat(yTick);
 
-  var color = d3.scale.category10();
+  var d3color = d3.scale.category10();
+  var color = function (token) {
+    var c;
+    switch (token) {
+      case "none":
+        c = '#2c7bb6';
+        break;
+      case "low":
+        c = '#abd9e9';
+        break;
+      case "medium":
+        c = '#ffffbf';
+        break;
+      case "high":
+        c = '#fdae61';
+        break;
+      case "critical":
+        c = '#d7191c';
+        break;
+      default:
+        c = d3color(token);
+    }
+    return c;
+  }
 
   var zoomBeh = d3.behavior.zoom()
       .x(x)
@@ -175,7 +198,6 @@ function start () {
         .enter().append("path")
       .classed("dot", true)
       .classed("active", d => {return d.active})
-      .classed("marked", d => {return d.marked})
       .attr("d", d3.svg.symbol()
         .size(d => {return getR(d)})
         .type(d => {return getShape(getS(d)) }))
@@ -229,8 +251,7 @@ function start () {
         });
 
     // Update existing dots
-    objs.classed("active", d => {return d.active})
-        .classed("marked", d => {return d.marked});
+    objs.classed("active", d => {return d.active });
     objs.transition().duration(1000)
         .style("fill", function(d) { return color(getC(d)); })
         .attr("d", d3.svg.symbol()
