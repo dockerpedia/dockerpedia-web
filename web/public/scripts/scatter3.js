@@ -22,8 +22,26 @@ function scatter (d3) {
 
     function createTip (d) {
       var tip = "<h6>" + d.parent.name + ":" + d.name + "</h6><hr>" +
-                "<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
-                "<b> Vulnerabilities: </b>" + d.vuln + "<br/>";
+                /*"<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
+                "<b> Packages: </b>" + d.packages + "<br/>" +
+                "<b> Vulnerabilities: </b>" + d.vuln + "<br/>";*/
+`<table class="image-table">
+  <tr>
+    <th rowspan="4">
+      <div style="color:`+d.letterColor+`;" class="image-score">`+d.letter+`</div>
+    </th>
+    <td><b>Vulnerabilities:</b> <span class="image-ver">`+d.vuln+`</span></td>
+  </tr>
+  <tr>
+    <td><b>Last updated:&nbsp;</b>`+d.last_updated.split('T')[0]+`</td>
+  </tr>
+  <tr>
+    <td><b>Packages:&nbsp;</b>`+d.packages+`</td>
+  </tr>
+  <tr>
+    <td><b>Image size:&nbsp;</b>`+scope.binding.toBytes(d.full_size)+`</td>
+  </tr>
+</table>`;
       return tip;
     }
     
@@ -74,9 +92,9 @@ function scatter (d3) {
 
     function getYDomain () {
       var filtered = scope.binding.data.filter(d => {return d.active});
-      var yMax = d3.max(filtered, function(d) { return getY(d); }) + 2,
-          yMin = d3.min(filtered, function(d) { return getY(d); }),
-          yMin = yMin > -2 ? -2 : yMin;
+      var yMax = 1.05 * d3.max(filtered, function(d) { return getY(d); }),
+          yMin = 0.95 * d3.min(filtered, function(d) { return getY(d); }),
+          yMin = yMin < -2 ? -2 : yMin;
       return [yMin, yMax];
     }
 
@@ -168,7 +186,7 @@ function start () {
     .append("text")
       .classed("label", true)
       .attr("transform", "rotate(-90)")
-      .attr("y", -margin.left + 2)
+      .attr("y", -margin.left + 10)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text(scope.binding.yLabel);
@@ -203,7 +221,7 @@ function start () {
         .type(d => {return getShape(getS(d)) }))
       .attr("transform", transform)
       .style("fill", function(d) { return color(getC(d)); })
-      .on("click", function (d) { scope.details(d.id) })
+      .on("click", function (d) { scope.details(d) })
       .on("mouseover", function(d) {
         tooltip.transition().duration(200).style("opacity", .9);
         tooltip.html(createTip(d))

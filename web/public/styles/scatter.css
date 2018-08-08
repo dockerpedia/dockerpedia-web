@@ -8,19 +8,12 @@
   cursor: initial;
 }
 
-.noselect > .name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: calc(100% - 42px);
-  display: inline-block;
-  overflow: hidden;
-}
-
 .legend-title {
   border: 1px solid #d3d3d3;
   padding: 4px 12px 4px 12px;
   background-color: rgb(233, 236, 239);
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .legend-title.active {
@@ -80,22 +73,28 @@
   border: 1px solid rgba(0, 0, 0, .2);
 }
 
+.legend-box > div > .name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: calc(100% - 42px);
+  display: inline-block;
+  overflow: hidden;
+  cursor:default;
+}
+
 .legend-box > div > shape {
   position: absolute;
   left: 7px;
   top: 7px;
 }
 
-.legend-box > div > i {
-  padding-top: 4px;
-  cursor:pointer;
-}
-
 .filter-title {
+  margin-top: 15px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   padding: 4px 12px 4px 12px;
   background-color: rgb(233, 236, 239);
+  cursor:pointer;
 }
 
 .filter-title.active {
@@ -129,8 +128,8 @@
   font-weight: bold;
 }
 
-.filter-title > i, .legend-title > i {
-  margin-top: 4px;
+.filter-title > i, .legend-title > i, .legend-box > div > i {
+  padding-top: 4px;
   cursor:pointer;
 }
 
@@ -146,66 +145,6 @@
   fill-opacity: .6;
 }
 
-/*.dot.marked { old
-  fill-opacity: .9;
-  stroke-width: 1px;
-  stroke:rgb(0,0,0);
-}*/
-
-/* Creates a small triangle extender for the tooltip *
-.d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
-  content: "\25BC";
-  position: absolute;
-  text-align: center;
-}
-
-/* Style northward tooltips differently *
-.d3-tip.n:after {
-  margin: -1px 0 0 0;
-  top: 100%;
-  left: 0;
-}
-
-.legend text,
-.axis text {
-  font-size: 13px;
-  fill: #333;
-}
-
-#scatter-svg > g > .legend > rect {
-  fill-opacity: .7;
-  cursor:pointer;
-}
-
-#scatter-svg > g > .legend.active > rect {
-  fill-opacity: .95;
-  stroke-width: 1px;
-  stroke:rgb(0,0,0);
-}
-
-.dropdown-menu>li>a {
-  display: block;
-  padding: 3px 20px;
-  clear: both;
-  font-weight: 400;
-  line-height: 1.42857143;
-  color: #333;
-  white-space: nowrap;
-}
-
-.dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover {
-  color: #fff;
-  text-decoration: none;
-  background-color: #337ab7;
-  outline: 0;
-}*/
-
 text {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
@@ -217,11 +156,6 @@ text {
 #scatter-svg {
   /*border: 1px solid red;*/
 }
-/*
-.label {
-  text-anchor: middle !important;
-  font-size: 16px !important;
-}*/
 
 .tooltip {
   background: lightgrey;
@@ -290,4 +224,72 @@ rect.scatter-rect {
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+.image-score {
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  text-align: center;
+  font-size: 42px;
+  width: 50px;
+  border-right: 1px solid black;
+  margin-right: 15px;
+}
+
+.image-table {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.div-table {
+  margin: 5px 0px 5px 0px;
+  max-height: 24px;
+  -webkit-transition: max-height 0.4s ease-in-out;
+  transition: max-height 0.4s ease-in-out;
+  overflow: hidden;
+}
+
+.div-table.active {
+  max-height: 208px;
+}
+
+.div-table > .table-header {
+  font-weight: bold;
+  padding: 0px 10px 0px 10px;
+  cursor: pointer;
+}
+
+.div-table > .table-body {
+  max-height: 184px;
+  overflow-y: scroll;
+}
+
+.div-table.active > .table-body {
+  border-bottom: 1px solid #D3D3D3;
+  border-right: 1px solid #D3D3D3;
+  border-left: 1px solid #D3D3D3;
+}
+
+.vCritical {
+  background-color: #d7191c;
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.vHigh {
+  background-color: #fdae61;
+}
+
+.vMedium {
+  background-color: #ffffbf;
+}
+
+.vLow {
+  background-color: #abd9e9;
+}
+
+.table-header > i {
+  padding-top: 4px;
+  cursor:pointer;
 }

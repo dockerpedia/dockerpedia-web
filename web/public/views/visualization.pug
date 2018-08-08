@@ -32,6 +32,13 @@ block content
                   div.dropdown-item
                     input#myCheckbox(type="checkbox")
                     | &nbsp; View vulnerabilities as percentage
+                  div.dropdown-item
+                    .form
+                      .input-group
+                        .input-group-prepend
+                          .input-group-text Y Axis:
+                        select.custom-select(ng-model="ctrl.conf.yAxis", ng-change="ctrl.setConf()")
+                          option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
               input#search-input.form-control(
                   ng-submit="ctrl.search()",
                   ng-model="ctrl.searchTerm",
@@ -62,13 +69,13 @@ block content
         .row
           scatter(details="ctrl.getPackages", binding="ctrl.scatter")
 
-      div.col-md-4(style="padding-left: 0px; padding-top:51px;")
+      div.col-md-4(style="padding-left: 0px;")
         form
           .form-row
-            .form-group.col-md-6
-              .legend-title.noselect(ng-class="ctrl.show.categories ? 'active' : ''") Color by risk:
-                i.pull-right.fa(ng-class="ctrl.show.categories ? 'fa-angle-up' : 'fa-angle-down';",
-                                ng-click="ctrl.show.categories = !ctrl.show.categories")
+            .form-group.col-md-6(style="margin-bottom: 0px;")
+              .legend-title.noselect(ng-class="ctrl.show.categories ? 'active' : ''"
+                                     ng-click="ctrl.show.categories = !ctrl.show.categories") Color by repository:
+                i.pull-right.fa(ng-class="ctrl.show.categories ? 'fa-angle-up' : 'fa-angle-down';")
               //.input-group.legend-select
                 .input-group-prepend
                   .input-group-text Color by:
@@ -82,10 +89,10 @@ block content
                   .name {{ val.name }}
                   i.fa.fa-trash.pull-right(ng-click="ctrl.rmCat(val.name)")
                   i.fa.pull-right(ng-class="(val.marked || !ctrl.categoryMarked) ? 'fa-eye' : 'fa-eye-slash'")
-            .form-group.col-md-6
-              .legend-title.noselect(ng-class="ctrl.show.shapes ? 'active' : ''") Shape by OS:
-                i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';",
-                                ng-click="ctrl.show.shapes = !ctrl.show.shapes")
+            .form-group.col-md-6(style="margin-bottom: 0px;")
+              .legend-title.noselect(ng-class="ctrl.show.shapes ? 'active' : ''",
+                                     ng-click="ctrl.show.shapes = !ctrl.show.shapes") Shape by OS:
+                i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';")
               //.input-group.legend-select
                 .input-group-prepend
                   .input-group-text Shape by
@@ -100,9 +107,9 @@ block content
                   i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
                   i.fa.pull-right(ng-class="(val.marked || !ctrl.shapeMarked) ? 'fa-eye' : 'fa-eye-slash'")
 
-        .filter-title.noselect(ng-class="ctrl.show.filters ? 'active' : ''") Filters:
-          i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';",
-                          ng-click="ctrl.show.filters = !ctrl.show.filters")
+        .filter-title.noselect(ng-class="ctrl.show.filters ? 'active' : ''"
+                               ng-click="ctrl.show.filters = !ctrl.show.filters") Filters:
+          i.pull-right.fa(ng-class="ctrl.show.filters ? 'fa-angle-up' : 'fa-angle-down';")
         .container.filter-box(ng-class="ctrl.show.filters ? 'active' : ''")
           .row
             .col-md-4.filter-legend Size:
@@ -130,5 +137,28 @@ block content
               div.input-group-append
                 button.btn.btn-outline-secondary(type="button", ng-click="ctrl.applyFilters()")
                   i.fa.fa-refresh.fa-fw
+
+        .filter-title.noselect(ng-if="ctrl.selected"
+                               ng-class="ctrl.show.details ? 'active' : ''"
+                               ng-click="ctrl.show.details = !ctrl.show.details") 
+          | Vulnerabilities of 
+          b {{ctrl.selected.parent.name}}:{{ctrl.selected.name}}
+          |:
+          i.pull-right.fa(ng-class="ctrl.show.details ? 'fa-angle-up' : 'fa-angle-down';")
+          .pull-right.mr-2 ({{ctrl.selected.vuln}})
+        .container.filter-box(ng-class="ctrl.show.details ? 'active' : ''")
+          div.div-table(ng-repeat="title in ['Critical', 'High', 'Medium', 'Low']",
+                        ng-class="ctrl.details.active[title] ? 'active' : '';",
+                        ng-if="ctrl.details.data[title].length > 0",
+                        ng-init="ctrl.details.active[title]=false;")
+            div.table-header(ng-click="ctrl.details.active[title] = !ctrl.details.active[title];",
+                             ng-class="'v'+title") {{ title }} ({{ ctrl.details.data[title].length }})
+              i.pull-right.fa(ng-class="ctrl.details.active[title] ? 'fa-angle-up' : 'fa-angle-down';")
+            div.table-body
+              div.row.row-table(ng-repeat="(i,obj) in ctrl.details.data[title]")
+                div.col-4 {{ obj.package }}
+                div.col-3 {{ obj.version }}
+                div.col-5 
+                  a(href="{{ obj.link }}", target="_blank") {{ obj.name }}
 
         stacked(update="ctrl.com")
