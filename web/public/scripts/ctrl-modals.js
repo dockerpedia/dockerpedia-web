@@ -21,7 +21,7 @@ function describeImageModal ($scope, $uibModalInstance, image, extra, $http) {
   getPackages(image.id);
 
   function getPackages (id) {
-    $http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
+    $http.get('https://api.dockerpedia.inf.utfsm.cl/api/v1/images/'+id+'/packages').then(
       function onSuccess (response) {
         ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
         var s, p, i, j, target;
