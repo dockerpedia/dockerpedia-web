@@ -68,7 +68,7 @@ function scatterCtrl (http, d3) {
     },
     categoryOpts: {
       'Risk':       { getC: d => {return d.risk} },
-      'Repository': { getC: d => {return d.parent.name} },
+      'Repository': { getC: d => {return d.parent.full_name} },
       'User':       { getC: d => {return d.parent.namespace} },
       'SO':         { getC: d => {
         if (sp = d.operating_system.split(':') ) {

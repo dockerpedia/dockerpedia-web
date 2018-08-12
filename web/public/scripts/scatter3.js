@@ -257,7 +257,7 @@ function start () {
     // Create new dots
     objs.enter().append("path")
         .classed("dot", true)
-        .on("click", function (d) { scope.details(d.id) })
+        .on("click", function (d) { scope.details(d) })
         .on("mouseover", function(d) {
           tooltip.transition().duration(200).style("opacity", .9);
           tooltip.html(createTip(d))
