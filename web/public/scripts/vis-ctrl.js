@@ -15,6 +15,8 @@ function scatterCtrl (http, d3) {
   vm.markCat = markCategory;
   vm.markShape = markShape;
   vm.getPackages = getPackages;
+  vm.getUsers = getUsers;
+  vm.taOnSelect = taOnSelect;
   vm.applyFilters = applyFilter;
   vm.removeUser = removeUser;
   vm.categoryMarked = false;
@@ -402,6 +404,19 @@ function scatterCtrl (http, d3) {
     });
     updateData();
     if (vm.scatter.refresh) vm.scatter.refresh();
+  }
+
+  function getUsers (prefix) {
+    return http.get('https://api.mosorio.me/api/v1/users?query='+prefix).then(
+      function onSuccess (response) {
+        return response.data.result;
+      },
+      function onError (response) { console.log('Error: ' + response.data); }
+    );
+  }
+
+  function taOnSelect (a) {
+    console.log(a);
   }
 
   function formatBytes (a,b) {

@@ -40,15 +40,29 @@ block content
                         select.custom-select(ng-model="ctrl.conf.yAxis", ng-change="ctrl.setConf()")
                           option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
               input#search-input.form-control(
+                  uib-typeahead="user for user in ctrl.getUsers(ctrl.searchTerm) | limitTo:8",
+                  typeahead-on-select="ctrl.search()",
+                  uib-typeahead-wait-ms="500",
+                  typeahead-no-results="ctrl.noResults",
                   ng-submit="ctrl.search()",
                   ng-model="ctrl.searchTerm",
                   type="text",
+                  autocomplete="off",
                   placeholder="Search a package",
                   aria-label="Package name",
                   aria-describedby="basic-addon2")
               div.input-group-append
                 button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
                   i.fa.fa-search.fa-fw
+
+          .col-md-6
+            .alert.alert-warning.alert-dismissible.fade.show(
+                role='alert',
+                ng-if="ctrl.noResults",
+                style="padding: 6px 12px; margin-bottom: 0px") No results found!
+              button.close(type='button', data-dismiss='alert', aria-label='Close')
+                span(aria-hidden='true', style="padding: 5px 10px;") ×
+            //.alert.alert-warning(ng-if="ctrl.noResults", style="padding: 6px 12px; margin-bottom: 0px") No results found!
 
           //div.col-md-6
             form
