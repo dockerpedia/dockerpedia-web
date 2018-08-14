@@ -111,6 +111,12 @@ block content
                                ng-click="ctrl.show.filters = !ctrl.show.filters") Filters:
           i.pull-right.fa(ng-class="ctrl.show.filters ? 'fa-angle-up' : 'fa-angle-down';")
         .container.filter-box(ng-class="ctrl.show.filters ? 'active' : ''")
+          .row(ng-if="ctrl.users.length > 0")
+            .col-md-4.filter-legend Users:
+            .col-md-8
+              .user-box(ng-repeat="(i, val) in ctrl.users") {{ val }}
+                i.fa.fa-times(ng-click="ctrl.removeUser(val)")
+
           .row
             .col-md-4.filter-legend Size:
             rzslider.col-md-8(rz-slider-model="ctrl.filters.size.min",
@@ -141,9 +147,9 @@ block content
         .filter-title.noselect(ng-if="ctrl.selected"
                                ng-class="ctrl.show.details ? 'active' : ''"
                                ng-click="ctrl.show.details = !ctrl.show.details") 
-          | Vulnerabilities of 
-          b {{ctrl.selected.parent.name}}:{{ctrl.selected.name}}
-          |:
+          div Vulnerabilities of 
+            b {{ctrl.selected.parent.name}}:{{ctrl.selected.name}}
+            |:
           i.pull-right.fa(ng-class="ctrl.show.details ? 'fa-angle-up' : 'fa-angle-down';")
           .pull-right.mr-2 ({{ctrl.selected.vuln}})
         .container.filter-box(ng-class="ctrl.show.details ? 'active' : ''")

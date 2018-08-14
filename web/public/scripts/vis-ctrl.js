@@ -16,8 +16,10 @@ function scatterCtrl (http, d3) {
   vm.markShape = markShape;
   vm.getPackages = getPackages;
   vm.applyFilters = applyFilter;
+  vm.removeUser = removeUser;
   vm.categoryMarked = false;
   vm.shapeMarked = false;
+  vm.users = [];
   vm.show = { categories: false, shapes: false, filters: false, details: false };
 
   vm.details = {
@@ -184,7 +186,6 @@ function scatterCtrl (http, d3) {
     });
     vm.scatter.categories = newCat;
     vm.scatter.shapes = newSha;
-    console.log(vm.scatter.data);
   }
 
 
@@ -264,8 +265,10 @@ function scatterCtrl (http, d3) {
           vm.noResults = false;
           var first = (vm.scatter.raw.length == 0);
           var filtered = response.data.result.children.filter(obj => { return (obj.children); });
+          vm.users = new Set(vm.users);
 
           filtered.forEach(repo => {
+            vm.users.add(repo.namespace);
             repo.active = true;
             repo.children = repo.children.filter(obj => { return (obj.last_updated); });
             repo.children.forEach( image => {
@@ -297,6 +300,7 @@ function scatterCtrl (http, d3) {
             repo.children = uniq;
           })
 
+          vm.users = Array.from(vm.users);
           updateData();
           vm.show.categories= true;
           vm.show.shapes= true;
@@ -383,10 +387,21 @@ function scatterCtrl (http, d3) {
             });
           }
         }
-        console.log(ctrl.data);
+        //console.log(ctrl.data);
       },
       function onError (response) { console.log('Error: ' + response.data); }
     );
+  }
+
+  function removeUser (user) {
+    var i = vm.users.indexOf(user);
+    if (i < 0) return;
+    vm.users.splice(i, 1);
+    vm.scatter.raw = vm.scatter.raw.filter(repo => {
+      return (repo.namespace != user);
+    });
+    updateData();
+    if (vm.scatter.refresh) vm.scatter.refresh();
   }
 
   function formatBytes (a,b) {

@@ -113,7 +113,7 @@
   border-right: 1px solid #d3d3d3;
   border-left: 1px solid #d3d3d3;
   border-bottom: 1px solid #d3d3d3;
-  max-height: 260px;
+  max-height: 280px;
   overflow-y: scroll;
 }
 
@@ -291,5 +291,18 @@ rect.scatter-rect {
 
 .table-header > i {
   padding-top: 4px;
+  cursor:pointer;
+}
+
+.user-box {
+  display: inline-block;
+  border: 1px solid #d3d3d3;
+  border-radius: 3px;
+  margin: 5px 10px 0px 0px;
+  padding: 3px 5px;
+}
+
+.user-box > i {
+  padding-left: 4px;
   cursor:pointer;
 }

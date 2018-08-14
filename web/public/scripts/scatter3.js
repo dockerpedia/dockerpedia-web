@@ -28,7 +28,7 @@ function scatter (d3) {
 `<table class="image-table">
   <tr>
     <th rowspan="4">
-      <div style="color:`+d.letterColor+`;" class="image-score">`+d.letter+`</div>
+      <div style="color:`+d.letterColor+`;" class="image-score">`+d.letter[0]+`</div>
     </th>
     <td><b>Vulnerabilities:</b> <span class="image-ver">`+d.vuln+`</span></td>
   </tr>
@@ -109,6 +109,8 @@ function scatter (d3) {
     }
 
 function start () {
+  var tmp = document.getElementById("scatter-svg");
+  if (tmp) tmp.parentNode.removeChild(tmp);
   updateCfg();
 
   x.domain(getXDomain());
@@ -158,6 +160,8 @@ function start () {
 
   var svg = d3.select(element[0])
     .append("svg")
+      .attr('id', 'scatter-svg')
+      .attr("width", outerWidth)
       .attr("width", outerWidth)
       .attr("height", outerHeight)
     .append("g")
