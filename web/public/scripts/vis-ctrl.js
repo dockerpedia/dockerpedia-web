@@ -198,6 +198,14 @@ function scatterCtrl (http, d3) {
     vm.scatter.data = vm.scatter.data.filter(obj => {
       return (vm.scatter.getC(obj) != name);
     });
+    //FIXME: this only work with the current config
+    var rName = name.split(' (');
+    if (rName.length>0) {
+      rName = rName[0];
+      vm.scatter.raw = vm.scatter.raw.filter(repo => {
+        return (repo.name != rName);
+      });
+    }
     if (vm.scatter.refresh) vm.scatter.refresh();
   }
 
