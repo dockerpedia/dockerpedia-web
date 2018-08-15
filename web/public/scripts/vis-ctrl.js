@@ -267,7 +267,11 @@ function scatterCtrl (http, d3) {
   }
 
   var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S").parse;
+  var lastSearch = '';
+
   function search () {
+    if (vm.searchTerm == lastSearch) return null;
+    lastSearch = vm.searchTerm;
     http.post('https://api.mosorio.me/api/v1/viz', {user: vm.searchTerm}).then(
       function onSuccess (response) {
         if (response.data.count == 0)
