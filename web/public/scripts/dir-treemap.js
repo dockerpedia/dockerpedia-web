@@ -93,6 +93,7 @@ function treemap (d3, $uibModal) {
       .attr("dy", ".75em");
 
     var legendWidth = document.getElementById('legend').parentElement.offsetWidth;
+    var legendLabel = ['', 'None', 'Low', 'Medium', 'High', 'Critical'];
     var legend = d3.select("#legend").append("svg")
       .attr("width", 360)
       .attr("height", 38)
@@ -165,17 +166,7 @@ function treemap (d3, $uibModal) {
 
       legend.append("text")
           .text(function (_, d) {
-            switch(d) {
-              case 1:
-                return 'Low';
-                break;
-              case 5:
-                return 'Critical';
-                break;
-              default:
-                return '';
-            }
-            return d;
+            return legendLabel[d];
           })
           .style('fill', 'darkOrange')
           .style('text-anchor', 'start')
@@ -271,10 +262,11 @@ function treemap (d3, $uibModal) {
           .attr("dy", ".75em")
           .html(function(d) {
             var title = '<p class="title"> ' + (d.full_name?d.full_name:d.name) + '</p>';
-            return title + 
-            '<p>Last updated: ' + (d.last_updated ? d.last_updated.split('T')[0]: 'unknown') + '</p>' +
-            '<p>Best image score: ' + scoreToLetter(d) + '</p>' +//' (' + d.value + ')' +
-            '<p>Image size: ' + formatBytes(d.full_size) + '</p>';
+            title += '<p>Last updated: ' + (d.last_updated ? d.last_updated.split('T')[0]: 'unknown') + '</p>';
+            //title += '<p>Best image score: ' + scoreToLetter(d) + '</p>' +//' (' + d.value + ')':
+            if (d.full_size) title += '<p>Image size: ' + formatBytes(d.full_size) + '</p>';
+            if (d.description) title += '<i>"' + d.description + '"</i>';
+            return title 
             ;})
           .attr("class", d => {console.log(); return 'textdiv score'+ scoreToLetter(d)[0]; });
           //.attr("class","textdiv"); //textdiv class allows us to style the text easily with CSS
