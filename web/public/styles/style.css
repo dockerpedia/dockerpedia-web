@@ -34,3 +34,13 @@ body {
   height: 1.2em;
   white-space: nowrap;
 }
+
+#tutor {
+  text-align: center;
+  cursor:pointer;
+}
+#tutor:hover {
+  text-width: bold;
+  color: steelblue;
+  text-decoration: underline;
+}

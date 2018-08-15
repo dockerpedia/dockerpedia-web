@@ -5,19 +5,24 @@ scatterCtrl.$inject = ['$http', 'd3v3'];
 function scatterCtrl (http, d3) {
   var vm = this;
   vm.selected = null;
-  vm.searchTerm = 'weaveworks';
+  vm.searchTerm = '';
   vm.noResults = false;
   vm.search = search;
   vm.com = null;
   vm.setConf = setConf;
+  vm.tutorial = tutorial;
   vm.rmCat = removeCategory;
   vm.rmShape = removeShape;
   vm.markCat = markCategory;
   vm.markShape = markShape;
   vm.getPackages = getPackages;
+  vm.getUsers = getUsers;
+  vm.taOnSelect = taOnSelect;
   vm.applyFilters = applyFilter;
+  vm.removeUser = removeUser;
   vm.categoryMarked = false;
   vm.shapeMarked = false;
+  vm.users = [];
   vm.show = { categories: false, shapes: false, filters: false, details: false };
 
   vm.details = {
@@ -184,7 +189,6 @@ function scatterCtrl (http, d3) {
     });
     vm.scatter.categories = newCat;
     vm.scatter.shapes = newSha;
-    console.log(vm.scatter.data);
   }
 
 
@@ -195,6 +199,14 @@ function scatterCtrl (http, d3) {
     vm.scatter.data = vm.scatter.data.filter(obj => {
       return (vm.scatter.getC(obj) != name);
     });
+    //FIXME: this only work with the current config
+    var rName = name.split(' (');
+    if (rName.length>0) {
+      rName = rName[0];
+      vm.scatter.raw = vm.scatter.raw.filter(repo => {
+        return (repo.name != rName);
+      });
+    }
     if (vm.scatter.refresh) vm.scatter.refresh();
   }
 
@@ -264,8 +276,10 @@ function scatterCtrl (http, d3) {
           vm.noResults = false;
           var first = (vm.scatter.raw.length == 0);
           var filtered = response.data.result.children.filter(obj => { return (obj.children); });
+          vm.users = new Set(vm.users);
 
           filtered.forEach(repo => {
+            vm.users.add(repo.namespace);
             repo.active = true;
             repo.children = repo.children.filter(obj => { return (obj.last_updated); });
             repo.children.forEach( image => {
@@ -297,6 +311,7 @@ function scatterCtrl (http, d3) {
             repo.children = uniq;
           })
 
+          vm.users = Array.from(vm.users);
           updateData();
           vm.show.categories= true;
           vm.show.shapes= true;
@@ -383,10 +398,34 @@ function scatterCtrl (http, d3) {
             });
           }
         }
-        console.log(ctrl.data);
+        //console.log(ctrl.data);
       },
       function onError (response) { console.log('Error: ' + response.data); }
     );
+  }
+
+  function removeUser (user) {
+    var i = vm.users.indexOf(user);
+    if (i < 0) return;
+    vm.users.splice(i, 1);
+    vm.scatter.raw = vm.scatter.raw.filter(repo => {
+      return (repo.namespace != user);
+    });
+    updateData();
+    if (vm.scatter.refresh) vm.scatter.refresh();
+  }
+
+  function getUsers (prefix) {
+    return http.get('https://api.mosorio.me/api/v1/users?query='+prefix).then(
+      function onSuccess (response) {
+        return response.data.result;
+      },
+      function onError (response) { console.log('Error: ' + response.data); }
+    );
+  }
+
+  function taOnSelect (a) {
+    console.log(a);
   }
 
   function formatBytes (a,b) {
@@ -413,5 +452,28 @@ function scatterCtrl (http, d3) {
 		}
 	});
 
-  search();
+  function tutorial () {
+    var intro = introJs();
+    intro.setOptions({
+      steps: [
+        { intro: "This visualization will show you all the images of selected users" },
+        { element: '#search-input', intro: "You can search users here." },
+        { element: '#search-input', intro: "As example we can search <strong> google </strong>." },
+        { element: '#chart', intro: "The results of your search are displayed here.", position: 'top'},
+        { element: '#sencoding', intro: "The encoding is displayed here." },
+        { element: '#sfilter', intro: "The results can be filtered here." },
+        { element: '#dropdownMenuButton', intro: "You can check change the encoding here." },
+      ]
+    });
+    intro.start().onbeforechange(function () {
+      switch (intro._currentStep) {
+        case 2:
+          vm.searchTerm = 'google';
+          vm.search();
+        break;
+      }
+    });
+  }
+
+  //search();
 }
