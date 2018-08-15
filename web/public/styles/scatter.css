@@ -89,17 +89,29 @@
 }
 
 .filter-title {
+  width:100%;
   margin-top: 15px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
   padding: 4px 12px 4px 12px;
   background-color: rgb(233, 236, 239);
+  display: inline-block;
+  overflow: hidden;
   cursor:pointer;
 }
 
 .filter-title.active {
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
+}
+
+.filter-title > .title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: calc(100% - 75px);
+  display: inline-block;
+  overflow: hidden;
+  cursor:default;
 }
 
 .filter-box {
@@ -163,7 +175,7 @@ text {
   border: 1px solid black;
   border-radius: 5px;
   pointer-events: none;
-  max-width: 290px;
+  max-width: 320px;
 }
 
 .tooltip > hr {
@@ -227,12 +239,50 @@ rect.scatter-rect {
 }
 
 .image-score {
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   text-align: center;
-  font-size: 42px;
-  width: 50px;
+  width: 70px;
+  padding-right: 10px;
+  margin-right: 10px;
   border-right: 1px solid black;
-  margin-right: 15px;
+  font-family: serif;
+}
+
+.image-score > i {
+  font-size: 42px;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.risk-none { 
+  color: #2c7bb6;
+}
+
+.risk-low {
+  color: #abd9e9;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.risk-medium {
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: #ffffbf;
+}
+
+.risk-high { 
+  color: #fdae61; 
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.risk-critical { 
+  color: #d7191c; 
+}
+
+.risk-text {
+  font-size: 16pt;
+  background-color: white;
+  opacity: 1;
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-weight: bold;
 }
 
 .image-table {

@@ -28,17 +28,17 @@ block content
                     aria-expanded="false")
                   i.fa.fas.fa-cog
                 div.dropdown-menu(aria-labelledby="dropdownMenuButton")
-                  h6.dropdown-header Options:
-                  div.dropdown-item
-                    input#myCheckbox(type="checkbox")
-                    | &nbsp; View vulnerabilities as percentage
-                  div.dropdown-item
+                  h6.dropdown-header Change encoding:
+                  .dropdown-item
                     .form
                       .input-group
                         .input-group-prepend
                           .input-group-text Y Axis:
                         select.custom-select(ng-model="ctrl.conf.yAxis", ng-change="ctrl.setConf()")
                           option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
+                  .dropdown-divider
+                  .dropdown-item(style="text-align: center;", ng-click="ctrl.tutorial()")
+                    a(href="") Run tutorial
               input#search-input.form-control(
                   uib-typeahead="user for user in ctrl.getUsers(ctrl.searchTerm) | limitTo:8",
                   typeahead-on-select="ctrl.search()",
@@ -48,8 +48,8 @@ block content
                   ng-model="ctrl.searchTerm",
                   type="text",
                   autocomplete="off",
-                  placeholder="Search a package",
-                  aria-label="Package name",
+                  placeholder="Search a user",
+                  aria-label="User name",
                   aria-describedby="basic-addon2")
               div.input-group-append
                 button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
@@ -60,41 +60,22 @@ block content
                 role='alert',
                 ng-if="ctrl.noResults",
                 style="padding: 6px 12px; margin-bottom: 0px") No results found!
-              button.close(type='button', data-dismiss='alert', aria-label='Close')
-                span(aria-hidden='true', style="padding: 5px 10px;") ×
-            //.alert.alert-warning(ng-if="ctrl.noResults", style="padding: 6px 12px; margin-bottom: 0px") No results found!
-
-          //div.col-md-6
-            form
-              .form-row
-                .form-group.col-md-6
-                  .input-group
-                    .input-group-prepend
-                      .input-group-text Y Axis:
-                    select.custom-select(ng-model="ctrl.conf.yAxis", ng-change="ctrl.setConf()")
-                      option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
-                .form-group.col-md-6
-                  .input-group
-                    .input-group-prepend
-                      .input-group-text Size:
-                    select.custom-select(ng-model="ctrl.conf.size", ng-change="ctrl.setConf()")
-                      option(ng-repeat="(name, obj) in ctrl.conf.sizeOpts", value="{{name}}") {{ name }}
+              button.close(type='button', data-dismiss='alert', aria-label='Close', style="padding: 5px 10px;")
+                span(aria-hidden='true') ×
 
         .row
-          scatter(details="ctrl.getPackages", binding="ctrl.scatter")
+          scatter#chart(details="ctrl.getPackages", binding="ctrl.scatter")
+          div(ng-hide="ctrl.scatter.data.length!=0", style="display:table; height: 400px; width:100%;")
+            div(style="display:table-cell; vertical-align: middle;")
+              h3#tutor(ng-click="ctrl.tutorial()") Need help? Click here to run the tutorial!
 
       div.col-md-4(style="padding-left: 0px;")
-        form
+        form#sencoding
           .form-row
             .form-group.col-md-6(style="margin-bottom: 0px;")
               .legend-title.noselect(ng-class="ctrl.show.categories ? 'active' : ''"
                                      ng-click="ctrl.show.categories = !ctrl.show.categories") Color by image:
                 i.pull-right.fa(ng-class="ctrl.show.categories ? 'fa-angle-up' : 'fa-angle-down';")
-              //.input-group.legend-select
-                .input-group-prepend
-                  .input-group-text Color by:
-                select.custom-select(ng-model="ctrl.conf.category", ng-change="ctrl.setConf()", disabled)
-                  option(ng-repeat="(name, obj) in ctrl.conf.categoryOpts", value="{{name}}") {{ name }}
               .legend-box(ng-class="ctrl.show.categories ? 'active' : ''")
                 div.noselect(ng-repeat="(i, val) in ctrl.scatter.categories",
                              ng-click="ctrl.markCat(val)",
@@ -107,11 +88,6 @@ block content
               .legend-title.noselect(ng-class="ctrl.show.shapes ? 'active' : ''",
                                      ng-click="ctrl.show.shapes = !ctrl.show.shapes") Shape by OS:
                 i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';")
-              //.input-group.legend-select
-                .input-group-prepend
-                  .input-group-text Shape by
-                select.custom-select(ng-model="ctrl.conf.shape", ng-change="ctrl.setConf()", disabled)
-                  option(ng-repeat="(name, obj) in ctrl.conf.shapeOpts", value="{{name}}") {{ name }}
               .legend-box(ng-class="ctrl.show.shapes ? 'active' : ''")
                 div.noselect(ng-repeat="(i, val) in ctrl.scatter.shapes",
                              ng-click="ctrl.markShape(val)",
@@ -121,47 +97,42 @@ block content
                   i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
                   i.fa.pull-right(ng-class="(val.marked || !ctrl.shapeMarked) ? 'fa-eye' : 'fa-eye-slash'")
 
-        .filter-title.noselect(ng-class="ctrl.show.filters ? 'active' : ''"
-                               ng-click="ctrl.show.filters = !ctrl.show.filters") Filters:
-          i.pull-right.fa(ng-class="ctrl.show.filters ? 'fa-angle-up' : 'fa-angle-down';")
-        .container.filter-box(ng-class="ctrl.show.filters ? 'active' : ''")
-          .row(ng-if="ctrl.users.length > 0")
-            .col-md-4.filter-legend Users:
-            .col-md-8
-              .user-box(ng-repeat="(i, val) in ctrl.users") {{ val }}
-                i.fa.fa-times(ng-click="ctrl.removeUser(val)")
-
-          .row
-            .col-md-4.filter-legend Size:
-            rzslider.col-md-8(rz-slider-model="ctrl.filters.size.min",
-                     rz-slider-high="ctrl.filters.size.max", rz-slider-options="ctrl.filters.size.opts")
-          .row
-            .col-md-4.filter-legend Vulnerabilities:
-            rzslider.col-md-8(rz-slider-model="ctrl.filters.vuln.min",
-                     rz-slider-high="ctrl.filters.vuln.max", rz-slider-options="ctrl.filters.vuln.opts")
-          .row
-            .col-md-4.filter-legend Packages:
-            rzslider.col-md-8(rz-slider-model="ctrl.filters.packages.min",
-                     rz-slider-high="ctrl.filters.packages.max", rz-slider-options="ctrl.filters.packages.opts")
-          //.row
-            .col-md-4.filter-legend Score:
-            rzslider.col-md-8(rz-slider-model="ctrl.filters.score.min",
-                     rz-slider-high="ctrl.filters.score.max", rz-slider-options="ctrl.filters.score.opts")
-          .row
-            //.col-md-4.filter-legend Text:
-            div.input-group.col-md-12(style="padding: 0;")
-              input#filter-input.form-control(
-                  ng-model="ctrl.filters.text",
-                  type="text",
-                  placeholder="Text filter")
-              div.input-group-append
-                button.btn.btn-outline-secondary(type="button", ng-click="ctrl.applyFilters()")
-                  i.fa.fa-refresh.fa-fw
+        #sfilter
+          .filter-title.noselect(ng-class="ctrl.show.filters ? 'active' : ''"
+                                 ng-click="ctrl.show.filters = !ctrl.show.filters") Filters:
+            i.pull-right.fa(ng-class="ctrl.show.filters ? 'fa-angle-up' : 'fa-angle-down';")
+          .container.filter-box(ng-class="ctrl.show.filters ? 'active' : ''")
+            .row(ng-if="ctrl.users.length > 0")
+              .col-md-4.filter-legend Users:
+              .col-md-8(style="padding: 0;")
+                .user-box(ng-repeat="(i, val) in ctrl.users") {{ val }}
+                  i.fa.fa-times(ng-click="ctrl.removeUser(val)")
+            .row
+              .col-md-4.filter-legend Size:
+              rzslider.col-md-8(rz-slider-model="ctrl.filters.size.min",
+                       rz-slider-high="ctrl.filters.size.max", rz-slider-options="ctrl.filters.size.opts")
+            .row
+              .col-md-4.filter-legend Vulnerabilities:
+              rzslider.col-md-8(rz-slider-model="ctrl.filters.vuln.min",
+                       rz-slider-high="ctrl.filters.vuln.max", rz-slider-options="ctrl.filters.vuln.opts")
+            .row
+              .col-md-4.filter-legend Packages:
+              rzslider.col-md-8(rz-slider-model="ctrl.filters.packages.min",
+                       rz-slider-high="ctrl.filters.packages.max", rz-slider-options="ctrl.filters.packages.opts")
+            .row
+              div.input-group.col-md-12(style="padding: 0;")
+                input#filter-input.form-control(
+                    ng-model="ctrl.filters.text",
+                    type="text",
+                    placeholder="Text filter")
+                div.input-group-append
+                  button.btn.btn-outline-secondary(type="button", ng-click="ctrl.applyFilters()")
+                    i.fa.fa-refresh.fa-fw
 
         .filter-title.noselect(ng-if="ctrl.selected"
                                ng-class="ctrl.show.details ? 'active' : ''"
                                ng-click="ctrl.show.details = !ctrl.show.details") 
-          div Vulnerabilities of 
+          .title Vulnerabilities of 
             b {{ctrl.selected.parent.name}}:{{ctrl.selected.name}}
             |:
           i.pull-right.fa(ng-class="ctrl.show.details ? 'fa-angle-up' : 'fa-angle-down';")
@@ -180,5 +151,3 @@ block content
                 div.col-3 {{ obj.version }}
                 div.col-5 
                   a(href="{{ obj.link }}", target="_blank") {{ obj.name }}
-
-        stacked(update="ctrl.com")

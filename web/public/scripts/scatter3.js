@@ -22,24 +22,18 @@ function scatter (d3) {
 
     function createTip (d) {
       var tip = "<h6>" + d.parent.name + ":" + d.name + "</h6><hr>" +
-                /*"<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
-                "<b> Packages: </b>" + d.packages + "<br/>" +
-                "<b> Vulnerabilities: </b>" + d.vuln + "<br/>";*/
 `<table class="image-table">
-  <tr>
-    <th rowspan="4">
-      <div style="color:`+d.letterColor+`;" class="image-score">`+d.letter[0]+`</div>
-    </th>
-    <td><b>Vulnerabilities:</b> <span class="image-ver">`+d.vuln+`</span></td>
+  <tr">
+    <td rowspan="2" style="border-right: 1px solid black; padding-right:4px;">
+      <b> Risk:</b> <span class="risk-text risk-`+d.risk+`">`+ d.risk +`</span></td>
+    <td style="padding-left:4px;"><b>Packages:&nbsp;</b>`+d.packages+`</td>
   </tr>
   <tr>
-    <td><b>Last updated:&nbsp;</b>`+d.last_updated.split('T')[0]+`</td>
+    <td style="padding-left:4px;"><b>Updated:&nbsp;</b>`+d.last_updated.split('T')[0]+`</td>
   </tr>
   <tr>
-    <td><b>Packages:&nbsp;</b>`+d.packages+`</td>
-  </tr>
-  <tr>
-    <td><b>Image size:&nbsp;</b>`+scope.binding.toBytes(d.full_size)+`</td>
+    <td style="border-right: 1px solid black; padding-right:4px;"><b>Vulnerabilities:</b>`+d.vuln+`</td>
+    <td style="padding-left:4px;"><b>Image size:&nbsp;</b>`+scope.binding.toBytes(d.full_size)+`</td>
   </tr>
 </table>`;
       return tip;
@@ -297,8 +291,6 @@ function start () {
   updateCategories(color);
   scope.binding.refresh = change;
 }
-
-
 
   }
 }
