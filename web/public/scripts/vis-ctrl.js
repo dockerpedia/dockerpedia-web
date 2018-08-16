@@ -269,7 +269,7 @@ function scatterCtrl (http, d3) {
   function search () {
     if (vm.searchTerm == lastSearch) return null;
     lastSearch = vm.searchTerm;
-    http.post('https://api.mosorio.me/api/v1/viz', {user: vm.searchTerm}).then(
+    http.post('https://api.mosorio.me/api/v1/viz2', {user: vm.searchTerm, images: 40}).then(
       function onSuccess (response) {
         if (response.data.count == 0)
           vm.noResults = true;
