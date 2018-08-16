@@ -58,13 +58,13 @@ function scatterCtrl (http, d3) {
   }
 
   vm.conf = {
-    yAxis: 'Score', size: 'None', category: 'Repository', shape: 'SO',
+    yAxis: 'Score2', size: 'None', category: 'Repository', shape: 'SO',
     yAxisOpts: {
       'Vulnerabilities': { getY: d => {return d.vuln},      yLabel: 'Vulnerabilities', yTick: d => {return d} },
       'Packages':        { getY: d => {return d.packages},  yLabel: 'Packages',        yTick: d => {return d} },
       'Score':           { getY: d => {return d.score},     yLabel: 'Score',           yTick: d => {return d} },
       'Size':            { getY: d => {return d.full_size}, yLabel: 'Size', yTick: d => {return formatBytes(d,0)} },
-      'Score2':          { getY: d => { return d.value},    yLabel: 'Score',           yTick: d => { return d; }
+      'Score2':          { getY: d => { return d.value},    yLabel: 'Score',           yTick: d => {return ''; }
       },
     },
     sizeOpts: {
@@ -282,7 +282,7 @@ function scatterCtrl (http, d3) {
           filtered.forEach(repo => {
             vm.users.add(repo.namespace);
             repo.active = true;
-            repo.children = repo.children.filter(obj => { return (obj.last_updated); });
+            repo.children = repo.children.filter(obj => { return (obj.last_updated && obj.packages>0); });
             repo.children.forEach( image => {
               computeScore(image);
               image.active = true;
@@ -326,10 +326,11 @@ function scatterCtrl (http, d3) {
       } else {
         // Preliminary value
         imagesByRisk[key].forEach(image =>{
-          image.value = weight[0] * image.vulnerabilities_low +
-                        weight[1] * image.vulnerabilities_medium +
-                        weight[2] * image.vulnerabilities_high +
-                        weight[3] * image.vulnerabilities_critical;
+          image.value = Math.log10(
+                          weight[0] * image.vulnerabilities_low +
+                          weight[1] * image.vulnerabilities_medium +
+                          weight[2] * image.vulnerabilities_high +
+                          weight[3] * image.vulnerabilities_critical);
         });
         var values = imagesByRisk[key].map(image => { return image.value; });
         var min = Math.min.apply(null, values),
@@ -509,6 +510,6 @@ function scatterCtrl (http, d3) {
     });
   }
 
-  vm.searchTerm = 'weaveworks';
+  vm.searchTerm = '18fgsa';
   search();
 }
