@@ -22,8 +22,20 @@ function scatter (d3) {
 
     function createTip (d) {
       var tip = "<h6>" + d.parent.name + ":" + d.name + "</h6><hr>" +
-                "<b> Last updated: </b>" + d.last_updated.split("T")[0] + "<br/>" +
-                "<b> Vulnerabilities: </b>" + d.vuln + "<br/>";
+`<table class="image-table">
+  <tr">
+    <td rowspan="2" style="border-right: 1px solid black; padding-right:4px;">
+      <b> Risk:</b> <span class="risk-text risk-`+d.risk+`">`+ d.risk +`</span></td>
+    <td style="padding-left:4px;"><b>Packages:&nbsp;</b>`+d.packages+`</td>
+  </tr>
+  <tr>
+    <td style="padding-left:4px;"><b>Updated:&nbsp;</b>`+d.last_updated.split('T')[0]+`</td>
+  </tr>
+  <tr>
+    <td style="border-right: 1px solid black; padding-right:4px;"><b>Vulnerabilities:</b>`+d.vuln+`</td>
+    <td style="padding-left:4px;"><b>Image size:&nbsp;</b>`+scope.binding.toBytes(d.full_size)+`</td>
+  </tr>
+</table>`;
       return tip;
     }
     
@@ -74,9 +86,9 @@ function scatter (d3) {
 
     function getYDomain () {
       var filtered = scope.binding.data.filter(d => {return d.active});
-      var yMax = d3.max(filtered, function(d) { return getY(d); }) + 2,
-          yMin = d3.min(filtered, function(d) { return getY(d); }),
-          yMin = yMin > -2 ? -2 : yMin;
+      var yMax = 1.05 * d3.max(filtered, function(d) { return getY(d); }),
+          yMin = 0.95 * d3.min(filtered, function(d) { return getY(d); }),
+          yMin = yMin < -2 ? -2 : yMin;
       return [yMin, yMax];
     }
 
@@ -91,6 +103,8 @@ function scatter (d3) {
     }
 
 function start () {
+  var tmp = document.getElementById("scatter-svg");
+  if (tmp) tmp.parentNode.removeChild(tmp);
   updateCfg();
 
   x.domain(getXDomain());
@@ -140,6 +154,8 @@ function start () {
 
   var svg = d3.select(element[0])
     .append("svg")
+      .attr('id', 'scatter-svg')
+      .attr("width", outerWidth)
       .attr("width", outerWidth)
       .attr("height", outerHeight)
     .append("g")
@@ -168,7 +184,7 @@ function start () {
     .append("text")
       .classed("label", true)
       .attr("transform", "rotate(-90)")
-      .attr("y", -margin.left + 2)
+      .attr("y", -margin.left + 10)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text(scope.binding.yLabel);
@@ -203,7 +219,7 @@ function start () {
         .type(d => {return getShape(getS(d)) }))
       .attr("transform", transform)
       .style("fill", function(d) { return color(getC(d)); })
-      .on("click", function (d) { scope.details(d.id) })
+      .on("click", function (d) { scope.details(d) })
       .on("mouseover", function(d) {
         tooltip.transition().duration(200).style("opacity", .9);
         tooltip.html(createTip(d))
@@ -239,7 +255,7 @@ function start () {
     // Create new dots
     objs.enter().append("path")
         .classed("dot", true)
-        .on("click", function (d) { scope.details(d.id) })
+        .on("click", function (d) { scope.details(d) })
         .on("mouseover", function(d) {
           tooltip.transition().duration(200).style("opacity", .9);
           tooltip.html(createTip(d))
@@ -275,8 +291,6 @@ function start () {
   updateCategories(color);
   scope.binding.refresh = change;
 }
-
-
 
   }
 }

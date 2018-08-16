@@ -24,7 +24,6 @@ function treemapCtrl (http, $timeout) {
         { element: '#chart', intro: "The results of your search are displayed here.", position: 'top'},
         { element: '#legend', intro: "The colors encode the vulnerabilities of the packages." },
         { element: '#dropdownMenuButton', intro: "You can change the area codification here." },
-        //{ element: '#dropdownMenu', intro: "Chose at least one and the size of the elements in the treemap will change." },
       ]
     });
     intro.start().onbeforechange(function () {
@@ -35,7 +34,6 @@ function treemapCtrl (http, $timeout) {
       }
     });
   }
-
 
   function writeRuby () {
     $timeout(s=>{vm.searchTerm = 'r'}, 300);
@@ -49,14 +47,14 @@ function treemapCtrl (http, $timeout) {
     else {
       var i = 0;
       for (var k in vm.encode) if (vm.encode[k]) i +=1;
-      if (i>=2) vm.encode[key] = false;
+      if (i >= 2) vm.encode[key] = false;
     }
-    vm.test();
+    if (vm.test) vm.test();
   }
 
   function search () {
     //images per repo
-    http.post('https://api.dockerpedia.inf.utfsm.cl/api/v1/viz2', {package: vm.searchTerm, images: 40}).then(
+    http.post('https://api.dockerpedia.inf.utfsm.cl/api/v1/viz2', {package: vm.searchTerm, images: 10}).then(
       function onSuccess (response) {
         if (response.data.result.children.length == 0)
           vm.noResults = true;

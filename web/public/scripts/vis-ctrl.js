@@ -4,24 +4,30 @@ scatterCtrl.$inject = ['$http', 'd3v3'];
 
 function scatterCtrl (http, d3) {
   var vm = this;
-  vm.searchTerm = 'weaveworks';
+  vm.selected = null;
+  vm.searchTerm = '';
   vm.noResults = false;
   vm.search = search;
   vm.com = null;
   vm.setConf = setConf;
+  vm.tutorial = tutorial;
   vm.rmCat = removeCategory;
   vm.rmShape = removeShape;
   vm.markCat = markCategory;
   vm.markShape = markShape;
   vm.getPackages = getPackages;
+  vm.getUsers = getUsers;
+  vm.taOnSelect = taOnSelect;
   vm.applyFilters = applyFilter;
+  vm.removeUser = removeUser;
   vm.categoryMarked = false;
   vm.shapeMarked = false;
-  vm.show = {
-    categories: true,
-    shapes: true,
-    filters: true,
-    graph: false
+  vm.users = [];
+  vm.show = { categories: false, shapes: false, filters: false, details: false };
+
+  vm.details = {
+    data: {Critical: [], High: [], Medium: [], Low: []},
+    active: {Critical: false, High: false, Medium: false, Low: false},
   };
 
   vm.scatter = {
@@ -36,6 +42,7 @@ function scatterCtrl (http, d3) {
     getC: null,
     getS: null,
     yTick: null,
+    toBytes: formatBytes,
     // from svg
     categories: [],
     shapes: [],
@@ -52,11 +59,11 @@ function scatterCtrl (http, d3) {
   }
 
   vm.conf = {
-    yAxis: 'Vulnerabilities', size: 'None', category: 'Risk', shape: 'SO',
+    yAxis: 'Score', size: 'None', category: 'Repository', shape: 'SO',
     yAxisOpts: {
       'Vulnerabilities': { getY: d => {return d.vuln},      yLabel: 'Vulnerabilities', yTick: d => {return d} },
       'Packages':        { getY: d => {return d.packages},  yLabel: 'Packages',        yTick: d => {return d} },
-      'Score':           { getY: d => {return d.value},     yLabel: 'Score',           yTick: d => {return d} },
+      'Score':           { getY: d => {return d.score},     yLabel: 'Score',           yTick: d => {return d} },
       'Size':            { getY: d => {return d.full_size}, yLabel: 'Size', yTick: d => {return formatBytes(d,0)} },
     },
     sizeOpts: {
@@ -66,7 +73,7 @@ function scatterCtrl (http, d3) {
     },
     categoryOpts: {
       'Risk':       { getC: d => {return d.risk} },
-      'Repository': { getC: d => {return d.parent.name} },
+      'Repository': { getC: d => {return d.parent.name +' ('+ d.parent.namespace+')'} },
       'User':       { getC: d => {return d.parent.namespace} },
       'SO':         { getC: d => {
         if (sp = d.operating_system.split(':') ) {
@@ -89,8 +96,8 @@ function scatterCtrl (http, d3) {
 
   var lastConf = {category: '', shape: ''};
   setConf();
+
   function setConf () {
-    console.log('setConf');
     vm.scatter.getY = vm.conf.yAxisOpts[vm.conf.yAxis].getY;
     vm.scatter.yLabel = vm.conf.yAxisOpts[vm.conf.yAxis].yLabel;
     vm.scatter.yTick = vm.conf.yAxisOpts[vm.conf.yAxis].yTick;
@@ -182,7 +189,6 @@ function scatterCtrl (http, d3) {
     });
     vm.scatter.categories = newCat;
     vm.scatter.shapes = newSha;
-    console.log(vm.scatter.data);
   }
 
 
@@ -193,6 +199,14 @@ function scatterCtrl (http, d3) {
     vm.scatter.data = vm.scatter.data.filter(obj => {
       return (vm.scatter.getC(obj) != name);
     });
+    //FIXME: this only work with the current config
+    var rName = name.split(' (');
+    if (rName.length>0) {
+      rName = rName[0];
+      vm.scatter.raw = vm.scatter.raw.filter(repo => {
+        return (repo.name != rName);
+      });
+    }
     if (vm.scatter.refresh) vm.scatter.refresh();
   }
 
@@ -253,33 +267,37 @@ function scatterCtrl (http, d3) {
   }
 
   var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S").parse;
+  var lastSearch = '';
+
   function search () {
-    //images per repo
-    http.post('https://api.dockerpedia.inf.utfsm.cl/api/v1/viz2', {user: vm.searchTerm, images: 100}).then(
-        function onSuccess (response) {
+    if (vm.searchTerm == lastSearch) return null;
+    lastSearch = vm.searchTerm;
+    http.post('https://api.mosorio.me/api/v1/viz', {user: vm.searchTerm}).then(
+      function onSuccess (response) {
         if (response.data.count == 0)
           vm.noResults = true;
         else {
           vm.noResults = false;
           var first = (vm.scatter.raw.length == 0);
           var filtered = response.data.result.children.filter(obj => { return (obj.children); });
-          var split_date;
+          vm.users = new Set(vm.users);
 
           filtered.forEach(repo => {
+            vm.users.add(repo.namespace);
             repo.active = true;
             repo.children = repo.children.filter(obj => { return (obj.last_updated); });
             repo.children.forEach( image => {
-              split_date = image.last_updated.split('.');
+              computeScore(image);
               image.active = true;
               image.parent = repo;
-              image.date = parseDate( split_date[0] );
+              image.date = parseDate( image.last_updated.split('.')[0] );
               image.vuln = image.vulnerabilities_critical +
-                           image.vulnerabilities_defcon1 +
+                           //image.vulnerabilities_defcon1 +
                            image.vulnerabilities_high +
                            image.vulnerabilities_low +
-                           image.vulnerabilities_medium +
-                           image.vulnerabilities_negligible +
-                           image.vulnerabilities_unknown;
+                           image.vulnerabilities_medium;// +
+                           /*image.vulnerabilities_negligible +
+                           /image.vulnerabilities_unknown;*/
             });
             vm.scatter.raw.push(repo);
           });
@@ -297,7 +315,12 @@ function scatterCtrl (http, d3) {
             repo.children = uniq;
           })
 
+          vm.users = Array.from(vm.users);
           updateData();
+          vm.show.categories= true;
+          vm.show.shapes= true;
+          vm.show.filters= true;
+
           if (first) vm.scatter.start();
           else vm.scatter.refresh();
         }
@@ -306,13 +329,107 @@ function scatterCtrl (http, d3) {
     );
   };
 
-  function getPackages (id) {
-    http.get('https://api.dockerpedia.inf.utfsm.cl/api/v1/images/'+id+'/packages').then(
+  function computeScore (img) {
+    img.score = 1000;
+    if (img.vulnerabilities_critical > 0) img.score -= 100 - 50 * (1-Math.min(img.vulnerabilities_critical, 5));
+    if (img.vulnerabilities_high > 0)     img.score -=  50 - 25 * (1-Math.min(img.vulnerabilities_high, 9));
+    if (img.vulnerabilities_medium > 0)   img.score -=  30 - 20 * (1-Math.min(img.vulnerabilities_medium, 15));
+    if (img.vulnerabilities_low > 0)      img.score -=  20 - 10 * (1-Math.min(img.vulnerabilities_low, 23));
+    if (img.score < 0 ) img.score = 0;
+
+    if (img.score > 900) {
+      img.letter = (img.score == 1000) ? 'A+' : 'A';
+      img.letterColor = '#2c7bb6';
+    } else if (img.score > 800) {
+      img.letter = 'B';
+      img.letterColor = '#abd9e9';
+    } else if (img.score > 700) {
+      img.letter = 'C';
+      img.letterColor = '#ffffbf';
+    } else if (img.score > 600) {
+      img.letter = 'D';
+      img.letterColor = '#fdae61';
+    } else {
+      img.letter = 'F';
+      img.letterColor = '#d7191c';
+    }
+  }
+
+  function getPackages (image) {
+    var ctrl = vm.details;
+    var id = image.id;
+    vm.selected = image;
+    ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
+    http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
       function onSuccess (response) {
-        vm.com(response.data);
+        var s, p, i, j, target;
+        if (response.data.length > 0) {
+          vm.show.details = true;
+          vm.show.filters = false;
+        } else {
+          vm.show.details = false;
+        }
+        for (i in response.data) {
+          s = response.data[i];
+          for (j in s.vulnerabilities) {
+            p = s.vulnerabilities[j];
+            switch (p.severity) {
+              case 'Critical':
+              case 'Defcon1':
+                target = ctrl.data.Critical;
+                break;
+              case 'High':
+                target = ctrl.data.High;
+                break;
+              case 'Medium':
+                target = ctrl.data.Medium;
+                break;
+              case 'Low':
+              case 'Negligible':
+              case 'Unknown':
+                target = ctrl.data.Low;
+                break;
+              default:
+                console.log(p);
+            }
+            target.push({
+              name: p.name,
+              severity: p.severity,
+              link: p.link,
+              meta: p.metadata,
+              package: s.name,
+              version: s.version,
+            });
+          }
+        }
+        //console.log(ctrl.data);
       },
       function onError (response) { console.log('Error: ' + response.data); }
     );
+  }
+
+  function removeUser (user) {
+    var i = vm.users.indexOf(user);
+    if (i < 0) return;
+    vm.users.splice(i, 1);
+    vm.scatter.raw = vm.scatter.raw.filter(repo => {
+      return (repo.namespace != user);
+    });
+    updateData();
+    if (vm.scatter.refresh) vm.scatter.refresh();
+  }
+
+  function getUsers (prefix) {
+    return http.get('https://api.mosorio.me/api/v1/users?query='+prefix).then(
+      function onSuccess (response) {
+        return response.data.result;
+      },
+      function onError (response) { console.log('Error: ' + response.data); }
+    );
+  }
+
+  function taOnSelect (a) {
+    console.log(a);
   }
 
   function formatBytes (a,b) {
@@ -339,5 +456,28 @@ function scatterCtrl (http, d3) {
 		}
 	});
 
-  search();
+  function tutorial () {
+    var intro = introJs();
+    intro.setOptions({
+      steps: [
+        { intro: "This visualization will show you all the images of selected users" },
+        { element: '#search-input', intro: "You can search users here." },
+        { element: '#search-input', intro: "As example we can search <strong> google </strong>." },
+        { element: '#chart', intro: "The results of your search are displayed here.", position: 'top'},
+        { element: '#sencoding', intro: "The encoding is displayed here." },
+        { element: '#sfilter', intro: "The results can be filtered here." },
+        { element: '#dropdownMenuButton', intro: "You can check change the encoding here." },
+      ]
+    });
+    intro.start().onbeforechange(function () {
+      switch (intro._currentStep) {
+        case 2:
+          vm.searchTerm = 'google';
+          vm.search();
+        break;
+      }
+    });
+  }
+
+  //search();
 }
