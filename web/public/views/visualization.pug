@@ -36,15 +36,15 @@ block content
                     aria-expanded="false")
                   i.fa.fas.fa-cog
                 div.dropdown-menu(aria-labelledby="dropdownMenuButton")
-                  h6.dropdown-header Change encoding:
-                  .dropdown-item
+                  //h6.dropdown-header Change encoding:
+                  //.dropdown-item
                     .form
                       .input-group
                         .input-group-prepend
                           .input-group-text Y Axis:
                         select.custom-select(ng-model="ctrl.conf.yAxis", ng-change="ctrl.setConf()")
                           option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
-                  .dropdown-divider
+                  //.dropdown-divider
                   .dropdown-item(style="text-align: center;", ng-click="ctrl.tutorial()")
                     a(href="") Run tutorial
               input#search-input.form-control(
