@@ -165,7 +165,9 @@ text {
   cursor: default;
 }
 
-#scatter-svg {
+#chart {
+  height: calc(100vh - 160px);
+  width: 100%
   /*border: 1px solid red;*/
 }
 
@@ -373,4 +375,19 @@ rect.scatter-rect {
   text-decoration: none;
   background-color: #337ab7;
   outline: 0;
+}
+
+/* SVG axis*/
+
+.ytick {
+  stroke: rgba(175,175,175,0.75) !important;
+  stroke-width: 2;
+}
+
+.axisLine {
+  stroke: rgba(0,0,0,0) !important;
+}
+
+.scatter-title {
+  font-size: 14pt;
 }
