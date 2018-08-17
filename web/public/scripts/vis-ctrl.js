@@ -510,6 +510,4 @@ function scatterCtrl (http, d3) {
     });
   }
 
-  vm.searchTerm = '18fgsa';
-  search();
 }

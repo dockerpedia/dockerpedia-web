@@ -285,7 +285,7 @@ function start () {
     yAxis.tickFormat(yTick);
     // Update axis label
     svg.select(".x.axis").duration(750).call(xAxis).select(".label").text(scope.binding.xLabel);
-    svg.select(".y.axis").duration(750).call(yAxis).select(".label").text(scope.binding.yLabel);
+    //svg.select(".y.axis").duration(750).call(yAxis).select(".label").text(scope.binding.yLabel);
 
     var objs = objects.selectAll(".dot").data(scope.binding.data)
     // Remove old dots
