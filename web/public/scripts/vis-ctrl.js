@@ -54,17 +54,18 @@ function scatterCtrl (http, d3) {
     text: '',
     size: { min: 0, max: 0, opts: {floor: 0, ceil: 0, onEnd: applyFilter, translate: formatBytes}},
     vuln: { min: 0, max: 0, opts: {floor: 0, ceil: 0, onEnd: applyFilter}},
-    score: { min: 0, max: 0, opts: {floor: 0, ceil: 0, onEnd: applyFilter}},
     packages: { min: 0, max: 0, opts: {floor: 0, ceil: 0, onEnd: applyFilter}},
   }
 
   vm.conf = {
-    yAxis: 'Score', size: 'None', category: 'Repository', shape: 'SO',
+    yAxis: 'Score2', size: 'None', category: 'Repository', shape: 'SO',
     yAxisOpts: {
       'Vulnerabilities': { getY: d => {return d.vuln},      yLabel: 'Vulnerabilities', yTick: d => {return d} },
       'Packages':        { getY: d => {return d.packages},  yLabel: 'Packages',        yTick: d => {return d} },
       'Score':           { getY: d => {return d.score},     yLabel: 'Score',           yTick: d => {return d} },
       'Size':            { getY: d => {return d.full_size}, yLabel: 'Size', yTick: d => {return formatBytes(d,0)} },
+      'Score2':          { getY: d => { return d.value},    yLabel: 'Score',           yTick: d => {return ''; }
+      },
     },
     sizeOpts: {
       'None':     { getR: d => {return 100} },
@@ -140,10 +141,10 @@ function scatterCtrl (http, d3) {
   }
 
   function updateData () {
+    computeValues();
     // Check filter status
     var b1 = (vm.filters.size.max == vm.filters.size.opts.ceil),
         b2 = (vm.filters.vuln.max == vm.filters.vuln.opts.ceil);
-        b3 = (vm.filters.score.max == vm.filters.score.opts.ceil);
         b4 = (vm.filters.packages.max == vm.filters.packages.opts.ceil);
 
     // Categories and shapes
@@ -161,8 +162,6 @@ function scatterCtrl (http, d3) {
           vm.filters.size.opts.ceil = image.full_size;
         if (vm.filters.vuln.opts.ceil < image.vuln)
           vm.filters.vuln.opts.ceil = image.vuln;
-        if (vm.filters.score.opts.ceil < image.value)
-          vm.filters.score.opts.ceil = image.value;
         if (vm.filters.packages.opts.ceil < image.packages)
           vm.filters.packages.opts.ceil = image.packages;
         vm.scatter.data.push(image);
@@ -172,7 +171,6 @@ function scatterCtrl (http, d3) {
     // Filters
     if (b1) vm.filters.size.max = vm.filters.size.opts.ceil;
     if (b2) vm.filters.vuln.max = vm.filters.vuln.opts.ceil;
-    if (b3) vm.filters.score.max = vm.filters.score.opts.ceil;
     if (b4) vm.filters.packages.max = vm.filters.packages.opts.ceil;
 
     // Categories and shapes
@@ -189,6 +187,7 @@ function scatterCtrl (http, d3) {
     });
     vm.scatter.categories = newCat;
     vm.scatter.shapes = newSha;
+    console.log(vm.scatter.data);
   }
 
 
@@ -252,8 +251,6 @@ function scatterCtrl (http, d3) {
                       image.full_size >= vm.filters.size.min && 
                       image.vuln <= vm.filters.vuln.max &&
                       image.vuln >= vm.filters.vuln.min &&
-                      image.value <= vm.filters.score.max &&
-                      image.value >= vm.filters.score.min &&
                       image.packages <= vm.filters.packages.max &&
                       image.packages >= vm.filters.packages.min &&
                       ( image.name.includes(vm.filters.text) ||
@@ -272,7 +269,7 @@ function scatterCtrl (http, d3) {
   function search () {
     if (vm.searchTerm == lastSearch) return null;
     lastSearch = vm.searchTerm;
-    http.post('https://api.mosorio.me/api/v1/viz', {user: vm.searchTerm}).then(
+    http.post('https://api.mosorio.me/api/v1/viz2', {user: vm.searchTerm, images: 40}).then(
       function onSuccess (response) {
         if (response.data.count == 0)
           vm.noResults = true;
@@ -285,35 +282,19 @@ function scatterCtrl (http, d3) {
           filtered.forEach(repo => {
             vm.users.add(repo.namespace);
             repo.active = true;
-            repo.children = repo.children.filter(obj => { return (obj.last_updated); });
+            repo.children = repo.children.filter(obj => { return (obj.last_updated && obj.packages>0); });
             repo.children.forEach( image => {
               computeScore(image);
               image.active = true;
               image.parent = repo;
               image.date = parseDate( image.last_updated.split('.')[0] );
-              image.vuln = image.vulnerabilities_critical +
-                           //image.vulnerabilities_defcon1 +
-                           image.vulnerabilities_high +
-                           image.vulnerabilities_low +
-                           image.vulnerabilities_medium;// +
-                           /*image.vulnerabilities_negligible +
-                           /image.vulnerabilities_unknown;*/
+              image.vulnerabilities_critical += image.vulnerabilities_defcon1;
+              image.vulnerabilities_low += image.vulnerabilities_negligible + image.vulnerabilities_unknown;
+              image.vuln = image.vulnerabilities_low + image.vulnerabilities_medium +
+                           image.vulnerabilities_high + image.vulnerabilities_critical;
             });
             vm.scatter.raw.push(repo);
           });
-
-          var sorted, uniq, lastValue;
-          filtered.forEach(repo => {
-            sorted = repo.children.sort((a,b) => { return b.date - a.date; });
-            uniq = [];
-            sorted.forEach(img => {
-              if (img.vuln != lastValue) {
-                uniq.push(img);
-              }
-              lastValue = img.vuln;
-            });
-            repo.children = uniq;
-          })
 
           vm.users = Array.from(vm.users);
           updateData();
@@ -328,6 +309,56 @@ function scatterCtrl (http, d3) {
       function onError (response) { console.log('Error: ' + response.data); }
     );
   };
+
+  var weight = [1,2,4,8];
+  var base = {low: 400, medium: 300, high: 200, critical: 100 };
+  function computeValues () {
+    var imagesByRisk = {none: [], low: [], medium: [], high: [], critical: []};
+    vm.scatter.raw.forEach(repo => {
+      repo.children.forEach(image => {
+        imagesByRisk[image.risk].push(image);
+      });
+    });
+
+    for (var key in imagesByRisk) {
+      if (key == 'none') {
+        imagesByRisk[key].forEach(image =>{ image.value = 400; });
+      } else {
+        // Preliminary value
+        imagesByRisk[key].forEach(image =>{
+          image.value = Math.log10(
+                          weight[0] * image.vulnerabilities_low +
+                          weight[1] * image.vulnerabilities_medium +
+                          weight[2] * image.vulnerabilities_high +
+                          weight[3] * image.vulnerabilities_critical);
+        });
+        var values = imagesByRisk[key].map(image => { return image.value; });
+        var min = Math.min.apply(null, values),
+            max = Math.max.apply(null, values);
+
+        // Compute the real value
+        imagesByRisk[key].forEach(image =>{
+          image.value = (min == max) ? 50 : 100 * (image.value - min) /  (max - min);
+          image.value = base[key] - image.value;
+        });
+      }
+    }
+
+    // Only show last changed version
+    vm.scatter.raw.forEach(repo => {
+      var sorted = repo.children.sort((a,b) => { return b.date - a.date; });
+      var uniq = [];
+      var lastValue = -1;
+
+      sorted.forEach(image => {
+        if (image.value != lastValue) {
+          uniq.push(image);
+        }
+        lastValue = image.value;
+      });
+      repo.children = uniq;
+    });
+  }
 
   function computeScore (img) {
     img.score = 1000;
@@ -479,5 +510,4 @@ function scatterCtrl (http, d3) {
     });
   }
 
-  //search();
 }

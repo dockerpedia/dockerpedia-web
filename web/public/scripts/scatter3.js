@@ -39,11 +39,12 @@ function scatter (d3) {
       return tip;
     }
     
-    var parentWidth = element[0].parentElement.offsetWidth;
+    var parentWidth = element[0].parentElement.offsetWidth,
+        parentHeight = element[0].parentElement.offsetHeight;
 
-    var margin = { top: 15, right: 15, bottom: 50, left: 70 },
+    var margin = { top: 35, right: 15, bottom: 50, left: 50 },
         outerWidth = parentWidth,
-        outerHeight = 600,
+        outerHeight = parentHeight,
         width = outerWidth - margin.left - margin.right,
         height = outerHeight - margin.top - margin.bottom;
 
@@ -85,6 +86,7 @@ function scatter (d3) {
     }
 
     function getYDomain () {
+      return [-15, 415];
       var filtered = scope.binding.data.filter(d => {return d.active});
       var yMax = 1.05 * d3.max(filtered, function(d) { return getY(d); }),
           yMin = 0.95 * d3.min(filtered, function(d) { return getY(d); }),
@@ -118,38 +120,16 @@ function start () {
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
+      .ticks(4)
       .tickSize(-width)
       .tickFormat(yTick);
 
-  var d3color = d3.scale.category10();
-  var color = function (token) {
-    var c;
-    switch (token) {
-      case "none":
-        c = '#2c7bb6';
-        break;
-      case "low":
-        c = '#abd9e9';
-        break;
-      case "medium":
-        c = '#ffffbf';
-        break;
-      case "high":
-        c = '#fdae61';
-        break;
-      case "critical":
-        c = '#d7191c';
-        break;
-      default:
-        c = d3color(token);
-    }
-    return c;
-  }
+  var color = d3.scale.category10();
 
   var zoomBeh = d3.behavior.zoom()
       .x(x)
-      .y(y)
-      .scaleExtent([0, 500])
+      //.y(y)
+      .scaleExtent([0.6, 10])
       .on("zoom", zoom);
 
   var svg = d3.select(element[0])
@@ -172,22 +152,81 @@ function start () {
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
     .append("text")
-      .classed("label", true)
+      .classed("scatter-title", true)
       .attr("x", width)
       .attr("y", margin.bottom - 10)
       .style("text-anchor", "end")
       .text(scope.binding.xLabel);
 
-  svg.append("g")
-      .classed("y axis", true)
-      .call(yAxis)
-    .append("text")
-      .classed("label", true)
+  var yy = svg.append("g")
+     .classed("y axis", true)
+     .call(yAxis);
+  yy.append("text")
+      .classed("scatter-title", true)
       .attr("transform", "rotate(-90)")
       .attr("y", -margin.left + 10)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text(scope.binding.yLabel);
+      .text("Risk");
+
+  yy.append("text")
+      .classed("scatter-title", true)
+      //.attr("transform", "rotate(-90)")
+      .attr("y", -30)
+      .attr("x", 160)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Image Risk by Date");
+
+  //TODO: data enter this.
+  var off = height*3/43
+  var gap = (height - off)/4;
+  console.log(gap);
+  yy.append("text")
+      .classed("label", true)
+      .attr("transform", "rotate(-90)")
+      .attr("y", -20)
+      .attr("x", margin.top + off/2 - 4*gap)
+      .attr("dy", ".71em")
+      .style("text-anchor", "middle")
+      .text("Critical");
+
+  yy.append("text")
+      .classed("label", true)
+      .attr("transform", "rotate(-90)")
+      .attr("y", -20)
+      .attr("x", margin.top + off/2 - 3*gap)
+      .attr("dy", ".71em")
+      .style("text-anchor", "middle")
+      .text("High");
+
+  yy.append("text")
+      .classed("label", true)
+      .attr("transform", "rotate(-90)")
+      .attr("y", -20)
+      .attr("x", margin.top + off/2 - 2*gap)
+      .attr("dy", ".71em")
+      .style("text-anchor", "middle")
+      .text("Medium");
+
+  yy.append("text")
+      .classed("label", true)
+      .attr("transform", "rotate(-90)")
+      .attr("y", -20)
+      .attr("x", margin.top + off/2 - 1*gap)
+      .attr("dy", ".71em")
+      .style("text-anchor", "middle")
+      .text("Low");
+
+  yy.append("text")
+      .classed("label", true)
+      .attr("y", off/2 - 16)
+      .attr("x", 45)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("None");
+
+  var ticks = d3.selectAll(".y .tick line").classed('ytick', true);
 
   var objects = svg.append("svg")
       .classed("objects", true)
@@ -238,15 +277,15 @@ function start () {
       objects.selectAll(".dot").data(scope.binding.data).exit().remove();
       return null;
     }
-    zoomBeh.x(x.domain(getXDomain()))
-           .y(y.domain(getYDomain()));
+    zoomBeh.x(x.domain(getXDomain()));
+           //.y(y.domain(getYDomain()));
 
     var svg = d3.select(element[0]).transition();
     // Update axis tick
     yAxis.tickFormat(yTick);
     // Update axis label
     svg.select(".x.axis").duration(750).call(xAxis).select(".label").text(scope.binding.xLabel);
-    svg.select(".y.axis").duration(750).call(yAxis).select(".label").text(scope.binding.yLabel);
+    //svg.select(".y.axis").duration(750).call(yAxis).select(".label").text(scope.binding.yLabel);
 
     var objs = objects.selectAll(".dot").data(scope.binding.data)
     // Remove old dots

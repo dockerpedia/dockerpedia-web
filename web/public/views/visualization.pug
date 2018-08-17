@@ -16,9 +16,17 @@ block content
   main.container-fluid(role="main", ng-controller="scatterCtrl as ctrl", style="padding-top:10px;")
     div.row
       div.col-md-8.container
-        .row
 
-          div.col-md-6
+        .row
+          scatter#chart(details="ctrl.getPackages", binding="ctrl.scatter")
+          div(ng-hide="ctrl.scatter.data.length!=0",
+              style="display:table; height: calc(100vh - 160px); width:100%; position: absolute;")
+            div(style="display:table-cell; vertical-align: middle;")
+              h3#tutor(ng-click="ctrl.tutorial()") Need help? Click here to run the tutorial!
+
+      div.col-md-4(style="padding-left: 0px;")
+        .row
+          div.col-md-12.mb-2
             div.input-group
               div.input-group-prepend
                 button#dropdownMenuButton.btn.dropdown-toggle.btn-outline-secondary(
@@ -28,15 +36,15 @@ block content
                     aria-expanded="false")
                   i.fa.fas.fa-cog
                 div.dropdown-menu(aria-labelledby="dropdownMenuButton")
-                  h6.dropdown-header Change encoding:
-                  .dropdown-item
+                  //h6.dropdown-header Change encoding:
+                  //.dropdown-item
                     .form
                       .input-group
                         .input-group-prepend
                           .input-group-text Y Axis:
                         select.custom-select(ng-model="ctrl.conf.yAxis", ng-change="ctrl.setConf()")
                           option(ng-repeat="(name, obj) in ctrl.conf.yAxisOpts", value="{{name}}") {{ name }}
-                  .dropdown-divider
+                  //.dropdown-divider
                   .dropdown-item(style="text-align: center;", ng-click="ctrl.tutorial()")
                     a(href="") Run tutorial
               input#search-input.form-control(
@@ -55,7 +63,8 @@ block content
                 button.btn.btn-outline-secondary(type="button", ng-click="ctrl.search()")
                   i.fa.fa-search.fa-fw
 
-          .col-md-6
+        .row
+          .col-md-12.mb-2
             .alert.alert-warning.alert-dismissible.fade.show(
                 role='alert',
                 ng-if="ctrl.noResults",
@@ -64,38 +73,30 @@ block content
                 span(aria-hidden='true') ×
 
         .row
-          scatter#chart(details="ctrl.getPackages", binding="ctrl.scatter")
-          div(ng-hide="ctrl.scatter.data.length!=0", style="display:table; height: 400px; width:100%;")
-            div(style="display:table-cell; vertical-align: middle;")
-              h3#tutor(ng-click="ctrl.tutorial()") Need help? Click here to run the tutorial!
-
-      div.col-md-4(style="padding-left: 0px;")
-        form#sencoding
-          .form-row
-            .form-group.col-md-6(style="margin-bottom: 0px;")
-              .legend-title.noselect(ng-class="ctrl.show.categories ? 'active' : ''"
-                                     ng-click="ctrl.show.categories = !ctrl.show.categories") Color by image:
-                i.pull-right.fa(ng-class="ctrl.show.categories ? 'fa-angle-up' : 'fa-angle-down';")
-              .legend-box(ng-class="ctrl.show.categories ? 'active' : ''")
-                div.noselect(ng-repeat="(i, val) in ctrl.scatter.categories",
-                             ng-click="ctrl.markCat(val)",
-                             ng-class="val.marked ? 'active' : ''")
-                  .small-box(style="background-color: {{ val.color }}")
-                  .name {{ val.name }}
-                  i.fa.fa-trash.pull-right(ng-click="ctrl.rmCat(val.name)")
-                  i.fa.pull-right(ng-class="(val.marked || !ctrl.categoryMarked) ? 'fa-eye' : 'fa-eye-slash'")
-            .form-group.col-md-6(style="margin-bottom: 0px;")
-              .legend-title.noselect(ng-class="ctrl.show.shapes ? 'active' : ''",
-                                     ng-click="ctrl.show.shapes = !ctrl.show.shapes") Shape by OS:
-                i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';")
-              .legend-box(ng-class="ctrl.show.shapes ? 'active' : ''")
-                div.noselect(ng-repeat="(i, val) in ctrl.scatter.shapes",
-                             ng-click="ctrl.markShape(val)",
-                             ng-class="val.marked ? 'active' : ''")
-                  shape(type="val.shape")
-                  .name {{ val.name }}
-                  i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
-                  i.fa.pull-right(ng-class="(val.marked || !ctrl.shapeMarked) ? 'fa-eye' : 'fa-eye-slash'")
+          .col-md-6(style="margin-bottom: 0px; padding-right: 7px;")
+            .legend-title.noselect(ng-class="ctrl.show.categories ? 'active' : ''"
+                                   ng-click="ctrl.show.categories = !ctrl.show.categories") Color by image:
+              i.pull-right.fa(ng-class="ctrl.show.categories ? 'fa-angle-up' : 'fa-angle-down';")
+            .legend-box(ng-class="ctrl.show.categories ? 'active' : ''")
+              div.noselect(ng-repeat="(i, val) in ctrl.scatter.categories",
+                           ng-click="ctrl.markCat(val)",
+                           ng-class="val.marked ? 'active' : ''")
+                .small-box(style="background-color: {{ val.color }}")
+                .name {{ val.name }}
+                i.fa.fa-trash.pull-right(ng-click="ctrl.rmCat(val.name)")
+                i.fa.pull-right(ng-class="(val.marked || !ctrl.categoryMarked) ? 'fa-eye' : 'fa-eye-slash'")
+          .col-md-6(style="margin-bottom: 0px; padding-right: 7px;")
+            .legend-title.noselect(ng-class="ctrl.show.shapes ? 'active' : ''",
+                                   ng-click="ctrl.show.shapes = !ctrl.show.shapes") Shape by OS:
+              i.pull-right.fa(ng-class="ctrl.show.shapes ? 'fa-angle-up' : 'fa-angle-down';")
+            .legend-box(ng-class="ctrl.show.shapes ? 'active' : ''")
+              div.noselect(ng-repeat="(i, val) in ctrl.scatter.shapes",
+                           ng-click="ctrl.markShape(val)",
+                           ng-class="val.marked ? 'active' : ''")
+                shape(type="val.shape")
+                .name {{ val.name }}
+                i.fa.fa-trash.pull-right(ng-click="ctrl.rmShape(val.name)")
+                i.fa.pull-right(ng-class="(val.marked || !ctrl.shapeMarked) ? 'fa-eye' : 'fa-eye-slash'")
 
         #sfilter
           .filter-title.noselect(ng-class="ctrl.show.filters ? 'active' : ''"
