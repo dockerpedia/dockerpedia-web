@@ -3,7 +3,7 @@ angular.module('dockerpedia.controllers').controller('describeCtrl', describeCtr
 describeCtrl.$inject = ['$scope', '$location', '$http']
 
 function describeCtrl (scope, location, http) {
-  var endpoint = "https://dockerpedia.inf.utfsm.cl/dockerpedia/sparql";
+  var endpoint = "https://dockerpedia.inf.utfsm.cl/v3/sparql";
   var vm = this;
   vm.toPrefix = toPrefix;
   vm.getValues = getValues;

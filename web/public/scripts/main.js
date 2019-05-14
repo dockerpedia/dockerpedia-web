@@ -81,8 +81,8 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
   if (scope.loc == 'query') {
     //console.log(YASGUI.defaults);
     scope.yasgui = YASGUI(document.getElementById("yasgui"), {
-      yasqe: { sparql:{ endpoint:'https://dockerpedia.inf.utfsm.cl/dockerpedia/sparql' } },
-      endpoint: 'https://dockerpedia.inf.utfsm.cl/dockerpedia/sparql',
+      yasqe: { sparql:{ endpoint:'https://dockerpedia.inf.utfsm.cl/v3/sparql' } },
+      endpoint: 'https://dockerpedia.inf.utfsm.cl/v3/sparql',
       catalogueEndpoints: [],
     });
   } else if (scope.loc == 'examples') {
@@ -92,7 +92,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
     YASQE.defaults.viewportMargin = Infinity;
     YASQE.defaults.createShareLink = null;
     YASQE.defaults.sparql.showQueryButton = true;
-    YASQE.defaults.sparql.endpoint = "https://dockerpedia.inf.utfsm.cl/dockerpedia/sparql";
+    YASQE.defaults.sparql.endpoint = "https://dockerpedia.inf.utfsm.cl/v3/sparql";
     for (var n in scope.examples) {
       yasqeTMP = YASQE(document.getElementById("yasqe"+n), {});
       yasqeTMP.setValue(scope.examples[n]);
