@@ -10,45 +10,34 @@ block content
       div.col-md-2
       div.col-md-8
         h1 Examples
-        p In our first example we obtain 10 repositories and the images associated to these:
+        p In our first example we obtain 10 images associated to these:
         div#yasqe0
         p 
-        | You can filter these results to get the repository/image you want to analyze.
-        | In the following examples we use the image with ID 1140801 because has all the information
-        | needed to explain the characteristics of the dataset.
+        | You can get the results of a image.
+        | In the following examples we use the image dockerpedia/pegasus_workflow_images
+        | version latest.
         p 
         | We can obtain all the packages of this image and their version:
         p
         div#yasqe1
         p 
-        | Expanding this query we can obtain the vulnerabilities associated with these packages:
+        | Also, you can compare the packages of images. This example compares two versions of the image 
+        | dockerpedia/pegasus_workflow_images
         p
         div#yasqe2
         p 
-        | Now we have all the information needed to analyze the vulnerabilities of a Docker Hub
-        | image or repository!
-        | We do not even need to know information about the images or repositories, we can 
-        | directly search for critical vulnerabilities and make a list of the packages with
-        | more versions having some:
+        | You can query which images are using a package (example:dash), the package version and operating system 
         p
         div#yasqe6
-        p &nbsp;
-        p
-        | But our dataset is not only useful when we are searching for the vulnerabilities of 
-        | repositories and images.
-        | We can analyze the information stored in Docker Hub in several ways, as an example 
-        | the following query shows a ranking of the most commonly used operating systems:
-        p
-        div#yasqe3
-        p
-        | And this one returns the top 10 most used packages: 
-        p
-        div#yasqe4
         p
         | Also, as a layer can be used in multiple images, we may be interested in knowing which 
         | ones are the most popular:
         p
         div#yasqe5
+        p
+        | And this one returns the top 10 most used packages:
+        p
+        div#yasqe3
         p
         | These are just some ways how our dataset can be used. We recommend executing these examples
         | in the 

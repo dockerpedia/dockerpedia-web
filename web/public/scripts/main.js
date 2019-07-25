@@ -3,51 +3,38 @@ angular.module('dockerpedia.controllers', ['angular-loading-bar', 'ngAnimate'])
 .controller('mainCtrl', ['$scope', '$location', '$window', function(scope, location, window) {
   scope.examples = [ 
 `PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?repo ?image WHERE { 
-  ?repo  a vocab:Repository ;
-         vocab:hasImage ?image.
-  ?image a vocab:SoftwareImage .
-} limit 10`,
-`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+SELECT ?image ?label WHERE { 
+  ?image a vocab:SoftwareImage ;
+  		 rdfs:label ?label;
+} limit 100`,
+`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?packagename ?packageversionint WHERE {
-  ?image vocab:id 1140801 .
-  ?image vocab:hasLayer ?layer .
-  ?modification vocab:modifiedLayer ?layer .
-  ?modification vocab:relatedPackage ?packageversion .
+SELECT ?image ?software WHERE { 
+  ?image a vocab:SoftwareImage ;
+  		 vocab:containsSoftware ?software
+} limit 100
+`,
+`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+PREFIX DPimage: <http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/>
+ 
+SELECT ?p WHERE { 
+	DPimage:dockerpedia-pegasus_workflow_images_latest vocab:containsSoftware ?p .
+   MINUS{
+    DPimage:dockerpedia-pegasus_workflow_images-4.8.5 vocab:containsSoftware ?p   
+ 	}
+} limit 100`,
+`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?packagename (count(?packagename) as ?count) WHERE {
+  ?image a vocab:SoftwareImage ;
+  		 vocab:containsSoftware ?software .
   ?package vocab:hasVersion ?packageversion .
   ?package rdfs:label ?packagename .
-  ?packageversion rdfs:label ?packageversionint
-} limit 500`,
-`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
-
-SELECT ?packagename ?packageversionnumber ?vulnerabilityname ?severity WHERE {
-  ?image vocab:id 1140801 .
-  ?image vocab:hasLayer ?layer .
-  ?modification vocab:modifiedLayer ?layer .
-  ?modification vocab:relatedPackage ?packageversion .
-  ?package vocab:hasVersion ?packageversion .
-  ?package rdfs:label ?packagename .
-  ?packageversion rdfs:label ?packageversionnumber .
-  ?packageversion vocab:hasVulnerability ?vulnerability.
-  ?vulnerability rdfs:label ?vulnerabilityname .
-  ?vulnerability vocab:severity ?severity
-} limit 10000`,
-`PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
-
-SELECT ?osname (count(?osname) as ?count) WHERE { 
-  { SELECT distinct ?image ?os WHERE {
-      ?image a vocab:SoftwareImage .
-      ?image vocab:hasLayer ?layer .
-      ?layer vocab:useOS ?os .
-    }
-  } 
-  ?os rdfs:label ?osname 
-} group by (?osname) order by desc(?count) limit 10`,
+} group by (?packagename) order by desc(?count) limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
@@ -63,17 +50,25 @@ PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?layer (count(?layer) as ?count) WHERE {
   ?image a vocab:SoftwareImage ;
-         vocab:hasLayer ?layer .
+         vocab:composedBy ?layer .
 } group by (?layer) order by desc(?count) limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dockerpedia: <http://dockerpedia.inf.utfsm.cl/resource/>
+PREFIX http: <http://www.w3.org/2011/http#>
 PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX docker: <https://www.w3.org/ns/bde/docker#>
+PREFIX DPimage: <http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/>
+PREFIX DPpackage: <http://dockerpedia.inf.utfsm.cl/resource/SoftwarePackage/>
 
-SELECT ?packagename (count(?packagename) as ?count) WHERE {
-  ?vulnerability vocab:severity "Critical" .
-  ?packageversion vocab:hasVulnerability ?vulnerability.
-  ?package vocab:hasVersion ?packageversion ;
-           rdfs:label ?packagename .
-} group by (?packagename) order by desc(?count) limit 20`,
+SELECT ?image ?package_version ?os
+	WHERE {
+  		?package a vocab:SoftwarePackage ;
+             rdfs:label "dash" ;
+             vocab:hasVersion ?package_version;
+			 vocab:isPackageOf ?os .
+        ?package_version vocab:isInstalledOn ?image
+}`,
   ];
 
   var absUrlArray = location.absUrl().split('/');
