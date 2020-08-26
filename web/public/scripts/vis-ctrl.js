@@ -239,16 +239,16 @@ function scatterCtrl (http, d3) {
 
   function applyFilter () {
     var categories, shapes;
-    if (vm.categoryMarked) 
+    if (vm.categoryMarked)
       categories = vm.scatter.categories.filter(cat => { return cat.marked }).map(cat => {return cat.name});
     if (vm.shapeMarked)
       shapes = vm.scatter.shapes.filter(sha => { return sha.marked }).map(sha => {return sha.name});
 
     vm.scatter.data.forEach(image => {
-      image.active = (( !vm.categoryMarked || categories.includes( vm.scatter.getC(image) ) ) && 
+      image.active = (( !vm.categoryMarked || categories.includes( vm.scatter.getC(image) ) ) &&
                       ( !vm.shapeMarked || shapes.includes( vm.scatter.getS(image) ) ) &&
                       image.full_size <= vm.filters.size.max &&
-                      image.full_size >= vm.filters.size.min && 
+                      image.full_size >= vm.filters.size.min &&
                       image.vuln <= vm.filters.vuln.max &&
                       image.vuln >= vm.filters.vuln.min &&
                       image.packages <= vm.filters.packages.max &&
@@ -269,7 +269,7 @@ function scatterCtrl (http, d3) {
   function search () {
     if (vm.searchTerm == lastSearch) return null;
     lastSearch = vm.searchTerm;
-    http.post('https://api.mosorio.me/api/v1/viz2', {user: vm.searchTerm, images: 40}).then(
+    http.post('https://api.mosorio.dev/api/v1/viz2', {user: vm.searchTerm, images: 40}).then(
       function onSuccess (response) {
         if (response.data.count == 0)
           vm.noResults = true;
@@ -391,7 +391,7 @@ function scatterCtrl (http, d3) {
     var id = image.id;
     vm.selected = image;
     ctrl.data = {Critical: [], High: [], Medium: [], Low: []};
-    http.get('https://api.mosorio.me/api/v1/images/'+id+'/packages').then(
+    http.get('https://api.mosorio.dev/api/v1/images/'+id+'/packages').then(
       function onSuccess (response) {
         var s, p, i, j, target;
         if (response.data.length > 0) {
@@ -451,7 +451,7 @@ function scatterCtrl (http, d3) {
   }
 
   function getUsers (prefix) {
-    return http.get('https://api.mosorio.me/api/v1/users?query='+prefix).then(
+    return http.get('https://api.mosorio.dev/api/v1/users?query='+prefix).then(
       function onSuccess (response) {
         return response.data.result;
       },
@@ -464,7 +464,7 @@ function scatterCtrl (http, d3) {
   }
 
   function formatBytes (a,b) {
-    if (a <= 0) 
+    if (a <= 0)
       return"0 B";
     var c = 1024,
         d = (b===0) ? 0 : (b || 2),
