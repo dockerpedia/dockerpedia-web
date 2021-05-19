@@ -6,51 +6,51 @@ angular.module('dockerpedia.controllers', ['angular-loading-bar', 'ngAnimate'])
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?image ?label WHERE { 
-  ?image a vocab:SoftwareImage ;
+  ?image a dpv:SoftwareImage ;
   		 rdfs:label ?label;
 } limit 100`,
 `PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?image ?software WHERE { 
-  ?image a vocab:SoftwareImage ;
-  		 vocab:containsSoftware ?software
+  ?image a dpv:SoftwareImage ;
+  		 dpv:containsSoftware ?software
 } limit 100
 `,
 `PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX DPimage: <http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/>
  
 SELECT ?p WHERE { 
-	DPimage:dockerpedia-pegasus_workflow_images_latest vocab:containsSoftware ?p .
+	DPimage:dockerpedia-pegasus_workflow_images_latest dpv:containsSoftware ?p .
    MINUS{
-    DPimage:dockerpedia-pegasus_workflow_images-4.8.5 vocab:containsSoftware ?p   
+    DPimage:dockerpedia-pegasus_workflow_images-4.8.5 dpv:containsSoftware ?p   
  	}
 } limit 100`,
 `PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?packagename (count(?packagename) as ?count) WHERE {
-  ?image a vocab:SoftwareImage ;
-  		 vocab:containsSoftware ?software .
-  ?package vocab:hasVersion ?packageversion .
+  ?image a dpv:SoftwareImage ;
+  		 dpv:containsSoftware ?software .
+  ?package dpv:hasVersion ?packageversion .
   ?package rdfs:label ?packagename .
 } group by (?packagename) order by desc(?count) limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?packagename (count(?packagename) as ?count) WHERE {
-  ?image vocab:hasLayer ?layer .
-  ?modification vocab:modifiedLayer ?layer .
-  ?modification vocab:relatedPackage ?packageversion .
-  ?package vocab:hasVersion ?packageversion .
+  ?image dpv:hasLayer ?layer .
+  ?modification dpv:modifiedLayer ?layer .
+  ?modification dpv:relatedPackage ?packageversion .
+  ?package dpv:hasVersion ?packageversion .
   ?package rdfs:label ?packagename .
 } group by (?packagename) order by desc(?count) limit 10`,
 `PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?layer (count(?layer) as ?count) WHERE {
-  ?image a vocab:SoftwareImage ;
-         vocab:composedBy ?layer .
+  ?image a dpv:SoftwareImage ;
+         dpv:composedBy ?layer .
 } group by (?layer) order by desc(?count) limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dockerpedia: <http://dockerpedia.inf.utfsm.cl/resource/>
@@ -63,11 +63,11 @@ PREFIX DPpackage: <http://dockerpedia.inf.utfsm.cl/resource/SoftwarePackage/>
 
 SELECT ?image ?package_version ?os
 	WHERE {
-  		?package a vocab:SoftwarePackage ;
+  		?package a dpv:SoftwarePackage ;
              rdfs:label "dash" ;
-             vocab:hasVersion ?package_version;
-			 vocab:isPackageOf ?os .
-        ?package_version vocab:isInstalledOn ?image
+             dpv:hasVersion ?package_version;
+			 dpv:isPackageOf ?os .
+        ?package_version dpv:isInstalledOn ?image
 }`,
   ];
 
