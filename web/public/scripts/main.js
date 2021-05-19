@@ -2,14 +2,14 @@ angular.module('dockerpedia.controllers', ['angular-loading-bar', 'ngAnimate'])
 
 .controller('mainCtrl', ['$scope', '$location', '$window', function(scope, location, window) {
   scope.examples = [ 
-`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+`PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?image ?label WHERE { 
   ?image a vocab:SoftwareImage ;
   		 rdfs:label ?label;
 } limit 100`,
-`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+`PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?image ?software WHERE { 
@@ -17,7 +17,7 @@ SELECT ?image ?software WHERE {
   		 vocab:containsSoftware ?software
 } limit 100
 `,
-`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+`PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX DPimage: <http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/>
  
 SELECT ?p WHERE { 
@@ -26,7 +26,7 @@ SELECT ?p WHERE {
     DPimage:dockerpedia-pegasus_workflow_images-4.8.5 vocab:containsSoftware ?p   
  	}
 } limit 100`,
-`PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+`PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?packagename (count(?packagename) as ?count) WHERE {
@@ -36,7 +36,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
   ?package rdfs:label ?packagename .
 } group by (?packagename) order by desc(?count) limit 10`,
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+prefix dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?packagename (count(?packagename) as ?count) WHERE {
   ?image vocab:hasLayer ?layer .
@@ -46,7 +46,7 @@ SELECT ?packagename (count(?packagename) as ?count) WHERE {
   ?package rdfs:label ?packagename .
 } group by (?packagename) order by desc(?count) limit 10`,
 `PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 
 SELECT ?layer (count(?layer) as ?count) WHERE {
   ?image a vocab:SoftwareImage ;
@@ -55,7 +55,7 @@ SELECT ?layer (count(?layer) as ?count) WHERE {
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dockerpedia: <http://dockerpedia.inf.utfsm.cl/resource/>
 PREFIX http: <http://www.w3.org/2011/http#>
-PREFIX vocab: <http://dockerpedia.inf.utfsm.cl/vocab#>
+PREFIX dpv: <http://dockerpedia.inf.utfsm.cl/vocab#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX docker: <https://www.w3.org/ns/bde/docker#>
 PREFIX DPimage: <http://dockerpedia.inf.utfsm.cl/resource/SoftwareImage/>
